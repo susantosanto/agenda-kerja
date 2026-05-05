@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum Priority {
+  P1
+  P2
+  P3
+  P4
+}
+
+enum ActivityType {
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_DELETED
+  TASK_COMPLETED
+  TASK_UNCOMPLETED
+  TASK_ASSIGNED
+  TASK_UNASSIGNED
+  COMMENT_ADDED
+  COMMENT_DELETED
+  STATUS_CHANGED
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  memberships   CommunityMember[]
+  assignedTasks TaskAssignee[]
+  createdTasks  Task[]    @relation("CreatedTasks")
+  comments      Comment[]
+  activities    Activity[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  inviteCode  String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  members     CommunityMember[]
+  lists       List[]
+  labels      Label[]
+}
+
+model CommunityMember {
+  id          String     @id @default(cuid())
+  role        Role       @default(MEMBER)
+  joinedAt    DateTime   @default(now())
+  userId      String
+  communityId String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community   Community  @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, communityId])
+}
+
+model List {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String   @default("#6366f1")
+  isArchived  Boolean  @default(false)
+  isPinned    Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(P3)
+  startDate   DateTime?
+  dueDate     DateTime?
+  duration    Int?
+  isStarred   Boolean    @default(false)
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  listId      String
+  list        List       @relation(fields: [listId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User       @relation("CreatedTasks", fields: [createdById], references: [id])
+  assignees   TaskAssignee[]
+  subtasks    Subtask[]
+  labels      TaskLabel[]
+  comments    Comment[]
+  activities  Activity[]
+}
+
+model Subtask {
+  id     String  @id @default(cuid())
+  title  String
+  isDone Boolean @default(false)
+  order  Int     @default(0)
+  taskId String
+  task   Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Label {
+  id          String      @id @default(cuid())
+  name        String
+  color       String
+  communityId String
+  community   Community   @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  tasks       TaskLabel[]
+}
+
+model TaskLabel {
+  taskId  String
+  labelId String
+  task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label   Label  @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, labelId])
+}
+
+model TaskAssignee {
+  taskId String
+  userId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([taskId, userId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Activity {
+  id        String       @id @default(cuid())
+  type      ActivityType
+  details   String?
+  createdAt DateTime     @default(now())
+  taskId    String
+  task      Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+}
