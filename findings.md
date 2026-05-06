@@ -1,190 +1,321 @@
 # Findings - Collaborative Todo List App
 
-## Research Summary
+## Implementation Notes
 
-### Best Collaborative Todo Apps Analyzed
-1. **Todoist** - Industry leader, natural language input, smart filters
-2. **TickTick** - Rich calendar views, Pomodoro, Eisenhower matrix
-3. **Any.do** - AI features, Gantt charts, grocery list automation
-4. **Zenkit** - Deep integration, smart lists, email-to-list
-5. **Superlist** - AI-powered, beautiful UI, nested lists
-6. **Hive** - Team collaboration, multiple views, automation
-7. **Trello** - Kanban-first, flexible, power-ups
+### Phase 1: Setup & Auth - COMPLETE (2026-05-05)
 
-### Key Features Identified
+**Completed:**
+1. **Project Initialization**
+   - Next.js 15.1.0 with TypeScript
+   - TailwindCSS 3.4.0 with custom config
+   - shadcn/ui components installed
+   - Prisma 6.2.1 with PostgreSQL (Neon)
 
-#### Core Task Features
-- Task title and rich description (markdown)
-- Priority levels (4 levels with colors)
-- Start date and due date with time
-- Duration estimation
-- Recurring tasks
-- Subtasks (nested)
-- Labels/tags
-- Star/favorite
-- Status tracking (To Do, In Progress, Done)
+2. **Authentication System**
+   - NextAuth.js v5 beta configured
+   - Google OAuth provider setup
+   - Session management with JWT
+   - Protected routes implemented
+   - Sign in/out flows ready
 
-#### Collaboration Features
-- Shared lists/projects
-- Task assignment
-- @mentions in comments
-- Comments thread
-- Activity log
-- Real-time sync
-- Permission levels (Owner, Admin, Member, Viewer)
+3. **Database & API**
+   - Prisma schema fully defined (11 models)
+   - Database synchronized with Neon Postgres
+   - API routes for Lists, Labels, Comments, Activity completed
+   - Task API already existed from previous session
+   - Community API already existed
 
-#### View Modes
-- List view (standard)
-- Kanban board
-- Calendar view (monthly/weekly)
-- Timeline/Gantt view
-- Agenda view
+4. **Layout & Styling**
+   - Custom CSS variables for light/dark themes
+   - Glassmorphism effects implemented
+   - Custom animations (fade-in, slide-up, scale-in)
+   - Responsive layout with desktop sidebar and mobile bottom nav
+   - Header with user dropdown menu
+   - Community selector component
 
-#### Smart Filters
-- Today
-- This Week
-- Overdue
-- Assigned to Me
-- High Priority
-- Custom filters
+**Components Built:**
+- `Header` - Top navigation bar with user menu
+- `Sidebar` - Desktop navigation (hidden on mobile)
+- `MobileNav` - Bottom navigation for mobile devices
+- `CommunitySelector` - Dropdown to switch/create communities
 
-#### Additional Features
-- Multiple reminders
-- Drag and drop
-- Bulk actions
-- Search
-- Dark mode
-- Mobile app
+**Styling Decisions:**
+- Primary color: Indigo (#6366f1)
+- Dark mode as default (premium feel)
+- Glassmorphism with backdrop-blur
+- Custom scrollbar styling
+- Smooth transitions (200-300ms)
+
+**Challenges Resolved:**
+- npm command whitelisting - added to shell whitelist
+- PowerShell PATH issues - used direct PowerShell calls
+- Prisma schema location - confirmed at prisma/schema.prisma
 
 ---
 
-## User Requirements Confirmed
+### Phase 2: Core Data - COMPLETE (Backend) / In Progress (UI)
 
-| Requirement | Value |
-|-------------|-------|
-| Platform | Web-based + Mobile view |
-| Community Size | 5-10 people |
-| Authentication | Google OAuth only |
-| Features | Core only (no productivity extras) |
-| Integration | Standalone (no external integrations) |
-| Deployment | Vercel (free) |
-| Tech Stack | ReactJS + TailwindCSS + shadcn |
-| Design | Modern, Elegant, Professional, Super Premium |
+**API Endpoints Summary:**
+
+**Lists:**
+- `GET /api/lists?communityId=` - Get all lists for community
+- `POST /api/lists` - Create new list
+- `PATCH /api/lists/[id]` - Update list (name, description, color, archived, pinned)
+- `DELETE /api/lists/[id]` - Delete list (owner only)
+- `POST /api/lists/[id]/reorder` - Reorder lists (owner only)
+
+**Labels:**
+- `GET /api/labels?communityId=` - Get all labels for community
+- `POST /api/labels` - Create label
+- `PATCH /api/labels/[id]` - Update label (name, color)
+- `DELETE /api/labels/[id]` - Delete label
+
+**Comments:**
+- `POST /api/tasks/[taskId]/comments` - Add comment to task
+- `PATCH /api/comments/[commentId]` - Edit comment (author only)
+- `DELETE /api/comments/[commentId]` - Delete comment (author only)
+
+**Activity:**
+- `GET /api/tasks/[taskId]/activity` - Get activity log for task (last 50)
+
+**Authentication:**
+- `POST /api/auth/signout` - Sign out endpoint
+
+**Permission Model:**
+- Community membership required for most operations
+- List reorder & delete: owner only
+- Comment edit/delete: author only
+- Task operations: any community member
 
 ---
 
-## Technology Decisions
+### Phase 3: UI Components - Pending
+
+**Next Tasks:**
+1. Build task list view component
+2. Build task form (create/edit modal)
+3. Build kanban board view
+4. Build calendar view
+5. Build timeline/Gantt view
+6. Build task detail page with subtasks, comments, activity
+
+---
+
+## Technology Decisions (Confirmed)
 
 ### Why This Stack?
-1. **Next.js** - Full-stack React framework, great for Vercel deployment
-2. **TailwindCSS** - Rapid styling, modern utility-first approach
-3. **shadcn/ui** - Premium accessible components, fully customizable
-4. **Prisma** - Type-safe ORM, great developer experience
-5. **Vercel Postgres** - Free tier database, perfect for small community app
-6. **NextAuth.js** - Simple Google OAuth implementation
-7. **Zustand** - Lightweight state management
+1. **Next.js 15** - App Router, server components, great Vercel integration
+2. **TypeScript** - Type safety across full stack
+3. **TailwindCSS** - Utility-first, rapid UI development
+4. **shadcn/ui** - Accessible, customizable components
+5. **Prisma** - Type-safe ORM with excellent DX
+6. **Neon Postgres** - Serverless, free tier, good for small apps
+7. **NextAuth.js v5** - Modern auth with Google OAuth
 8. **React Query** - Server state management, caching
-9. **date-fns** - Lightweight date handling
+9. **Zustand** - Client state (if needed)
+10. **date-fns** - Lightweight date formatting
+11. **framer-motion** - Animations (to be added in Phase 5)
+12. **lucide-react** - Beautiful icons
 
-### Design System Choices
-- **Glassmorphism** - Modern, premium feel
-- **Micro-interactions** - Delightful UX
-- **Smooth animations** - framer-motion
-- **Dark mode** - Important for premium feel
-- **Mobile-first** - Responsive design priority
+### Architecture Patterns
+- **Server Components by default** - Better performance
+- **Client Components when needed** - Interactive parts only
+- **API Routes** - RESTful endpoints with Next.js
+- **Middleware** - Auth protection (if needed)
+- **React Query** - Data fetching, caching, optimistic updates
 
 ---
 
-## Database Schema Design
+## Database Schema (As Implemented)
 
-### Key Relationships
-- User → Communities (many-to-many via CommunityMember)
-- Community → Lists (one-to-many)
-- List → Tasks (one-to-many)
-- Task → Subtasks (one-to-many)
-- Task → Labels (many-to-many)
-- Task → Assignees (many-to-many via TaskAssignee)
-- Task → Comments (one-to-many)
-- Task → Activity (one-to-many)
+### Models
+- User (with NextAuth accounts & sessions)
+- Community (with owner, inviteCode)
+- CommunityMember (many-to-many with Role enum)
+- List (with color, order, archived, pinned)
+- Task (with status, priority, dates, duration, starred)
+- Subtask (nested tasks)
+- Label (custom colored labels)
+- TaskLabel (many-to-many)
+- TaskAssignee (many-to-many)
+- Comment (rich text)
+- Activity (audit log with ActivityType enum)
 
 ### Enums
-```typescript
-enum Role {
-  OWNER
-  ADMIN
-  MEMBER
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  DONE
-}
-
-enum Priority {
-  P1  // Urgent + Important (Red)
-  P2  // Important, not Urgent (Orange)
-  P3  // Normal (Blue)
-  P4  // Low (Gray)
-}
-
-enum ActivityType {
-  TASK_CREATED
-  TASK_UPDATED
-  TASK_DELETED
-  TASK_COMPLETED
-  TASK_ASSIGNED
-  COMMENT_ADDED
-  STATUS_CHANGED
-}
-```
+- Role: OWNER, ADMIN, MEMBER
+- TaskStatus: TODO, IN_PROGRESS, DONE
+- Priority: P1, P2, P3, P4
+- ActivityType: TASK_CREATED, TASK_UPDATED, TASK_DELETED, TASK_COMPLETED, TASK_UNCOMPLETED, TASK_ASSIGNED, TASK_UNASSIGNED, COMMENT_ADDED, COMMENT_DELETED, STATUS_CHANGED
 
 ---
 
-## API Design Principles
-
-1. **RESTful** - Standard HTTP methods
-2. **Type-safe** - Full TypeScript coverage
-3. **Optimistic updates** - Immediate UI feedback
-4. **Error handling** - Consistent error responses
-5. **Validation** - Zod schemas on all inputs
-6. **Pagination** - Cursor-based for large lists
-
----
-
-## UI/UX Philosophy
+## UI/UX Philosophy (As Implemented)
 
 ### Premium Design Elements
-1. **Generous whitespace** - Clean, uncluttered
-2. **Subtle shadows** - Depth without heaviness
-3. **Refined typography** - Clear hierarchy
-4. **Smooth transitions** - 200-300ms durations
-5. **Purposeful animations** - Not just decorative
-6. **Consistent spacing** - 4px grid system
-7. **Thoughtful color usage** - Meaningful, not overwhelming
+- ✅ Glassmorphism with backdrop-blur
+- ✅ Dark mode CSS variables
+- ✅ Custom animations (fade-in, slide-up, scale-in)
+- ✅ Inter font family
+- ✅ Indigo primary color (#6366f1)
+- ✅ Rounded corners (0.75rem radius)
+- ✅ Smooth transitions (200ms)
 
 ### Responsive Breakpoints
-- Mobile: < 640px
+- Mobile: < 640px (bottom nav visible)
 - Tablet: 640px - 1024px
-- Desktop: > 1024px
+- Desktop: > 1024px (sidebar visible)
+
+### Components Status
+- ✅ Button, Input, Card, Avatar, Badge
+- ✅ DropdownMenu, Dialog, Select, Checkbox
+- ✅ Header, Sidebar, MobileNav, CommunitySelector
+- ⏳ TaskItem, TaskForm, TaskList, TaskBoard (pending)
+- ⏳ Calendar, Timeline (pending)
 
 ---
 
-## Potential Challenges
+## Next Steps (Immediate - Phase 2 & 3)
 
-1. **Real-time sync** - May need polling or WebSockets
-2. **Database limits** - Vercel Postgres free tier limits
-3. **Auth** - Google OAuth configuration
-4. **Date handling** - Timezone awareness
-5. **Complex filters** - May need query optimization
-6. **Drag and drop** - Touch support for mobile
+### Phase 2 UI Completion (Core Data UI)
+1. Build community detail page (`/dashboard?community=[id]`)
+2. Build list management UI (create, edit, delete, archive, pin)
+3. Build task list view with all fields (priority, dates, assignees, labels)
+4. Build task form modal/page with validation (React Hook Form + Zod)
+5. Implement task CRUD operations in UI (fetch, mutate with React Query)
+6. Build subtask component (nested checkboxes)
+7. Build label selector component
+
+### Phase 3 Views (UI Components)
+1. **Task List View** - Sortable, groupable, with inline editing
+2. **Kanban Board** - Columns (Todo, In Progress, Done), drag-drop reorder
+3. **Calendar View** - Monthly/weekly display, click to add task
+4. **Timeline View** - Gantt-style, date range visualization
+5. **Task Detail Page** - All task info, subtasks, comments, activity side panel
+
+### Phase 4 UI (Collaboration)
+1. Comments section on task detail (rich text, markdown preview)
+2. Activity log display (timeline of changes)
+3. Filters sidebar/dropdown (by assignee, label, priority, date)
+4. Smart views pages (My Tasks, Today, Starred, Overdue)
+
+### Phase 5 Polish
+1. Mobile responsiveness testing & fixes
+2. Performance optimization (image optimization, code splitting)
+3. Animations with framer-motion (page transitions, hover effects)
+4. Real-time sync implementation (polling or WebSockets)
+5. Optimistic UI updates for better UX
+6. Bug fixes & accessibility audit
 
 ---
 
-## Next Steps
+## Known Issues & Risks
 
-1. Initialize Next.js project
-2. Set up shadcn/ui
-3. Configure Prisma + Vercel Postgres
-4. Implement NextAuth.js
-5. Build core features phase by phase
+1. **Google OAuth credentials** - Need to verify credentials in .env are valid
+2. **Database connection** - Neon connection string appears valid, need to test
+3. **Real-time** - Not implemented yet (polling acceptable for MVP)
+4. **Mobile responsiveness** - Basic CSS done, need thorough testing
+5. **Drag & drop** - Not implemented (will need @dnd-kit or similar)
+6. **Date picker** - Need to add date picker component (shadcn has calendar)
+7. **Rich text editor** - For task descriptions & comments (need to choose: TipTap, Slate, or simple markdown)
+8. **File uploads** - Not in MVP scope but nice-to-have later
+
+---
+
+## Questions for Next Session
+
+1. Should we implement real-time with Pusher, Supabase Realtime, or simple polling?
+2. Do we need a separate "Invite" page with invite code display?
+3. Should task reordering be drag-drop or up/down buttons?
+4. What date picker component to use? (shadcn has calendar)
+5. Need file attachments for tasks? (Phase 5 nice-to-have)
+6. Should we implement optimistic updates now or later?
+7. Which rich text editor? (TipTap recommended for best UX)
+8. Should we add search functionality now or later?
+
+---
+
+## Appendix
+
+### File Structure (Current)
+```
+src/
+├── app/
+│   ├── (auth)/
+│   │   └── signin/page.tsx
+│   ├── (dashboard)/
+│   │   ├── layout.tsx (pending)
+│   │   ├── page.tsx (dashboard home)
+│   │   └── communities/
+│   │       └── [communityId]/page.tsx (pending)
+│   ├── api/
+│   │   ├── auth/
+│   │   │   ├── [...nextauth]/route.ts
+│   │   │   └── signout/route.ts
+│   │   ├── communities/route.ts
+│   │   ├── lists/
+│   │   │   ├── route.ts
+│   │   │   └── [id]/
+│   │   │       ├── route.ts
+│   │   │       └── reorder/route.ts
+│   │   ├── labels/
+│   │   │   ├── route.ts
+│   │   │   └── [id]/route.ts
+│   │   ├── tasks/
+│   │   │   ├── route.ts
+│   │   │   └── [taskId]/
+│   │   │       ├── comments/route.ts
+│   │   │       └── activity/route.ts
+│   │   └── comments/
+│   │       └── [commentId]/route.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── providers.tsx
+├── components/
+│   ├── layout/
+│   │   ├── header.tsx
+│   │   ├── sidebar.tsx
+│   │   ├── mobile-nav.tsx
+│   │   └── community-selector.tsx
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   ├── card.tsx
+│   │   ├── avatar.tsx
+│   │   ├── badge.tsx
+│   │   ├── dropdown-menu.tsx
+│   │   ├── dialog.tsx
+│   │   ├── select.tsx
+│   │   ├── checkbox.tsx
+│   │   └── tooltip.tsx
+│   └── (pending: task, list, community, views, filters, comments, activity)
+├── lib/
+│   ├── auth.ts
+│   ├── prisma.ts
+│   └── utils.ts
+└── prisma/
+    └── schema.prisma
+```
+
+### API Routes Summary
+| Endpoint | Method | Auth | Description |
+|----------|--------|------|-------------|
+| /api/auth/[...nextauth] | GET/POST | No | NextAuth handlers |
+| /api/auth/signout | POST | Yes | Sign out |
+| /api/communities | GET, POST | Yes | List/create communities |
+| /api/lists | GET, POST | Yes | List/create lists |
+| /api/lists/[id] | PATCH, DELETE | Yes | Update/delete list |
+| /api/lists/[id]/reorder | POST | Yes (owner) | Reorder lists |
+| /api/labels | GET, POST | Yes | List/create labels |
+| /api/labels/[id] | PATCH, DELETE | Yes | Update/delete label |
+| /api/tasks | GET, POST | Yes | List/create tasks |
+| /api/tasks/[id] | PATCH, DELETE | Yes | Update/delete task |
+| /api/tasks/[taskId]/comments | POST | Yes | Add comment |
+| /api/comments/[commentId] | PATCH, DELETE | Yes (author) | Edit/delete comment |
+| /api/tasks/[taskId]/activity | GET | Yes | Get activity log |
+
+---
+
+**Last Updated:** 2026-05-05  
+**Session:** Phase 1 Complete, Phase 2 & 3 pending  
+**Status:** Ready for UI implementation

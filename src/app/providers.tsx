@@ -2,8 +2,27 @@
 
 import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { useState } from "react"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { useState, createContext, useContext } from "react"
+
+const TooltipContext = createContext<{ delayDuration: number }>({ delayDuration: 200 })
+
+export function useTooltip() {
+  return useContext(TooltipContext)
+}
+
+export function TooltipProvider({ 
+  children, 
+  delayDuration = 200 
+}: { 
+  children: React.ReactNode
+  delayDuration?: number 
+}) {
+  return (
+    <TooltipContext.Provider value={{ delayDuration }}>
+      {children}
+    </TooltipContext.Provider>
+  )
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -12,9 +31,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: 60 * 1000,
-          refetchOnWindowFocus: false,
-          retry: 1,
-          refetchInterval: 30000,
+            refetchOnWindowFocus: false,
+            retry: 1,
+            refetchInterval: 30000,
+          },
         },
       })
   )

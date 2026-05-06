@@ -1,22 +1,80 @@
 "use client"
 
 import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import { createContext, useContext, useState } from "react"
 import { cn } from "@/lib/utils"
 
-const TooltipProvider = TooltipPrimitive.Provider
+const TooltipContext = createContext<{ 
+  delayDuration: number 
+  children?: React.ReactNode 
+}>({ 
+  delayDuration: 200 
+})
 
-const Tooltip = TooltipPrimitive.Root
+export function useTooltip() {
+  return useContext(TooltipContext)
+}
 
-const TooltipTrigger = TooltipPrimitive.Trigger
+export function TooltipProvider({ 
+  children, 
+  delayDuration = 200 
+}: { 
+  children: React.ReactNode
+  delayDuration?: number 
+}) {
+  return (
+    <TooltipContext.Provider value={{ delayDuration }}>
+      {children}
+    </TooltipContext.Provider>
+  )
+}
+
+const Tooltip = ({
+  children,
+  content,
+  delayDuration = 200,
+}: {
+  children: React.ReactNode
+  content?: string
+  delayDuration?: number
+}) => {
+  const [show, setShow] = useState(false)
+  const [timeout, setTimeout] = useState<NodeJS.Timeout | null>(null)
+
+  const handleMouseEnter = () => {
+    const timer = setTimeout(() => setShow(true), delayDuration)
+    setTimeout(timer)
+  }
+
+  const handleMouseLeave = () => {
+    if (timeout) clearTimeout(timeout)
+    setShow(false)
+  }
+
+  return (
+    <div 
+      className="relative inline-block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+      {show && content && (
+        <div className="absolute z-50 px-3 py-1.5 text-xs bg-primary text-primary-foreground rounded-md animate-fade-in">
+          {content}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const TooltipTrigger = ({ children }: { children: React.ReactNode }) => <>{children}</>
 
 const TooltipContent = React.forwardRef<
   HTMLDivElement,
-  TooltipPrimitive.TooltipContentProps
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
+  <div
     ref={ref}
-    sideOffset={sideOffset}
     className={cn(
       "z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-fade-in",
       className
@@ -24,6 +82,6 @@ const TooltipContent = React.forwardRef<
     {...props}
   />
 ))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+TooltipContent.displayName = "TooltipContent"
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

@@ -1,0 +1,1843 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "mvp_core_features",
+        "label": "MVP Core Features",
+        "nodes": [
+          "plan_auth_phase",
+          "plan_community_phase",
+          "plan_task_phase",
+          "collaboration_features"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "plan.md"
+      },
+      {
+        "id": "design_system",
+        "label": "Design System Components",
+        "nodes": [
+          "plan_design_philosophy",
+          "design_glassmorphism",
+          "design_color_palette"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "plan.md"
+      },
+      {
+        "id": "development_timeline",
+        "label": "5-Week Development Timeline",
+        "nodes": [
+          "plan_dev_phases",
+          "plan_auth_phase",
+          "plan_community_phase",
+          "plan_task_phase",
+          "plan_views_phase"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "plan.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "eslint.config.mjs",
+      "file_type": "code",
+      "source_file": "eslint.config.mjs",
+      "source_location": "L1",
+      "id": "eslint_config_mjs",
+      "community": 14,
+      "norm_label": "eslint.config.mjs"
+    },
+    {
+      "label": "next-env.d.ts",
+      "file_type": "code",
+      "source_file": "next-env.d.ts",
+      "source_location": "L1",
+      "id": "next_env_d_ts",
+      "community": 15,
+      "norm_label": "next-env.d.ts"
+    },
+    {
+      "label": "next.config.ts",
+      "file_type": "code",
+      "source_file": "next.config.ts",
+      "source_location": "L1",
+      "id": "next_config_ts",
+      "community": 16,
+      "norm_label": "next.config.ts"
+    },
+    {
+      "label": "postcss.config.mjs",
+      "file_type": "code",
+      "source_file": "postcss.config.mjs",
+      "source_location": "L1",
+      "id": "postcss_config_mjs",
+      "community": 17,
+      "norm_label": "postcss.config.mjs"
+    },
+    {
+      "label": "tailwind.config.ts",
+      "file_type": "code",
+      "source_file": "tailwind.config.ts",
+      "source_location": "L1",
+      "id": "tailwind_config_ts",
+      "community": 18,
+      "norm_label": "tailwind.config.ts"
+    },
+    {
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L1",
+      "id": "src_app_layout_tsx",
+      "community": 3,
+      "norm_label": "layout.tsx"
+    },
+    {
+      "label": "RootLayout()",
+      "file_type": "code",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L16",
+      "id": "app_layout_rootlayout",
+      "community": 3,
+      "norm_label": "rootlayout()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L1",
+      "id": "src_app_page_tsx",
+      "community": 10,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "Home()",
+      "file_type": "code",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L3",
+      "id": "app_page_home",
+      "community": 10,
+      "norm_label": "home()"
+    },
+    {
+      "label": "providers.tsx",
+      "file_type": "code",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L1",
+      "id": "src_app_providers_tsx",
+      "community": 3,
+      "norm_label": "providers.tsx"
+    },
+    {
+      "label": "useTooltip()",
+      "file_type": "code",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L9",
+      "id": "app_providers_usetooltip",
+      "community": 3,
+      "norm_label": "usetooltip()"
+    },
+    {
+      "label": "TooltipProvider()",
+      "file_type": "code",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L13",
+      "id": "app_providers_tooltipprovider",
+      "community": 3,
+      "norm_label": "tooltipprovider()"
+    },
+    {
+      "label": "Providers()",
+      "file_type": "code",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L27",
+      "id": "app_providers_providers",
+      "community": 3,
+      "norm_label": "providers()"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "src/app/api/auth/[...nextauth]/route.ts",
+      "source_location": "L1",
+      "id": "src_app_api_auth_nextauth_route_ts",
+      "community": 19,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "src/app/api/communities/route.ts",
+      "source_location": "L1",
+      "id": "src_app_api_communities_route_ts",
+      "community": 8,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "src/app/api/communities/route.ts",
+      "source_location": "L6",
+      "id": "communities_route_post",
+      "community": 8,
+      "norm_label": "post()"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "src/app/api/communities/route.ts",
+      "source_location": "L48",
+      "id": "communities_route_get",
+      "community": 8,
+      "norm_label": "get()"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L1",
+      "id": "src_app_api_tasks_route_ts",
+      "community": 4,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L5",
+      "id": "tasks_route_get",
+      "community": 4,
+      "norm_label": "get()"
+    },
+    {
+      "label": "POST()",
+      "file_type": "code",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L62",
+      "id": "tasks_route_post",
+      "community": 4,
+      "norm_label": "post()"
+    },
+    {
+      "label": "PATCH()",
+      "file_type": "code",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L140",
+      "id": "tasks_route_patch",
+      "community": 4,
+      "norm_label": "patch()"
+    },
+    {
+      "label": "DELETE()",
+      "file_type": "code",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L201",
+      "id": "tasks_route_delete",
+      "community": 4,
+      "norm_label": "delete()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/dashboard/page.tsx",
+      "source_location": "L1",
+      "id": "src_app_dashboard_page_tsx",
+      "community": 2,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "fetchCommunities()",
+      "file_type": "code",
+      "source_file": "src/app/dashboard/page.tsx",
+      "source_location": "L41",
+      "id": "dashboard_page_fetchcommunities",
+      "community": 2,
+      "norm_label": "fetchcommunities()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/signin/page.tsx",
+      "source_location": "L1",
+      "id": "src_app_signin_page_tsx",
+      "community": 11,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "handleGoogleSignIn()",
+      "file_type": "code",
+      "source_file": "src/app/signin/page.tsx",
+      "source_location": "L15",
+      "id": "signin_page_handlegooglesignin",
+      "community": 11,
+      "norm_label": "handlegooglesignin()"
+    },
+    {
+      "label": "task-item.tsx",
+      "file_type": "code",
+      "source_file": "src/components/task/task-item.tsx",
+      "source_location": "L1",
+      "id": "src_components_task_task_item_tsx",
+      "community": 2,
+      "norm_label": "task-item.tsx"
+    },
+    {
+      "label": "avatar.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/avatar.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_avatar_tsx",
+      "community": 2,
+      "norm_label": "avatar.tsx"
+    },
+    {
+      "label": "Avatar()",
+      "file_type": "code",
+      "source_file": "src/components/ui/avatar.tsx",
+      "source_location": "L6",
+      "id": "ui_avatar_avatar",
+      "community": 2,
+      "norm_label": "avatar()"
+    },
+    {
+      "label": "AvatarFallback()",
+      "file_type": "code",
+      "source_file": "src/components/ui/avatar.tsx",
+      "source_location": "L34",
+      "id": "ui_avatar_avatarfallback",
+      "community": 2,
+      "norm_label": "avatarfallback()"
+    },
+    {
+      "label": "badge.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/badge.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_badge_tsx",
+      "community": 2,
+      "norm_label": "badge.tsx"
+    },
+    {
+      "label": "Badge()",
+      "file_type": "code",
+      "source_file": "src/components/ui/badge.tsx",
+      "source_location": "L28",
+      "id": "ui_badge_badge",
+      "community": 2,
+      "norm_label": "badge()"
+    },
+    {
+      "label": "button.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_button_tsx",
+      "community": 1,
+      "norm_label": "button.tsx"
+    },
+    {
+      "label": "card.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/card.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_card_tsx",
+      "community": 1,
+      "norm_label": "card.tsx"
+    },
+    {
+      "label": "checkbox.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/checkbox.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_checkbox_tsx",
+      "community": 1,
+      "norm_label": "checkbox.tsx"
+    },
+    {
+      "label": "dialog.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_dialog_tsx",
+      "community": 1,
+      "norm_label": "dialog.tsx"
+    },
+    {
+      "label": "DialogRoot()",
+      "file_type": "code",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L8",
+      "id": "ui_dialog_dialogroot",
+      "community": 1,
+      "norm_label": "dialogroot()"
+    },
+    {
+      "label": "DialogPortal()",
+      "file_type": "code",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L20",
+      "id": "ui_dialog_dialogportal",
+      "community": 1,
+      "norm_label": "dialogportal()"
+    },
+    {
+      "label": "cn()",
+      "file_type": "code",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L89",
+      "id": "ui_dialog_cn",
+      "community": 1,
+      "norm_label": "cn()"
+    },
+    {
+      "label": "dropdown-menu.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/dropdown-menu.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_dropdown_menu_tsx",
+      "community": 1,
+      "norm_label": "dropdown-menu.tsx"
+    },
+    {
+      "label": "input.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_input_tsx",
+      "community": 1,
+      "norm_label": "input.tsx"
+    },
+    {
+      "label": "select.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/select.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_select_tsx",
+      "community": 1,
+      "norm_label": "select.tsx"
+    },
+    {
+      "label": "SelectValue()",
+      "file_type": "code",
+      "source_file": "src/components/ui/select.tsx",
+      "source_location": "L85",
+      "id": "ui_select_selectvalue",
+      "community": 1,
+      "norm_label": "selectvalue()"
+    },
+    {
+      "label": "tabs.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/tabs.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_tabs_tsx",
+      "community": 1,
+      "norm_label": "tabs.tsx"
+    },
+    {
+      "label": "theme-toggle.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/theme-toggle.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_theme_toggle_tsx",
+      "community": 12,
+      "norm_label": "theme-toggle.tsx"
+    },
+    {
+      "label": "ThemeToggle()",
+      "file_type": "code",
+      "source_file": "src/components/ui/theme-toggle.tsx",
+      "source_location": "L14",
+      "id": "ui_theme_toggle_themetoggle",
+      "community": 12,
+      "norm_label": "themetoggle()"
+    },
+    {
+      "label": "tooltip.tsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L1",
+      "id": "src_components_ui_tooltip_tsx",
+      "community": 5,
+      "norm_label": "tooltip.tsx"
+    },
+    {
+      "label": "useTooltip()",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L14",
+      "id": "ui_tooltip_usetooltip",
+      "community": 5,
+      "norm_label": "usetooltip()"
+    },
+    {
+      "label": "TooltipProvider()",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L18",
+      "id": "ui_tooltip_tooltipprovider",
+      "community": 5,
+      "norm_label": "tooltipprovider()"
+    },
+    {
+      "label": "handleMouseEnter()",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L44",
+      "id": "ui_tooltip_handlemouseenter",
+      "community": 5,
+      "norm_label": "handlemouseenter()"
+    },
+    {
+      "label": "handleMouseLeave()",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L49",
+      "id": "ui_tooltip_handlemouseleave",
+      "community": 5,
+      "norm_label": "handlemouseleave()"
+    },
+    {
+      "label": "use-task-store.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/use-task-store.ts",
+      "source_location": "L1",
+      "id": "src_hooks_use_task_store_ts",
+      "community": 20,
+      "norm_label": "use-task-store.ts"
+    },
+    {
+      "label": "auth-utils.ts",
+      "file_type": "code",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L1",
+      "id": "src_lib_auth_utils_ts",
+      "community": 6,
+      "norm_label": "auth-utils.ts"
+    },
+    {
+      "label": "currentUser()",
+      "file_type": "code",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L5",
+      "id": "lib_auth_utils_currentuser",
+      "community": 6,
+      "norm_label": "currentuser()"
+    },
+    {
+      "label": "requireAuth()",
+      "file_type": "code",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L15",
+      "id": "lib_auth_utils_requireauth",
+      "community": 6,
+      "norm_label": "requireauth()"
+    },
+    {
+      "label": "getUserCommunities()",
+      "file_type": "code",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L23",
+      "id": "lib_auth_utils_getusercommunities",
+      "community": 6,
+      "norm_label": "getusercommunities()"
+    },
+    {
+      "label": "getCommunityWithMembers()",
+      "file_type": "code",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L43",
+      "id": "lib_auth_utils_getcommunitywithmembers",
+      "community": 6,
+      "norm_label": "getcommunitywithmembers()"
+    },
+    {
+      "label": "auth.ts",
+      "file_type": "code",
+      "source_file": "src/lib/auth.ts",
+      "source_location": "L1",
+      "id": "src_lib_auth_ts",
+      "community": 21,
+      "norm_label": "auth.ts"
+    },
+    {
+      "label": "prisma.ts",
+      "file_type": "code",
+      "source_file": "src/lib/prisma.ts",
+      "source_location": "L1",
+      "id": "src_lib_prisma_ts",
+      "community": 22,
+      "norm_label": "prisma.ts"
+    },
+    {
+      "label": "utils.ts",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L1",
+      "id": "src_lib_utils_ts",
+      "community": 7,
+      "norm_label": "utils.ts"
+    },
+    {
+      "label": "cn()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L4",
+      "id": "lib_utils_cn",
+      "community": 1,
+      "norm_label": "cn()"
+    },
+    {
+      "label": "formatDate()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L8",
+      "id": "lib_utils_formatdate",
+      "community": 7,
+      "norm_label": "formatdate()"
+    },
+    {
+      "label": "formatDateTime()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L18",
+      "id": "lib_utils_formatdatetime",
+      "community": 7,
+      "norm_label": "formatdatetime()"
+    },
+    {
+      "label": "getPriorityColor()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L30",
+      "id": "lib_utils_getprioritycolor",
+      "community": 7,
+      "norm_label": "getprioritycolor()"
+    },
+    {
+      "label": "getStatusColor()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L45",
+      "id": "lib_utils_getstatuscolor",
+      "community": 7,
+      "norm_label": "getstatuscolor()"
+    },
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "src/types/index.ts",
+      "source_location": "L1",
+      "id": "src_types_index_ts",
+      "community": 23,
+      "norm_label": "index.ts"
+    },
+    {
+      "label": "AGENDA KERJA OPS - Project Overview",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_project_overview",
+      "community": 0,
+      "norm_label": "agenda kerja ops - project overview"
+    },
+    {
+      "label": "MVP Feature Specification",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 563-573",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_mvp_features",
+      "community": 0,
+      "norm_label": "mvp feature specification"
+    },
+    {
+      "label": "Authentication Phase (Phase 1)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 57-70",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_auth_phase",
+      "community": 0,
+      "norm_label": "authentication phase (phase 1)"
+    },
+    {
+      "label": "Community & List Management (Phase 2)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 72-95",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_community_phase",
+      "community": 0,
+      "norm_label": "community & list management (phase 2)"
+    },
+    {
+      "label": "Task Management Core (Phase 3)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 98-128",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_task_phase",
+      "community": 0,
+      "norm_label": "task management core (phase 3)"
+    },
+    {
+      "label": "Views & Visualization (Phase 4)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 131-156",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_views_phase",
+      "community": 0,
+      "norm_label": "views & visualization (phase 4)"
+    },
+    {
+      "label": "UI/UX Design Philosophy",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 29-51",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_design_philosophy",
+      "community": 9,
+      "norm_label": "ui/ux design philosophy"
+    },
+    {
+      "label": "Technology Stack",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 12-26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_tech_stack",
+      "community": 0,
+      "norm_label": "technology stack"
+    },
+    {
+      "label": "Database Schema Design",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 226-388",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_db_schema",
+      "community": 0,
+      "norm_label": "database schema design"
+    },
+    {
+      "label": "API Endpoint Specification",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 392-441",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_api_endpoints",
+      "community": 0,
+      "norm_label": "api endpoint specification"
+    },
+    {
+      "label": "Development Phases (5 weeks)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 523-558",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "plan_dev_phases",
+      "community": 0,
+      "norm_label": "development phases (5 weeks)"
+    },
+    {
+      "label": "Project Findings",
+      "file_type": "document",
+      "source_file": "findings.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "findings_doc",
+      "community": 13,
+      "norm_label": "project findings"
+    },
+    {
+      "label": "Project Progress Tracker",
+      "file_type": "document",
+      "source_file": "progress.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "progress_doc",
+      "community": 13,
+      "norm_label": "project progress tracker"
+    },
+    {
+      "label": "Setup Documentation (OAuth, DB, Env, GitHub)",
+      "file_type": "document",
+      "source_file": "SETUP-STEP1.md, SETUP-STEP2.md, SETUP-STEP3.md, SETUP-GITHUB.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "setup_guides",
+      "community": 0,
+      "norm_label": "setup documentation (oauth, db, env, github)"
+    },
+    {
+      "label": "Glassmorphism Design System",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 33-51",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "design_glassmorphism",
+      "community": 9,
+      "norm_label": "glassmorphism design system"
+    },
+    {
+      "label": "Color Palette (Indigo/Slate/Emerald)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 43-51",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "design_color_palette",
+      "community": 9,
+      "norm_label": "color palette (indigo/slate/emerald)"
+    },
+    {
+      "label": "Collaboration Features (Comments, Activity, Real-time)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 159-177",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "collaboration_features",
+      "community": 0,
+      "norm_label": "collaboration features (comments, activity, real-time)"
+    },
+    {
+      "label": "Filters & Smart Views",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 180-194",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "filter_smart_views",
+      "community": 0,
+      "norm_label": "filters & smart views"
+    },
+    {
+      "label": "Notifications & Reminders System",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 197-209",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notifications_reminders",
+      "community": 0,
+      "norm_label": "notifications & reminders system"
+    },
+    {
+      "label": "Community Workflow (Invite, Join, Roles)",
+      "file_type": "document",
+      "source_file": "plan.md",
+      "source_location": "lines 72-95",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "community_workflow",
+      "community": 0,
+      "norm_label": "community workflow (invite, join, roles)"
+    }
+  ],
+  "links": [
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_app_layout_tsx",
+      "target": "app_providers_providers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/layout.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_app_layout_tsx",
+      "target": "app_layout_rootlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/page.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_app_page_tsx",
+      "target": "app_page_home",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_app_providers_tsx",
+      "target": "app_providers_usetooltip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_app_providers_tsx",
+      "target": "app_providers_tooltipprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/providers.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "src_app_providers_tsx",
+      "target": "app_providers_providers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/communities/route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_app_api_communities_route_ts",
+      "target": "communities_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/communities/route.ts",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "src_app_api_communities_route_ts",
+      "target": "communities_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_app_api_tasks_route_ts",
+      "target": "tasks_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "src_app_api_tasks_route_ts",
+      "target": "tasks_route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "src_app_api_tasks_route_ts",
+      "target": "tasks_route_patch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "src_app_api_tasks_route_ts",
+      "target": "tasks_route_delete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/api/tasks/route.ts",
+      "source_location": "L208",
+      "weight": 1.0,
+      "source": "tasks_route_delete",
+      "target": "tasks_route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/dashboard/page.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "src_app_dashboard_page_tsx",
+      "target": "ui_avatar_avatar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/dashboard/page.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "src_app_dashboard_page_tsx",
+      "target": "ui_avatar_avatarfallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/dashboard/page.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "src_app_dashboard_page_tsx",
+      "target": "ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/dashboard/page.tsx",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "src_app_dashboard_page_tsx",
+      "target": "dashboard_page_fetchcommunities",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/signin/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_app_signin_page_tsx",
+      "target": "signin_page_handlegooglesignin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/task/task-item.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "src_components_task_task_item_tsx",
+      "target": "ui_avatar_avatar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/task/task-item.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "src_components_task_task_item_tsx",
+      "target": "ui_avatar_avatarfallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/task/task-item.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_components_task_task_item_tsx",
+      "target": "ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/task/task-item.tsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "src_components_task_task_item_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/avatar.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_avatar_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/avatar.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_components_ui_avatar_tsx",
+      "target": "ui_avatar_avatar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/avatar.tsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "src_components_ui_avatar_tsx",
+      "target": "ui_avatar_avatarfallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/badge.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_ui_badge_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/badge.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "src_components_ui_badge_tsx",
+      "target": "ui_badge_badge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/button.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_ui_button_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/card.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_components_ui_card_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/checkbox.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_checkbox_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_components_ui_dialog_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_components_ui_dialog_tsx",
+      "target": "ui_dialog_dialogroot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "src_components_ui_dialog_tsx",
+      "target": "ui_dialog_dialogportal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/dialog.tsx",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "src_components_ui_dialog_tsx",
+      "target": "ui_dialog_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/dropdown-menu.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_dropdown_menu_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/input.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_components_ui_input_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/select.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_components_ui_select_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/select.tsx",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "src_components_ui_select_tsx",
+      "target": "ui_select_selectvalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/tabs.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_components_ui_tabs_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/theme-toggle.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_components_ui_theme_toggle_tsx",
+      "target": "ui_theme_toggle_themetoggle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_components_ui_tooltip_tsx",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_components_ui_tooltip_tsx",
+      "target": "ui_tooltip_usetooltip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_components_ui_tooltip_tsx",
+      "target": "ui_tooltip_tooltipprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "src_components_ui_tooltip_tsx",
+      "target": "ui_tooltip_handlemouseenter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/ui/tooltip.tsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "src_components_ui_tooltip_tsx",
+      "target": "ui_tooltip_handlemouseleave",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_lib_auth_utils_ts",
+      "target": "lib_auth_utils_currentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "src_lib_auth_utils_ts",
+      "target": "lib_auth_utils_requireauth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "src_lib_auth_utils_ts",
+      "target": "lib_auth_utils_getusercommunities",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "src_lib_auth_utils_ts",
+      "target": "lib_auth_utils_getcommunitywithmembers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/auth-utils.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "lib_auth_utils_requireauth",
+      "target": "lib_auth_utils_currentuser",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_lib_utils_ts",
+      "target": "lib_utils_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_lib_utils_ts",
+      "target": "lib_utils_formatdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_lib_utils_ts",
+      "target": "lib_utils_formatdatetime",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "src_lib_utils_ts",
+      "target": "lib_utils_getprioritycolor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/lib/utils.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "src_lib_utils_ts",
+      "target": "lib_utils_getstatuscolor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "plan_tech_stack"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "plan_auth_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "setup_guides",
+      "target": "readme_project_overview"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_mvp_features",
+      "target": "plan_auth_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_mvp_features",
+      "target": "plan_community_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_mvp_features",
+      "target": "plan_task_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_mvp_features",
+      "target": "plan_views_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_mvp_features",
+      "target": "collaboration_features"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_auth_phase",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_api_endpoints",
+      "target": "plan_auth_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_dev_phases",
+      "target": "plan_auth_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SETUP-STEP1.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "setup_guides",
+      "target": "plan_auth_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_community_phase",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_api_endpoints",
+      "target": "plan_community_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_dev_phases",
+      "target": "plan_community_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "community_workflow",
+      "target": "plan_community_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_task_phase",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_views_phase",
+      "target": "plan_task_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_api_endpoints",
+      "target": "plan_task_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_dev_phases",
+      "target": "plan_task_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "filter_smart_views",
+      "target": "plan_task_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_dev_phases",
+      "target": "plan_views_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "filter_smart_views",
+      "target": "plan_views_phase"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_design_philosophy",
+      "target": "design_glassmorphism"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_design_philosophy",
+      "target": "design_color_palette"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "plan_api_endpoints",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "collaboration_features",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "community_workflow",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SETUP-STEP2.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "setup_guides",
+      "target": "plan_db_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "collaboration_features",
+      "target": "plan_api_endpoints"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "findings.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "findings_doc",
+      "target": "progress_doc"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "plan.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "notifications_reminders",
+      "target": "collaboration_features"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "mvp_core_features",
+      "label": "MVP Core Features",
+      "nodes": [
+        "plan_auth_phase",
+        "plan_community_phase",
+        "plan_task_phase",
+        "collaboration_features"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md"
+    },
+    {
+      "id": "design_system",
+      "label": "Design System Components",
+      "nodes": [
+        "plan_design_philosophy",
+        "design_glassmorphism",
+        "design_color_palette"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md"
+    },
+    {
+      "id": "development_timeline",
+      "label": "5-Week Development Timeline",
+      "nodes": [
+        "plan_dev_phases",
+        "plan_auth_phase",
+        "plan_community_phase",
+        "plan_task_phase",
+        "plan_views_phase"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "plan.md"
+    }
+  ]
+}

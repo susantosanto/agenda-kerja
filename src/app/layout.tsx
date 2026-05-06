@@ -3,11 +3,14 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+})
 
 export const metadata: Metadata = {
-  title: "CommunityTodo - Collaborative Task Management",
-  description: "A powerful collaborative todo list app for small communities",
+  title: "AGENDA KERJA OPS GUGUS KH. ZAENAL MUSTOFA",
+  description: "Aplikasi Todo List Kolaboratif untuk komunitas",
 }
 
 export default function RootLayout({
@@ -16,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="id" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen bg-background`}>
         <Providers>{children}</Providers>
       </body>
     </html>

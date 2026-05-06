@@ -1,0 +1,182 @@
+{
+  "D:\\\\project\\\\todolist\\\\eslint.config.mjs": {
+    "mtime": 1777955223.0131989,
+    "hash": "dfa1f5f6a7037bf39dc510f30b180002"
+  },
+  "D:\\\\project\\\\todolist\\\\next-env.d.ts": {
+    "mtime": 1777958754.1687024,
+    "hash": "a64595e6014adce3002d3bf762d2dbeb"
+  },
+  "D:\\\\project\\\\todolist\\\\next.config.ts": {
+    "mtime": 1777955223.3131633,
+    "hash": "9b77af189a21a7a64e4bd7a426f64176"
+  },
+  "D:\\\\project\\\\todolist\\\\postcss.config.mjs": {
+    "mtime": 1777959287.5922441,
+    "hash": "a432b95cb81b0f6923f8cb5786b34cd1"
+  },
+  "D:\\\\project\\\\todolist\\\\tailwind.config.ts": {
+    "mtime": 1777959277.1486206,
+    "hash": "591471945e7daac04eef40e1a9803ac0"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\layout.tsx": {
+    "mtime": 1777959149.396735,
+    "hash": "a80b7cd816e77fbd2a2e75e0ae63a584"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\page.tsx": {
+    "mtime": 1777959127.159449,
+    "hash": "c77a9a342c1e39dff9ae7bc307f9e177"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\providers.tsx": {
+    "mtime": 1777958952.7457478,
+    "hash": "e3c35120b65610aed3ac4539e1540ace"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\api\\\\auth\\\\[...nextauth]\\\\route.ts": {
+    "mtime": 1777955963.7764635,
+    "hash": "9b9519f97cc92db0f0ce703c3d30aae1"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\api\\\\communities\\\\route.ts": {
+    "mtime": 1777955943.8844824,
+    "hash": "5f63010d5d528737be1da175ad7f57c9"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\api\\\\tasks\\\\route.ts": {
+    "mtime": 1777955957.129755,
+    "hash": "105f1ba67cdf65e17e784ca45adbb8f6"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\dashboard\\\\page.tsx": {
+    "mtime": 1777956231.8551667,
+    "hash": "9820059d97ae5d1138be5207b2af61bf"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\app\\\\signin\\\\page.tsx": {
+    "mtime": 1777956223.3806932,
+    "hash": "5115f279d314672da43081a644f529dd"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\task\\\\task-item.tsx": {
+    "mtime": 1777956215.697771,
+    "hash": "9cdf6f9e7459fe7166c7ae480c3eed88"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\avatar.tsx": {
+    "mtime": 1777956122.336452,
+    "hash": "a77a1d69725665f83cd952394bb50b07"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\badge.tsx": {
+    "mtime": 1777956083.402706,
+    "hash": "f5b17f6ddae1d57cf1db5789e4ac4b01"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\button.tsx": {
+    "mtime": 1777956014.9780176,
+    "hash": "9fbf688ff354eb885e1a8fbfca51ef49"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\card.tsx": {
+    "mtime": 1777956023.2232232,
+    "hash": "b9eb3d7dedf8d1d7867aa9d7a4e22433"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\checkbox.tsx": {
+    "mtime": 1777956104.335853,
+    "hash": "442c3979294a1c4c21ff081271ddb1c2"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\dialog.tsx": {
+    "mtime": 1777956067.5300279,
+    "hash": "e5a945ec01809653019f6aa7ac1d4462"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\dropdown-menu.tsx": {
+    "mtime": 1777956133.0747087,
+    "hash": "d71800dfe948f6fce35d715ce41c85bc"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\input.tsx": {
+    "mtime": 1777956049.4414408,
+    "hash": "5d07b01e3d0fafd5177a974987da2124"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\select.tsx": {
+    "mtime": 1777956114.29045,
+    "hash": "d42eadc4932962795cf49f12d9772e48"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\tabs.tsx": {
+    "mtime": 1777956141.581355,
+    "hash": "19d1af9e3184c6049a21332226eb2f72"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\theme-toggle.tsx": {
+    "mtime": 1777956095.1268456,
+    "hash": "f8035ef32fbea153a46c6edff8855380"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\components\\\\ui\\\\tooltip.tsx": {
+    "mtime": 1777958961.9083953,
+    "hash": "3825720c2f0085f17d9693e497238776"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\hooks\\\\use-task-store.ts": {
+    "mtime": 1777956195.3142848,
+    "hash": "eb8ce9ff80e60d96e7a8b779cbb3c30a"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\lib\\\\auth-utils.ts": {
+    "mtime": 1777955914.7483308,
+    "hash": "176e675f329c9f7f27edeaf514d5147c"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\lib\\\\auth.ts": {
+    "mtime": 1777955753.3016405,
+    "hash": "6b0273425be0d5d7ee1f7ffebe7fcecb"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\lib\\\\prisma.ts": {
+    "mtime": 1777955921.5628152,
+    "hash": "974ee254b03a01686178498aae3c5e7f"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\lib\\\\utils.ts": {
+    "mtime": 1777955715.409861,
+    "hash": "eaeef5f3c46112c753bc08bcd0cc5026"
+  },
+  "D:\\\\project\\\\todolist\\\\src\\\\types\\\\index.ts": {
+    "mtime": 1777955931.8301773,
+    "hash": "d17f90453c112759c998e73367421769"
+  },
+  "D:\\\\project\\\\todolist\\\\findings.md": {
+    "mtime": 1777955162.48923,
+    "hash": "7c70428dd3e5996f7843b7b23ed63654"
+  },
+  "D:\\\\project\\\\todolist\\\\plan.md": {
+    "mtime": 1777955124.7308254,
+    "hash": "823caf9e16cd877cb9cfc302200cd4d0"
+  },
+  "D:\\\\project\\\\todolist\\\\progress.md": {
+    "mtime": 1777955177.1368055,
+    "hash": "746ac58f2d816d1f581aa7c4abf31520"
+  },
+  "D:\\\\project\\\\todolist\\\\README.md": {
+    "mtime": 1777956670.3456974,
+    "hash": "38faa21b3112328b21a8ee278fd231ad"
+  },
+  "D:\\\\project\\\\todolist\\\\SETUP-GITHUB.md": {
+    "mtime": 1777956646.7616796,
+    "hash": "d5a7b6001931dd81d5f27b96facfff88"
+  },
+  "D:\\\\project\\\\todolist\\\\SETUP-STEP1.md": {
+    "mtime": 1777956604.819067,
+    "hash": "96de5dd75b08e25c76a351d8435716bc"
+  },
+  "D:\\\\project\\\\todolist\\\\SETUP-STEP2.md": {
+    "mtime": 1777956618.645089,
+    "hash": "71674ebe95fbe6460a846bf859b4986c"
+  },
+  "D:\\\\project\\\\todolist\\\\SETUP-STEP3.md": {
+    "mtime": 1777956628.4296286,
+    "hash": "2c92dcbe356b574bb1d36653b80fc5e0"
+  },
+  "D:\\\\project\\\\todolist\\\\public\\\\file.svg": {
+    "mtime": 1777955223.1148112,
+    "hash": "d09f95206c3fa0bb9bd9fefabfd0ea71"
+  },
+  "D:\\\\project\\\\todolist\\\\public\\\\globe.svg": {
+    "mtime": 1777955223.1416128,
+    "hash": "2aaafa6a49b6563925fe440891e32717"
+  },
+  "D:\\\\project\\\\todolist\\\\public\\\\next.svg": {
+    "mtime": 1777955223.1765497,
+    "hash": "8e061864f388b47f33a1c3780831193e"
+  },
+  "D:\\\\project\\\\todolist\\\\public\\\\vercel.svg": {
+    "mtime": 1777955223.2097297,
+    "hash": "c0af2f507b369b085b35ef4bbe3bcf1e"
+  },
+  "D:\\\\project\\\\todolist\\\\public\\\\window.svg": {
+    "mtime": 1777955223.2332332,
+    "hash": "a2760511c65806022ad20adf74370ff3"
+  }
+}

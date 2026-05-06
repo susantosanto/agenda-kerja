@@ -54,77 +54,78 @@ Surface Dark: #1e293b
 
 ## Feature Specification
 
-### Phase 1: Authentication & User Management
+### Phase 1: Authentication & User Management ✅ COMPLETE
 
 #### 1.1 Google OAuth Authentication
-- [ ] Implement NextAuth.js with Google Provider
-- [ ] Session management with JWT
-- [ ] Protected routes middleware
-- [ ] User profile sync from Google (name, email, avatar)
-- [ ] Sign out functionality
+- [x] Implement NextAuth.js with Google Provider
+- [x] Session management with JWT
+- [x] Protected routes middleware
+- [x] User profile sync from Google (name, email, avatar)
+- [x] Sign out functionality
 
 #### 1.2 User Profile
-- [ ] Display user avatar from Google
-- [ ] Show user name and email
-- [ ] User presence indicator (online/offline)
+- [x] Display user avatar from Google
+- [x] Show user name and email
+- [ ] User presence indicator (online/offline) - Phase 4
 
 ---
 
-### Phase 2: Community & List Management
+### Phase 2: Community & List Management ✅ COMPLETE (Backend) / 🔄 In Progress (UI)
 
 #### 2.1 Community Creation
-- [ ] Create community with name and description
-- [ ] Generate unique invite code (6 characters)
-- [ ] Community owner can manage members
-- [ ] Invite members via code
+- [x] Create community with name and description (API done)
+- [x] Generate unique invite code (6 characters) (API done)
+- [ ] Community owner can manage members (API done, UI pending)
+- [ ] Invite members via code (API done, UI pending)
 
 #### 2.2 Community Members
-- [ ] Join community with invite code
-- [ ] View member list
-- [ ] Member roles: Owner, Admin, Member
-- [ ] Remove members (Owner/Admin only)
-- [ ] Leave community
+- [x] Join community with invite code (API done)
+- [x] View member list (API done)
+- [x] Member roles: Owner, Admin, Member (schema done)
+- [ ] Remove members (Owner/Admin only) (API done, UI pending)
+- [ ] Leave community (API done, UI pending)
 
 #### 2.3 List/Project Management
-- [ ] Create multiple lists per community
-- [ ] Edit list name and description
-- [ ] Delete list (with confirmation)
-- [ ] Archive list
-- [ ] Pin important lists
-- [ ] Color-code lists
+- [x] Create multiple lists per community (API done)
+- [x] Edit list name and description (API done)
+- [x] Delete list (with confirmation) (API done)
+- [x] Archive list (API done)
+- [x] Pin important lists (API done)
+- [x] Color-code lists (API done)
+- [ ] List UI components (pending - Phase 3)
 
 ---
 
-### Phase 3: Task Management (Core)
+### Phase 3: Task Management (Core) 🔄 In Progress (Backend API ✅ Complete, UI Pending)
 
 #### 3.1 Task CRUD
-- [ ] Create task with title (required)
-- [ ] Add description (rich text markdown)
-- [ ] Set priority (P1-P4 with color coding)
-- [ ] Set start date and time
-- [ ] Set due date and time
-- [ ] Set duration (estimated time)
-- [ ] Mark as completed/incomplete
-- [ ] Edit task inline
-- [ ] Delete task (with confirmation)
+- [x] Create task with title (required) (API done)
+- [x] Add description (rich text markdown) (API done)
+- [x] Set priority (P1-P4 with color coding) (API done)
+- [x] Set start date and time (API done)
+- [x] Set due date and time (API done)
+- [x] Set duration (estimated time) (API done)
+- [x] Mark as completed/incomplete (API done)
+- [ ] Edit task inline (UI pending)
+- [ ] Delete task (with confirmation) (API done, UI pending)
 
 #### 3.2 Task Organization
-- [ ] Drag and drop reorder tasks
-- [ ] Add subtasks (unlimited nesting)
-- [ ] Task checklists within subtasks
-- [ ] Star/favorite tasks
-- [ ] Bulk select and actions
+- [ ] Drag and drop reorder tasks (API order field done, UI pending)
+- [ ] Add subtasks (unlimited nesting) (API done, UI pending)
+- [ ] Task checklists within subtasks (API done, UI pending)
+- [ ] Star/favorite tasks (API done, UI pending)
+- [ ] Bulk select and actions (pending)
 
 #### 3.3 Task Labels/Tags
-- [ ] Create custom labels with colors
-- [ ] Assign multiple labels per task
-- [ ] Filter by label
-- [ ] Edit/delete labels
+- [x] Create custom labels with colors (API done)
+- [x] Assign multiple labels per task (API done)
+- [ ] Filter by label (API done, UI pending)
+- [x] Edit/delete labels (API done)
 
 #### 3.4 Task Assignment
-- [ ] Assign task to one or more members
-- [ ] View "Assigned to Me" filter
-- [ ] Unassigned task indicator
+- [x] Assign task to one or more members (API done)
+- [ ] View "Assigned to Me" filter (API done, UI pending)
+- [ ] Unassigned task indicator (UI pending)
 
 ---
 
@@ -156,41 +157,41 @@ Surface Dark: #1e293b
 
 ---
 
-### Phase 5: Collaboration Features
+### Phase 5: Collaboration Features ✅ COMPLETE (Backend) / 🔄 In Progress (UI)
 
 #### 5.1 Comments & Discussion
-- [ ] Add comments to tasks
-- [ ] @mention members
-- [ ] Edit/delete own comments
-- [ ] Rich text in comments
+- [x] Add comments to tasks (API done)
+- [ ] @mention members (API schema done, UI pending)
+- [x] Edit/delete own comments (API done)
+- [x] Rich text in comments (API done, UI markdown pending)
 
 #### 5.2 Activity Log
-- [ ] Track all changes (created, updated, deleted)
-- [ ] Show who made changes
-- [ ] Show when changes made
-- [ ] Filter activity by user
+- [x] Track all changes (created, updated, deleted) (API done)
+- [x] Show who made changes (API done)
+- [x] Show when changes made (API done)
+- [ ] Filter activity by user (API done, UI pending)
 
 #### 5.3 Real-time Updates
-- [ ] Live sync across all members
-- [ ] Presence indicators
-- [ ] Optimistic UI updates
+- [ ] Live sync across all members (pending - Phase 5)
+- [ ] Presence indicators (pending)
+- [ ] Optimistic UI updates (pending)
 
 ---
 
-### Phase 6: Filters & Smart Views
+### Phase 6: Filters & Smart Views 🔄 In Progress (API ✅, UI Pending)
 
 #### 6.1 Predefined Filters
-- [ ] My Tasks (assigned to me)
-- [ ] Today (due today)
-- [ ] This Week (due this week)
-- [ ] Overdue (past due date)
-- [ ] High Priority (P1, P2)
-- [ ] Unassigned
+- [ ] My Tasks (assigned to me) (API: GET /api/tasks?assignedToMe, UI pending)
+- [ ] Today (due today) (API: GET /api/tasks?dueToday, UI pending)
+- [ ] This Week (due this week) (API: GET /api/tasks?dueThisWeek, UI pending)
+- [ ] Overdue (past due date) (API: GET /api/tasks?overdue, UI pending)
+- [ ] High Priority (P1, P2) (API: GET /api/tasks?priority=P1,P2, UI pending)
+- [ ] Unassigned (API: GET /api/tasks?unassigned, UI pending)
 
 #### 6.2 Custom Filters
-- [ ] Create custom filter combinations
-- [ ] Save custom filters
-- [ ] Quick access to saved filters
+- [ ] Create custom filter combinations (pending)
+- [ ] Save custom filters (pending)
+- [ ] Quick access to saved filters (pending)
 
 ---
 
@@ -522,67 +523,74 @@ src/
 
 ## Development Phases
 
-### Phase 1: Setup & Auth (Week 1)
-- [ ] Initialize Next.js project with TypeScript
-- [ ] Install and configure TailwindCSS + shadcn/ui
-- [ ] Set up Prisma with PostgreSQL (Neon/Vercel Postgres)
-- [ ] Configure NextAuth.js with Google
-- [ ] Create base layout components
+### Phase 1: Setup & Auth (Week 1) ✅ COMPLETE
+- [x] Initialize Next.js project with TypeScript
+- [x] Install and configure TailwindCSS + shadcn/ui
+- [x] Set up Prisma with PostgreSQL (Neon/Vercel Postgres)
+- [x] Configure NextAuth.js with Google
+- [x] Create base layout components (Header, Sidebar, MobileNav, CommunitySelector)
 
-### Phase 2: Core Data (Week 2)
-- [ ] Implement database schema
-- [ ] Create API routes for CRUD
-- [ ] Build community management
-- [ ] Build list management
-- [ ] Build task management
+### Phase 2: Core Data (Week 2) ✅ COMPLETE (Backend) / 🔄 In Progress (UI)
+- [x] Implement database schema
+- [x] Create API routes for CRUD (Lists, Labels, Comments, Activity)
+- [x] Build community management (API)
+- [x] Build list management (API)
+- [x] Build task management (API)
+- [ ] Build community UI pages
+- [ ] Build list management UI
+- [ ] Build task management UI (forms, lists)
 
-### Phase 3: UI Components (Week 3)
-- [ ] Build task list view
-- [ ] Build task form with all fields
-- [ ] Build kanban board
-- [ ] Build calendar view
-- [ ] Build timeline view
+### Phase 3: UI Components (Week 3) 🔄 In Progress
+- [ ] Build task list view (priority, due dates, assignees)
+- [ ] Build task form with all fields (modal/page)
+- [ ] Build kanban board (columns, drag-drop)
+- [ ] Build calendar view (monthly/weekly)
+- [ ] Build timeline view (Gantt-style)
+- [ ] Build task detail view (subtasks, comments, activity)
 
-### Phase 4: Collaboration (Week 4)
-- [ ] Implement comments
-- [ ] Implement activity log
-- [ ] Real-time updates (Pusher or polling)
-- [ ] Filters and smart views
+### Phase 4: Collaboration (Week 4) ✅ COMPLETE (Backend) / 🔄 In Progress (UI)
+- [x] Implement comments (API)
+- [x] Implement activity log (API)
+- [ ] Real-time updates (Pusher or polling) - Phase 5
+- [x] Filters and smart views (API done, UI pending)
 
-### Phase 5: Polish (Week 5)
-- [ ] Dark mode
-- [ ] Animations
-- [ ] Mobile responsiveness
+### Phase 5: Polish (Week 5) 🔄 In Progress
+- [x] Dark mode (CSS variables done)
+- [x] Animations (Tailwind animations added)
+- [ ] Mobile responsiveness (partial - need testing)
 - [ ] Performance optimization
 - [ ] Bug fixes
+- [ ] Real-time sync implementation
+- [ ] Presence indicators
+- [ ] Optimistic UI updates
 
 ---
 
 ## Acceptance Criteria
 
-### Must Have (MVP)
-- [ ] Google OAuth login
-- [ ] Create/join community
-- [ ] Create/edit/delete lists
-- [ ] Create/edit/delete tasks with dates
-- [ ] Priority levels
-- [ ] Assign tasks to members
-- [ ] Mark tasks complete
-- [ ] List view
-- [ ] Comments on tasks
-- [ ] Responsive design
+### Must Have (MVP) 🔄 In Progress
+- [x] Google OAuth login (configured)
+- [x] Create/join community (API done)
+- [x] Create/edit/delete lists (API done)
+- [x] Create/edit/delete tasks with dates (API done)
+- [x] Priority levels (API done)
+- [x] Assign tasks to members (API done)
+- [x] Mark tasks complete (API done)
+- [ ] List view (UI pending)
+- [x] Comments on tasks (API done)
+- [ ] Responsive design (partial - base CSS done)
 
-### Should Have
-- [ ] Kanban view
-- [ ] Calendar view
-- [ ] Filters (Today, This Week, Overdue)
-- [ ] Labels/tags
-- [ ] Subtasks
-- [ ] Activity log
+### Should Have 🔄 In Progress
+- [ ] Kanban view (pending)
+- [ ] Calendar view (pending)
+- [ ] Filters (Today, This Week, Overdue) (API done, UI pending)
+- [x] Labels/tags (API done)
+- [x] Subtasks (API done)
+- [x] Activity log (API done)
 
-### Nice to Have
+### Nice to Have ⏳ Pending
 - [ ] Timeline view
-- [ ] Dark mode
+- [x] Dark mode (CSS done)
 - [ ] Reminders
 - [ ] Real-time sync
 
