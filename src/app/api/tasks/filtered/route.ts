@@ -1,0 +1,115 @@
+import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
+import { prisma } from "@/lib/prisma"
+import { authOptions } from "@/lib/auth"
+import { endOfDay, startOfDay, startOfWeek, endOfWeek } from "date-fns"
+
+export async function GET(request: Request) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const filter = searchParams.get("filter") // my-tasks, today, this-week, overdue, starred, high-priority
+
+    const today = new Date()
+    const userId = session.user.id
+
+    let whereClause: any = {
+      list: {
+        community: {
+          members: {
+            some: { userId },
+          },
+        },
+      },
+    }
+
+    switch (filter) {
+      case "my-tasks":
+        whereClause.assignees = {
+          some: { userId },
+        }
+        break
+
+      case "today":
+        whereClause.dueDate = {
+          gte: startOfDay(today),
+          lte: endOfDay(today),
+        }
+        break
+
+      case "this-week":
+        whereClause.dueDate = {
+          gte: startOfWeek(today, { weekStartsOn: 1 }),
+          lte: endOfWeek(today, { weekStartsOn: 1 }),
+        }
+        break
+
+      case "overdue":
+        whereClause.dueDate = {
+          lt: startOfDay(today),
+        }
+        whereClause.status = { not: "DONE" }
+        break
+
+      case "starred":
+        whereClause.starred = true
+        break
+
+      case "high-priority":
+        whereClause.priority = { in: ["P1", "P2"] }
+        break
+
+      default:
+        return NextResponse.json(
+          { message: "Invalid filter" },
+          { status: 400 }
+        )
+    }
+
+    const tasks = await prisma.task.findMany({
+      where: whereClause,
+      orderBy: [
+        { starred: "desc" },
+        { priority: "asc" },
+        { dueDate: "asc" },
+      ],
+      include: {
+        list: {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+          },
+        },
+        assignees: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
+        labels: {
+          include: {
+            label: true,
+          },
+        },
+      },
+    })
+
+    return NextResponse.json(tasks)
+  } catch (error) {
+    console.error("Error fetching filtered tasks:", error)
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    )
+  }
+}
