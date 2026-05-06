@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Pin, Archive } from "lucide-react"
 import { ListActions } from "./list-actions"
+import { useRouter } from "next/navigation"
 
 interface ListCardProps {
   list: {
@@ -23,7 +24,8 @@ interface ListCardProps {
   onAction?: () => void
 }
 
-export function ListCard({ list }: ListCardProps) {
+export function ListCard({ list, onAction }: ListCardProps) {
+  const router = useRouter()
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -39,6 +41,7 @@ export function ListCard({ list }: ListCardProps) {
       style={{
         borderLeft: `4px solid ${list.color}`,
       }}
+      onClick={() => router.push(`/lists/${list.id}`)}
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
