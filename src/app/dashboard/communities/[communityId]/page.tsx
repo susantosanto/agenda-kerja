@@ -10,6 +10,7 @@ import { CommunitySelector } from "@/components/layout/community-selector"
 import { CommunityHeader } from "@/components/community/community-header"
 import { CommunityMembers } from "@/components/community/community-members"
 import { ListCard } from "@/components/list/list-card"
+import { ChatBox } from "@/components/chat/chat-box"
 import { Button } from "@/components/ui/button"
 import { Plus, Loader2 } from "lucide-react"
 import {
@@ -259,6 +260,12 @@ export default function CommunityDetailPage() {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Chat Section */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold tracking-tight">Chat Komunitas</h2>
+              <ChatBox communityId={community.id} />
             </div>
           </div>
         </main>

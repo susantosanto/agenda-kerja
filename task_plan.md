@@ -184,57 +184,82 @@ Implement task management UI components and views (list, kanban, calendar, timel
 
 ---
 
-## Phase 4: Collaboration UI (Comments & Activity)
+## Phase 4: Collaboration UI (Comments & Activity) - IN PROGRESS
 
 ### Task 4.1: Task Detail Page
-- [ ] Page layout: main content (task info) + side panel (comments, activity)
-- [ ] Task header (title, priority, status, dates)
-- [ ] Task description (markdown render)
-- [ ] Subtasks section (expandable)
-- [ ] Assignees section (avatars, add/remove)
-- [ ] Labels section (chips, add/remove)
-- [ ] Comments section (list, form)
-- [ ] Activity log section (timeline)
+- [x] Page layout: main content (task info) + side panel (comments, activity)
+- [x] Task header (title, priority, status, dates)
+- [x] Task description (markdown render)
+- [x] Subtasks section (expandable)
+- [x] Assignees section (avatars, add/remove)
+- [x] Labels section (chips, add/remove)
+- [x] Comments section (list, form)
+- [x] Activity log section (timeline)
 
 **Files:**
 - `src/app/tasks/[taskId]/page.tsx`
 - `src/components/task/task-detail.tsx`
-- `src/components/task/task-sidebar.tsx`
+- `src/components/task/task-sidebar.tsx` (merged into task-detail)
 
 **Dependencies:** Task API, Comments API, Activity API
 
 ---
 
 ### Task 4.2: Comments UI
-- [ ] Comment list with avatars, names, timestamps
-- [ ] Comment form (textarea, submit)
-- [ ] Edit comment inline (on own comments)
-- [ ] Delete comment button (on own comments)
-- [ ] Markdown preview (or simple text)
+- [x] Comment list with avatars, names, timestamps
+- [x] Comment form (textarea, submit)
+- [x] Edit comment inline (on own comments)
+- [x] Delete comment button (on own comments)
+- [x] Markdown preview (or simple text)
 - [ ] @mention parsing (future)
 - [ ] Real-time comment updates (future)
 
 **Files:**
-- `src/components/comments/comment-list.tsx`
-- `src/components/comments/comment-item.tsx`
-- `src/components/comments/comment-form.tsx`
+- `src/components/comments/comment-list.tsx` (in task-detail)
+- `src/components/comments/comment-item.tsx` (in task-detail)
+- `src/components/comments/comment-form.tsx` (in task-detail)
 
 **Dependencies:** Comments API
 
 ---
 
 ### Task 4.3: Activity Log UI
-- [ ] Activity timeline (vertical list)
-- [ ] Activity items: icon + description + user + timestamp
-- [ ] Group by date (Today, Yesterday, This Week)
-- [ ] Filter by activity type
-- [ ] Relative time formatting (e.g., "2 hours ago")
+- [x] Activity timeline (vertical list)
+- [x] Activity items: icon + description + user + timestamp
+- [x] Group by date (Today, Yesterday, This Week)
+- [x] Filter by activity type
+- [x] Relative time formatting (e.g., "2 hours ago")
 
 **Files:**
-- `src/components/activity/activity-log.tsx`
-- `src/components/activity/activity-item.tsx`
+- `src/components/activity/activity-log.tsx` (in task-detail)
+- `src/components/activity/activity-item.tsx` (in task-detail)
 
 **Dependencies:** Activity API
+
+---
+
+## Phase 4.5: Real-time Chat (NEW)
+
+### Task 4.4: Community Chat System
+- [x] Database schema: ChatMessage model
+- [x] API GET /api/communities/[communityId]/messages (with pagination)
+- [x] API POST /api/communities/[communityId]/messages
+- [x] ChatBox component (message list, input, send)
+- [x] Message display with user avatar, name, timestamp
+- [x] Real-time polling (5-second interval)
+- [x] Optimistic message sending
+- [x] Toast notifications for send success/error
+- [ ] WebSocket implementation (future)
+- [ ] File attachments (future)
+- [ ] Emoji picker (future)
+- [ ] Message reactions (future)
+
+**Files:**
+- `src/app/api/communities/[communityId]/messages/route.ts`
+- `src/components/chat/chat-box.tsx`
+- `src/components/ui/scroll-area.tsx`
+
+**Dependencies:** Polling, fetch API
 
 ---
 
@@ -389,13 +414,16 @@ Implement task management UI components and views (list, kanban, calendar, timel
 
 | Task | Status | Started | Completed | Notes |
 |------|--------|---------|-----------|-------|
-| Phase 2 UI | ⏳ Pending | - | - | Not started |
-| Phase 3 Views | ⏳ Pending | - | - | Not started |
-| Phase 4 UI | ⏳ Pending | - | - | Not started |
-| Phase 5 Filters | ⏳ Pending | - | - | Not started |
-| Phase 6 Polish | ⏳ Pending | - | - | Not started |
+| Phase 1: Setup & Auth | ✅ COMPLETE | 2026-05-05 | 2026-05-05 | API routes, layout, auth siap |
+| Phase 2: Core Data UI | 🔄 IN PROGRESS | 2026-05-06 | - | Community page, list management, task UI selesai |
+| Phase 2: Task CRUD | ⏳ Pending | - | - | Belum terintegrasi dengan React Query |
+| Phase 3: Views | ⏳ Pending | - | - | List view siap, Kanban/Calendar/Timeline belum |
+| Phase 4: Collaboration | ⏳ Pending | - | - | Task detail dengan comments & activity siap |
+| Phase 5: Filters | ⏳ Pending | - | - | - |
+| Phase 6: Polish | ⏳ Pending | - | - | - |
 
 ---
 
-**Last Updated:** 2026-05-05  
-**Session:** Phase 1 Complete, ready for Phase 2 UI
+**Last Updated:** 2026-05-06  
+**Session:** Phase 2 UI Components (Community, List, Task) completed  
+**Commit:** 092b6be - feat(phase2): implement core data UI components

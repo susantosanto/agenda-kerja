@@ -212,3 +212,16 @@ model Activity {
   userId    String
   user      User         @relation(fields: [userId], references: [id])
 }
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([communityId, createdAt])
+}

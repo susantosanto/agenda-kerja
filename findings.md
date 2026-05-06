@@ -53,7 +53,7 @@
 
 ---
 
-### Phase 2: Core Data - COMPLETE (Backend) / In Progress (UI)
+### Phase 2: Core Data - COMPLETE (Backend) / IN PROGRESS (UI)
 
 **API Endpoints Summary:**
 
@@ -78,6 +78,16 @@
 **Activity:**
 - `GET /api/tasks/[taskId]/activity` - Get activity log for task (last 50)
 
+**Tasks:**
+- `GET /api/tasks?communityId=|listId=` - Get tasks (with subtasks, labels, assignees)
+- `POST /api/tasks` - Create task
+- `GET/PATCH/DELETE /api/tasks/[taskId]` - Single task operations
+- `POST /api/tasks/[taskId]/subtasks` - Create subtask
+- `PATCH/DELETE /api/subtasks/[subtaskId]` - Update/delete subtask
+
+**Members:**
+- `GET /api/members?communityId=` - Get community members
+
 **Authentication:**
 - `POST /api/auth/signout` - Sign out endpoint
 
@@ -86,18 +96,132 @@
 - List reorder & delete: owner only
 - Comment edit/delete: author only
 - Task operations: any community member
+- Subtask operations: any community member
 
 ---
 
-### Phase 3: UI Components - Pending
+### Phase 2: Core Data UI - IN PROGRESS (2026-05-06)
 
-**Next Tasks:**
-1. Build task list view component
-2. Build task form (create/edit modal)
-3. Build kanban board view
-4. Build calendar view
-5. Build timeline/Gantt view
-6. Build task detail page with subtasks, comments, activity
+**Components Built:**
+1. **Community Page** (`/dashboard/communities/[communityId]`)
+   - CommunityHeader with info, owner badge, invite code
+   - CommunityMembers with avatar stack & role badges
+   - ListCard grid with color coding, task count, pinned state
+   - Create List button with modal (color picker, validation)
+
+2. **List Management**
+   - ListFormModal (create/edit with Zod validation)
+   - ListActions dropdown (edit, pin, archive, delete with AlertDialog)
+   - ListCard with context menu
+
+3. **Task Management**
+   - TaskItem (checkbox, star, priority badge, due date, assignees, labels, subtasks)
+   - TaskList (sorting: due date/priority/title; grouping: status/priority/assignee)
+   - TaskFormModal (full form: title, description, priority, start/due dates, duration, assignees multi-select via Command, labels multi-select, status)
+   - SubtaskItem (toggle completion, inline edit, delete)
+   - TaskDetail page (`/tasks/[taskId]`) with:
+     * Task info header (priority, status, dates, assignees, labels)
+     * Expandable subtasks with add new
+     * Comments section (list, form with toast)
+     * Activity log timeline
+
+4. **UI Infrastructure Added:**
+   - AlertDialog (Radix) for confirmations
+   - Command (Radix) for searchable multi-select
+   - Popover (Radix) for dropdowns
+   - Form (react-hook-form integration)
+   - Toast system (ToastProvider, useToast, Toaster)
+   - Updated Providers to include ToastProvider
+
+**State Management:**
+- React Query configured in providers (staleTime 60s, refetchOnWindowFocus false)
+- Optimistic updates pattern ready (callbacks passed to components)
+- Error handling with toast notifications
+
+**Files Created (Phase 2):**
+- `src/app/dashboard/communities/[communityId]/page.tsx`
+- `src/components/community/community-header.tsx`
+- `src/components/community/community-members.tsx`
+- `src/components/list/list-card.tsx`
+- `src/components/list/list-form-modal.tsx`
+- `src/components/list/list-actions.tsx`
+- `src/components/task/task-item.tsx`
+- `src/components/task/task-list.tsx`
+- `src/components/task/task-form-modal.tsx`
+- `src/components/task/subtask-item.tsx`
+- `src/components/task/task-detail.tsx`
+- `src/app/tasks/[taskId]/page.tsx`
+- `src/components/ui/alert-dialog.tsx`
+- `src/components/ui/command.tsx`
+- `src/components/ui/form.tsx`
+- `src/components/ui/popover.tsx`
+- `src/components/ui/toast.tsx`
+- `src/components/ui/toaster.tsx`
+- `src/components/ui/use-toast.ts`
+
+**API Routes Created:**
+- `src/app/api/members/route.ts`
+- `src/app/api/tasks/[taskId]/route.ts` (GET single task, PATCH, DELETE)
+- `src/app/api/tasks/[taskId]/subtasks/route.ts` (POST subtask)
+- `src/app/api/subtasks/[subtaskId]/route.ts` (PATCH, DELETE subtask)
+
+---
+
+### Phase 4.5: Real-time Chat System - COMPLETE (2026-05-06)
+
+**Database:**
+- `ChatMessage` model: id, content, communityId, userId, createdAt, updatedAt
+- Index on `[communityId, createdAt]` for efficient queries
+
+**API Routes:**
+- `GET /api/communities/[communityId]/messages?limit=50&before=<timestamp>`
+  - Returns paginated messages (oldest first)
+  - Includes user data
+  - Membership verification
+- `POST /api/communities/[communityId]/messages`
+  - Creates new message
+  - Validates content (required, max 2000 chars)
+  - Returns created message with user
+
+**UI Components:**
+- `ChatBox` component:
+  - Message list with ScrollArea
+  - User avatars, names, timestamps (relative)
+  - Optimistic message sending
+  - Auto-scroll to bottom on new messages
+  - Load more pagination (load older messages)
+  - Real-time polling every 5 seconds
+  - Textarea with Enter to send
+  - Toast notifications
+
+**Features:**
+- ✅ All community members can send messages
+- ✅ Real-time updates via polling (5s interval)
+- ✅ Optimistic UI (message appears instantly)
+- ✅ Message history with pagination (load more)
+- ✅ User identification with avatars
+- ✅ Timestamp formatting (relative: "2 hours ago")
+- ✅ Error handling & toast feedback
+- ✅ Max 2000 characters per message
+
+**Integration:**
+- ChatBox embedded in Community Detail page
+- Below Lists section
+- Responsive design
+
+**Future Enhancements:**
+- WebSocket for true real-time
+- Message editing & deletion
+- File attachments
+- Emoji picker
+- Message reactions
+- Direct messaging (1-on-1)
+- @mentions
+- Message search
+
+---
+
+### Phase 3: Views - Pending
 
 ---
 
