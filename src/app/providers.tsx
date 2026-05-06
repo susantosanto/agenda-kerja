@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useState, createContext, useContext } from "react"
+import { ToastProvider } from "@/components/ui/toast"
 
 const TooltipContext = createContext<{ delayDuration: number }>({ delayDuration: 200 })
 
@@ -43,7 +44,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider delayDuration={200}>
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </SessionProvider>

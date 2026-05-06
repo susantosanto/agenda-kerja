@@ -1,24 +1,11 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { 
-  Star, 
-  Calendar, 
-  Clock, 
-  MoreVertical, 
-  CheckCircle2, 
-  Circle,
-  AlertCircle,
-  Trash2,
-  Edit3,
-  MessageSquare
-} from "lucide-react"
-import { format, isToday, isTomorrow, isPast } from "date-fns"
+import { useState } from "react"
+import { format, isPast, isToday, isTomorrow } from "date-fns"
 import { id } from "date-fns/locale"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge, badgeVariants } from "@/components/ui/badge"
+import { Star, MoreHorizontal, Calendar, User, Tag, ChevronDown, ChevronRight } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,257 +13,361 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-
-interface Task {
-  id: string
-  title: string
-  description?: string
-  status: string
-  priority: string
-  startDate?: string
-  dueDate?: string
-  duration?: number
-  isStarred: boolean
-  order: number
-  createdBy: { id: string; name?: string; image?: string }
-  assignees: { user: { id: string; name?: string; image?: string } }[]
-  subtasks: { id: string; title: string; isDone: boolean }[]
-  labels: { label: { id: string; name: string; color: string } }[]
-}
+import { SubtaskItem } from "./subtask-item"
+import { useToast } from "@/components/ui/use-toast"
 
 interface TaskItemProps {
-  task: Task
-  onEdit?: (task: Task) => void
+  task: {
+    id: string
+    title: string
+    description: string | null
+    status: "TODO" | "IN_PROGRESS" | "DONE"
+    priority: "P1" | "P2" | "P3" | "P4"
+    startDate: Date | null
+    dueDate: Date | null
+    duration: number | null
+    starred: boolean
+    createdAt: Date
+    updatedAt: Date
+    assignees: Array<{
+      user: {
+        id: string
+        name: string | null
+        image: string | null
+      }
+    }>
+    labels: Array<{
+      label: {
+        id: string
+        name: string
+        color: string
+      }
+    }>
+    subtasks: Array<{
+      id: string
+      title: string
+      completed: boolean
+    }>
+  }
+  onToggleComplete?: () => void
+  onToggleStar?: () => void
+  onEdit?: () => void
+  onDelete?: () => void
+  onSubtaskToggle?: (subtaskId: string, completed: boolean) => void
+  onSubtaskUpdate?: (subtaskId: string, title: string) => void
+  onSubtaskDelete?: (subtaskId: string) => void
+  onSubtaskCreate?: (title: string) => void
 }
 
-const priorityConfig = {
-  P1: { label: "P1", color: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100", icon: AlertCircle },
-  P2: { label: "P2", color: "bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-100", icon: AlertCircle },
-  P3: { label: "P3", color: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-100", icon: Circle },
-  P4: { label: "P4", color: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300", icon: Circle },
+const priorityColors = {
+  P1: "bg-red-500 text-white",
+  P2: "bg-orange-500 text-white",
+  P3: "bg-blue-500 text-white",
+  P4: "bg-gray-500 text-white",
 }
 
-export function TaskItem({ task, onEdit }: TaskItemProps) {
-  const queryClient = useQueryClient()
-  const isOverdue = task.dueDate && isPast(new Date(task.dueDate)) && task.status !== "DONE"
-  const isDueToday = task.dueDate && isToday(new Date(task.dueDate))
-  const isDueTomorrow = task.dueDate && isTomorrow(new Date(task.dueDate))
+const priorityLabels = {
+  P1: "P1 - Tinggi",
+  P2: "P2 - Sedang",
+  P3: "P3 - Rendah",
+  P4: "P4 - Minimal",
+}
 
-  const toggleComplete = useMutation({
-    mutationFn: async () => {
-      const newStatus = task.status === "DONE" ? "TODO" : "DONE"
-      const res = await fetch("/api/tasks", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: task.id, status: newStatus }),
+export function TaskItem({
+  task,
+  onToggleComplete,
+  onToggleStar,
+  onEdit,
+  onDelete,
+  onSubtaskToggle,
+  onSubtaskUpdate,
+  onSubtaskDelete,
+  onSubtaskCreate,
+}: TaskItemProps) {
+  const [isHovered, setIsHovered] = useState(false)
+  const [showSubtasks, setShowSubtasks] = useState(false)
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
+  const [isAddingSubtask, setIsAddingSubtask] = useState(false)
+  const { toast } = useToast()
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return null
+    if (isToday(date)) return " Hari ini"
+    if (isTomorrow(date)) return " Besok"
+    if (isPast(date) && task.status !== "DONE") return "Terlewat"
+    return format(new Date(date), "d MMM", { locale: id })
+  }
+
+  const isOverdue =
+    task.dueDate &&
+    isPast(new Date(task.dueDate)) &&
+    task.status !== "DONE"
+
+  const completedSubtasks = task.subtasks.filter((s) => s.completed).length
+  const totalSubtasks = task.subtasks.length
+
+  const handleAddSubtask = async () => {
+    if (!newSubtaskTitle.trim()) return
+    try {
+      await onSubtaskCreate?.(newSubtaskTitle.trim())
+      setNewSubtaskTitle("")
+      setIsAddingSubtask(false)
+      toast({
+        title: "Berhasil",
+        description: "Subtask ditambahkan",
       })
-      if (!res.ok) throw new Error("Failed to update task")
-      return res.json()
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] })
-    },
-  })
-
-  const toggleStar = useMutation({
-    mutationFn: async () => {
-      const res = await fetch("/api/tasks", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: task.id, isStarred: !task.isStarred }),
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Gagal menambahkan subtask",
+        variant: "destructive",
       })
-      if (!res.ok) throw new Error("Failed to update task")
-      return res.json()
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] })
-    },
-  })
-
-  const deleteTask = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/tasks?id=${task.id}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("Failed to delete task")
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] })
-    },
-  })
-
-  const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
-  const PriorityIcon = priority.icon
-
-  const completedSubtasks = task.subtasks?.filter((s) => s.isDone).length || 0
-  const totalSubtasks = task.subtasks?.length || 0
-  const progress = totalSubtasks > 0 ? (completedSubtasks / totalSubtasks) * 100 : 0
+    }
+  }
 
   return (
     <div
       className={cn(
-        "group relative rounded-xl border bg-card p-4 transition-all duration-200",
-        "hover:shadow-lg hover:border-primary/20",
+        "group rounded-lg border bg-card p-4 transition-all hover:shadow-md",
         task.status === "DONE" && "opacity-60"
       )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex gap-3">
         {/* Checkbox */}
         <button
-          onClick={() => toggleComplete.mutate()}
-          disabled={toggleComplete.isPending}
+          onClick={onToggleComplete}
           className={cn(
-            "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-all duration-200",
+            "mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2 transition-colors",
             task.status === "DONE"
-              ? "border-emerald-500 bg-emerald-500 text-white"
-              : "border-slate-300 dark:border-slate-600 hover:border-primary"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-muted-foreground/30 hover:border-primary"
           )}
         >
-          {task.status === "DONE" && <CheckCircle2 className="h-3.5 w-3.5" />}
+          {task.status === "DONE" && (
+            <svg
+              className="h-3 w-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={3}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          )}
         </button>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 space-y-2">
+          {/* Title & Star */}
           <div className="flex items-start justify-between gap-2">
             <h4
               className={cn(
-                "font-medium leading-tight",
+                "text-sm font-medium",
                 task.status === "DONE" && "line-through text-muted-foreground"
               )}
             >
               {task.title}
             </h4>
             <button
-              onClick={() => toggleStar.mutate()}
+              onClick={onToggleStar}
               className={cn(
-                "shrink-0 transition-colors",
-                task.isStarred
-                  ? "text-amber-500"
-                  : "text-slate-300 dark:text-slate-600 hover:text-amber-500"
+                "flex-shrink-0 transition-colors",
+                isHovered || task.starred
+                  ? task.starred
+                    ? "text-yellow-500"
+                    : "text-muted-foreground"
+                  : "text-transparent"
               )}
             >
-              <Star className={cn("h-4 w-4", task.isStarred && "fill-current")} />
+              <Star
+                className="h-4 w-4"
+                fill={task.starred ? "currentColor" : "none"}
+              />
             </button>
           </div>
 
           {/* Description */}
           {task.description && (
-            <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-muted-foreground line-clamp-2">
               {task.description}
             </p>
           )}
 
-          {/* Meta */}
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            {/* Priority */}
-            <span
-              className={cn(
-                "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium",
-                priority.color
-              )}
+          {/* Subtasks toggle */}
+          {totalSubtasks > 0 && (
+            <button
+              onClick={() => setShowSubtasks(!showSubtasks)}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
             >
-              <PriorityIcon className="h-3 w-3" />
-              {priority.label}
-            </span>
+              {showSubtasks ? (
+                <ChevronDown className="h-3 w-3" />
+              ) : (
+                <ChevronRight className="h-3 w-3" />
+              )}
+              Subtasks: {completedSubtasks}/{totalSubtasks}
+            </button>
+          )}
 
-            {/* Due Date */}
-            {task.dueDate && (
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1 text-xs",
-                  isOverdue && "text-red-600 dark:text-red-400",
-                  isDueToday && "text-amber-600 dark:text-amber-400"
-                )}
-              >
-                <Calendar className="h-3 w-3" />
-                {isDueToday
-                  ? "Today"
-                  : isDueTomorrow
-                  ? "Tomorrow"
-                  : format(new Date(task.dueDate), "MMM d", { locale: id })}
-              </span>
-            )}
-
-            {/* Duration */}
-            {task.duration && (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="h-3 w-3" />
-                {task.duration}m
-              </span>
-            )}
-
-            {/* Subtasks */}
-            {totalSubtasks > 0 && (
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3 w-3" />
-                {completedSubtasks}/{totalSubtasks}
-              </span>
-            )}
-
-            {/* Labels */}
-            {task.labels?.map(({ label }) => (
-              <span
-                key={label.id}
-                className="inline-flex items-center rounded-full px-2 py-0.5 text-xs"
-                style={{ backgroundColor: label.color + "20", color: label.color }}
-              >
-                {label.name}
-              </span>
-            ))}
-          </div>
-
-          {/* Progress Bar */}
-          {progress > 0 && progress < 100 && (
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full bg-primary transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+          {/* Subtasks List */}
+          {showSubtasks && totalSubtasks > 0 && (
+            <div className="ml-4 space-y-1 border-l-2 border-muted pl-3">
+              {task.subtasks.map((subtask) => (
+                <SubtaskItem
+                  key={subtask.id}
+                  subtask={subtask}
+                  onToggle={() => onSubtaskToggle?.(subtask.id, !subtask.completed)}
+                  onUpdate={(title) => onSubtaskUpdate?.(subtask.id, title)}
+                  onDelete={() => onSubtaskDelete?.(subtask.id)}
+                />
+              ))}
             </div>
           )}
 
-          {/* Assignees */}
-          <div className="mt-3 flex items-center gap-2">
-            <div className="flex -space-x-2">
-              {task.assignees?.slice(0, 3).map(({ user }) => (
-                <Avatar key={user.id} className="h-6 w-6 border-2 border-card">
-                  <AvatarImage src={user.image} />
-                  <AvatarFallback className="text-[10px]">
-                    {user.name?.[0] || "?"}
-                  </AvatarFallback>
-                </Avatar>
-              ))}
+          {/* Add Subtask Input */}
+          {showSubtasks && (
+            <div className="ml-4 flex items-center gap-2 border-l-2 border-muted pl-3">
+              <input
+                type="text"
+                value={newSubtaskTitle}
+                onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddSubtask()
+                }}
+                placeholder="+ Tambah subtask"
+                className="flex-1 text-sm border-none bg-transparent outline-none placeholder:text-muted-foreground"
+              />
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 px-2"
+                onClick={handleAddSubtask}
+                disabled={!newSubtaskTitle.trim()}
+              >
+                +
+              </Button>
             </div>
+          )}
+
+          {/* Meta: Due date, assignees, labels */}
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            {/* Due Date */}
+            {task.dueDate && (
+              <div
+                className={cn(
+                  "flex items-center gap-1",
+                  isOverdue && "text-destructive font-medium"
+                )}
+              >
+                <Calendar className="h-3 w-3" />
+                <span>{formatDate(task.dueDate)}</span>
+              </div>
+            )}
+
+            {/* Assignees */}
+            {task.assignees.length > 0 && (
+              <div className="flex items-center gap-1">
+                <User className="h-3 w-3 text-muted-foreground" />
+                <div className="flex -space-x-2">
+                  {task.assignees.slice(0, 3).map((assignment) => (
+                    <Avatar
+                      key={assignment.user.id}
+                      className="h-5 w-5 border-2 border-background"
+                    >
+                      <AvatarImage src={assignment.user.image || ""} />
+                      <AvatarFallback className="text-[10px]">
+                        {getInitials(assignment.user.name || "U")}
+                      </AvatarFallback>
+                    </Avatar>
+                  ))}
+                  {task.assignees.length > 3 && (
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-muted text-[10px]">
+                      +{task.assignees.length - 3}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Labels */}
+            {task.labels.length > 0 && (
+              <div className="flex items-center gap-1">
+                <Tag className="h-3 w-3 text-muted-foreground" />
+                <div className="flex gap-1">
+                  {task.labels.slice(0, 2).map(({ label }) => (
+                    <Badge
+                      key={label.id}
+                      variant="outline"
+                      className="px-1.5 py-0 text-[10px]"
+                      style={{
+                        borderColor: label.color,
+                        color: label.color,
+                      }}
+                    >
+                      {label.name}
+                    </Badge>
+                  ))}
+                  {task.labels.length > 2 && (
+                    <span className="text-xs text-muted-foreground">
+                      +{task.labels.length - 2}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Priority Badge */}
+            <Badge className={priorityColors[task.priority]} variant="secondary">
+              {priorityLabels[task.priority]}
+            </Badge>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onEdit?.(task)}>
-                <Edit3 className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Comments
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => deleteTask.mutate()}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setShowSubtasks(!showSubtasks)} className="gap-2">
+              {showSubtasks ? "Sembunyikan Subtasks" : "Tampilkan Subtasks"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onToggleComplete} className="gap-2">
+              {task.status === "DONE" ? "Tandai Belum Selesai" : "Tandai Selesai"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onToggleStar} className="gap-2">
+              {task.starred ? "Unstar" : "Star"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onEdit} className="gap-2">
+              Edit Task
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={onDelete}
+              className="gap-2 text-destructive"
+            >
+              Hapus Task
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

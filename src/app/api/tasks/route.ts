@@ -137,6 +137,8 @@ export async function POST(request: Request) {
   return NextResponse.json(task)
 }
 
+// No PATCH/DELETE here - they are in [taskId]/route.ts
+
 export async function PATCH(request: Request) {
   const session = await auth()
   if (!session?.user?.email) {
@@ -159,7 +161,64 @@ export async function PATCH(request: Request) {
 
   const existingTask = await prisma.task.findUnique({
     where: { id },
-    include: { list: { include: { community: true } } } },
+    include: { list: { include: { community: true } } },
+  })
+  if (!existingTask) {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 })
+  }
+
+  // Verify membership
+  const member = await prisma.communityMember.findFirst({
+    where: {
+      userId: user.id,
+      communityId: existingTask.list.communityId,
+    },
+  })
+  if (!member) {
+    return NextResponse.json({ error: "Not a member" }, { status: 403 })
+  }
+
+  const updates: Record<string, unknown> = {}
+  if (title !== undefined) updates.title = title
+  if (description !== undefined) updates.description = description
+  if (status !== undefined) updates.status = status
+  if (priority !== undefined) updates.priority = priority
+  if (startDate !== undefined) updates.startDate = startDate ? new Date(startDate) : null
+  if (dueDate !== undefined) updates.dueDate = dueDate ? new Date(dueDate) : null
+  if (duration !== undefined) updates.duration = duration
+  if (isStarred !== undefined) updates.isStarred = isStarred
+
+  // Handle assignees
+  if (assigneeIds !== undefined) {
+    // Delete existing assignees and create new ones
+    await prisma.taskAssignee.deleteMany({ where: { taskId: id } })
+    if (assigneeIds.length > 0) {
+      updates.assignees = {
+        create: assigneeIds.map((userId: string) => ({ userId })),
+      }
+    }
+  }
+
+  // Handle labels
+  if (labelIds !== undefined) {
+    // Delete existing labels and create new ones
+    await prisma.taskLabel.deleteMany({ where: { taskId: id } })
+    if (labelIds.length > 0) {
+      updates.labels = {
+        create: labelIds.map((labelId: string) => ({ labelId })),
+      }
+    }
+  }
+
+  const task = await prisma.task.update({
+    where: { id },
+    data: updates,
+    include: {
+      createdBy: { select: { id: true, name: true, email: true, image: true } },
+      assignees: { include: { user: { select: { id: true, name: true, email: true, image: true } } } },
+      subtasks: { orderBy: { order: "asc" } },
+      labels: { include: { label: true } },
+    },
   })
   if (!existingTask) {
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
