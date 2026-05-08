@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2, Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 interface SubtaskItemProps {
   subtask: {
@@ -63,24 +63,24 @@ export function SubtaskItem({ subtask, onToggle, onUpdate, onDelete }: SubtaskIt
   }
 
   return (
-    <div className="group flex items-center gap-3 rounded-lg p-2 hover:bg-muted/40 transition-all duration-200">
-      {/* Premium Checkbox */}
+    <div className="group flex items-center gap-3 rounded-lg p-1.5 hover:bg-muted/20 transition-all duration-200">
+      {/* Thin Checkbox */}
       <button
         onClick={onToggle}
         className={cn(
-          "flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300",
+          "flex h-4 w-4 flex-shrink-0 items-center justify-center rounded border transition-all duration-200",
           subtask.completed
-            ? "border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/30"
-            : "border-muted-foreground/30 bg-background hover:border-primary hover:scale-110"
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-muted-foreground/30 bg-transparent hover:border-primary/60"
         )}
       >
         {subtask.completed && (
           <svg
-            className="h-3 w-3"
+            className="h-2.5 w-2.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={3.5}
+            strokeWidth={3}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
@@ -158,5 +158,3 @@ export function SubtaskItem({ subtask, onToggle, onUpdate, onDelete }: SubtaskIt
     </div>
   )
 }
-
-import { cn } from "@/lib/utils"

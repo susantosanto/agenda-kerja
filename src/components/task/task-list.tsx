@@ -225,57 +225,56 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
       {/* Premium Header */}
       <div className="bg-transparent">
         <div className="max-w-6xl mx-auto px-6 pt-6 pb-4">
-          {/* Stats Pills */}
-          <div className="flex items-center gap-3 mb-4 overflow-x-auto pb-2">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/20">
-              <Clock className="h-4 w-4 text-slate-500" />
-              <span className="text-xs font-bold text-slate-500">{pendingCount} Pending</span>
+          {/* Stats Bar - Mobile First (no scroll) */}
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-slate-500/10 border border-slate-500/20">
+              <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-slate-500 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-sm sm:text-base font-black text-slate-500 tabular-nums">{pendingCount}</span>
+                <span className="text-[9px] sm:text-[10px] font-semibold text-slate-500/70 ml-1">Pending</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20">
-              <Flame className="h-4 w-4 text-amber-500" />
-              <span className="text-xs font-bold text-amber-500">{inProgressCount} In Progress</span>
+            <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-sm sm:text-base font-black text-amber-500 tabular-nums">{inProgressCount}</span>
+                <span className="text-[9px] sm:text-[10px] font-semibold text-amber-500/70 ml-1">Progress</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-              <span className="text-xs font-bold text-emerald-500">{completedCount} Completed</span>
-            </div>
-            <div className="ml-auto">
-              <Button 
-                onClick={() => setCreateTaskOpen(true)} 
-                size="sm"
-                className="h-10 px-6 rounded-xl bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 text-white font-bold shadow-lg shadow-primary/25 transition-all active:scale-95"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                New Task
-              </Button>
+            <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+              <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-500 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-sm sm:text-base font-black text-emerald-500 tabular-nums">{completedCount}</span>
+                <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-500/70 ml-1">Selesai</span>
+              </div>
             </div>
           </div>
 
-          {/* Toolbar */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+          {/* Toolbar - Mobile First */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 flex-1 min-w-0">
               {/* Sort */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9 rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-xs gap-2">
-                    <SortAsc className="h-4 w-4 text-muted-foreground" />
-                    Sort
+                  <Button variant="outline" size="sm" className="h-8 sm:h-9 rounded-lg sm:rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-[11px] sm:text-xs gap-1.5 px-2.5 sm:px-3">
+                    <SortAsc className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="hidden xs:inline">Sort</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1">
-                  <DropdownMenuItem onClick={() => setSortBy("dueDate")} className={cn("rounded-lg", sortBy === "dueDate" && "bg-primary/10 text-primary")}>
+                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1 min-w-[160px]">
+                  <DropdownMenuItem onClick={() => setSortBy("dueDate")} className={cn("rounded-lg text-sm", sortBy === "dueDate" && "bg-primary/10 text-primary")}>
                     <CalendarDays className="mr-2 h-4 w-4" />
                     Due Date
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("priority")} className={cn("rounded-lg", sortBy === "priority" && "bg-primary/10 text-primary")}>
+                  <DropdownMenuItem onClick={() => setSortBy("priority")} className={cn("rounded-lg text-sm", sortBy === "priority" && "bg-primary/10 text-primary")}>
                     <Flame className="mr-2 h-4 w-4" />
                     Priority
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("title")} className={cn("rounded-lg", sortBy === "title" && "bg-primary/10 text-primary")}>
+                  <DropdownMenuItem onClick={() => setSortBy("title")} className={cn("rounded-lg text-sm", sortBy === "title" && "bg-primary/10 text-primary")}>
                     <Sparkles className="mr-2 h-4 w-4" />
                     Title
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("createdAt")} className={cn("rounded-lg", sortBy === "createdAt" && "bg-primary/10 text-primary")}>
+                  <DropdownMenuItem onClick={() => setSortBy("createdAt")} className={cn("rounded-lg text-sm", sortBy === "createdAt" && "bg-primary/10 text-primary")}>
                     <Clock className="mr-2 h-4 w-4" />
                     Recently Added
                   </DropdownMenuItem>
@@ -285,20 +284,20 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
               {/* Group */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9 rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-xs gap-2">
-                    <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-                    {groupBy === "none" ? "No Group" : groupBy === "status" ? "Status" : "Priority"}
+                  <Button variant="outline" size="sm" className="h-8 sm:h-9 rounded-lg sm:rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-[11px] sm:text-xs gap-1.5 px-2.5 sm:px-3">
+                    <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+                    {groupBy === "none" ? "Group" : groupBy === "status" ? "Status" : "Priority"}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1">
-                  <DropdownMenuItem onClick={() => setGroupBy("none")} className={cn("rounded-lg", groupBy === "none" && "bg-primary/10 text-primary")}>
+                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1 min-w-[160px]">
+                  <DropdownMenuItem onClick={() => setGroupBy("none")} className={cn("rounded-lg text-sm", groupBy === "none" && "bg-primary/10 text-primary")}>
                     No Grouping
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setGroupBy("status")} className={cn("rounded-lg", groupBy === "status" && "bg-primary/10 text-primary")}>
+                  <DropdownMenuItem onClick={() => setGroupBy("status")} className={cn("rounded-lg text-sm", groupBy === "status" && "bg-primary/10 text-primary")}>
                     <CheckCircle2 className="mr-2 h-4 w-4" />
                     Group by Status
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setGroupBy("priority")} className={cn("rounded-lg", groupBy === "priority" && "bg-primary/10 text-primary")}>
+                  <DropdownMenuItem onClick={() => setGroupBy("priority")} className={cn("rounded-lg text-sm", groupBy === "priority" && "bg-primary/10 text-primary")}>
                     <Flame className="mr-2 h-4 w-4" />
                     Group by Priority
                   </DropdownMenuItem>
@@ -307,44 +306,46 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
             </div>
 
             {/* View Toggle */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/30 border border-border/50">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/30 border border-border/50 shrink-0">
               <button
                 onClick={() => setViewMode("list")}
                 className={cn(
-                  "p-2 rounded-lg transition-all",
+                  "p-1.5 sm:p-2 rounded-lg transition-all",
                   viewMode === "list" ? "bg-background shadow-md" : "hover:bg-muted/50"
                 )}
+                title="List view"
               >
-                <List className={cn("h-4 w-4", viewMode === "list" ? "text-primary" : "text-muted-foreground")} />
+                <List className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", viewMode === "list" ? "text-primary" : "text-muted-foreground")} />
               </button>
               <button
                 onClick={() => setViewMode("grid")}
                 className={cn(
-                  "p-2 rounded-lg transition-all",
+                  "p-1.5 sm:p-2 rounded-lg transition-all",
                   viewMode === "grid" ? "bg-background shadow-md" : "hover:bg-muted/50"
                 )}
+                title="Grid view"
               >
-                <LayoutGrid className={cn("h-4 w-4", viewMode === "grid" ? "text-primary" : "text-muted-foreground")} />
+                <LayoutGrid className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", viewMode === "grid" ? "text-primary" : "text-muted-foreground")} />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Task List - CSS Animation instead of framer-motion */}
-      <div className="max-w-6xl mx-auto px-6 py-6 pb-20">
+      {/* Task List - Mobile First */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-20">
           {tasks.length === 0 ? (
             <div
-              className="flex flex-col items-center justify-center py-24 text-center animate-in fade-in slide-in-from-top-4 duration-500"
+              className="flex flex-col items-center justify-center py-16 sm:py-24 text-center animate-in fade-in slide-in-from-top-4 duration-500"
             >
-              <div className="relative mb-8">
+              <div className="relative mb-6 sm:mb-8">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl scale-150" />
-                <div className="relative h-24 w-24 rounded-3xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 flex items-center justify-center">
-                  <Target className="h-10 w-10 text-primary/50" />
+                <div className="relative h-16 w-16 sm:h-24 sm:w-24 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 flex items-center justify-center">
+                  <Target className="h-7 w-7 sm:h-10 sm:w-10 text-primary/50" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-2">No tasks yet</h3>
-              <p className="text-muted-foreground mb-8 max-w-md">
+              <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">No tasks yet</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-md">
                 Start organizing your work by creating your first task.
               </p>
               <Button 
@@ -369,23 +370,23 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
                     key={groupKey || "all"}
                     className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300"
                   >
-                    {/* Group Header */}
+                    {/* Group Header - Mobile First */}
                     {groupBy !== "none" && groupConfig && (
-                      <div className="flex items-center gap-3">
-                        <div className={cn("flex items-center gap-2 px-4 py-2 rounded-xl", groupConfig.bg)}>
-                          <groupConfig.icon className={cn("h-4 w-4", groupConfig.color)} />
-                          <span className={cn("text-sm font-bold", groupConfig.color)}>{groupConfig.label}</span>
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className={cn("flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl", groupConfig.bg)}>
+                          <groupConfig.icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", groupConfig.color)} />
+                          <span className={cn("text-xs sm:text-sm font-bold", groupConfig.color)}>{groupConfig.label}</span>
                         </div>
                         <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
-                        <span className="text-xs font-medium text-muted-foreground/60">{groupTasks.length} tasks</span>
+                        <span className="text-[10px] sm:text-xs font-medium text-muted-foreground/60">{groupTasks.length} tasks</span>
                       </div>
                     )}
 
                     {/* Tasks */}
                     <div className={cn(
                       viewMode === "grid" 
-                        ? "grid grid-cols-1 md:grid-cols-2 gap-4"
-                        : "space-y-3"
+                        ? "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
+                        : "space-y-2 sm:space-y-3"
                     )}>
                       {groupTasks.map((task) => (
                         <div
@@ -422,6 +423,33 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
             </div>
           )}
       </div>
+
+      {/* ─── FLOATING ACTION BUTTON — SUPER PREMIUM ─── */}
+      <button
+        onClick={() => setCreateTaskOpen(true)}
+        className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[55] group"
+        aria-label="Create New Task"
+      >
+        {/* Outer glow — subtle by default, intensifies on hover */}
+        <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-primary/30 to-purple-600/30 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        
+        {/* Pulse ring — gentle heartbeat */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-purple-600/20 animate-pulse opacity-30 group-hover:opacity-0 transition-opacity duration-500" />
+        
+        {/* Button body */}
+        <div className="relative h-14 w-14 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-primary via-primary to-purple-600 flex items-center justify-center shadow-xl shadow-primary/30 ring-1 ring-white/20 group-hover:shadow-2xl group-hover:shadow-primary/50 group-hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
+          {/* Inner depth overlay */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 via-transparent to-white/20 pointer-events-none" />
+          
+          {/* Plus icon */}
+          <Plus className="h-6 w-6 md:h-7 md:w-7 text-white drop-shadow-sm relative z-10 group-hover:rotate-90 transition-transform duration-300 ease-out" />
+        </div>
+
+        {/* Tooltip label — desktop only */}
+        <span className="absolute right-full mr-4 top-1/2 -translate-y-1/2 hidden md:block px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-bold shadow-lg opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-200 whitespace-nowrap">
+          New Task
+        </span>
+      </button>
 
       {/* Create Task Modal */}
       <TaskFormModal

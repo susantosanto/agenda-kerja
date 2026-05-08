@@ -3,6 +3,7 @@
 import { ReactNode, useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Header } from "./header"
+import { MobileNav } from "./mobile-nav"
 import { X, Menu } from "lucide-react"
 
 interface SlackLayoutProps {
@@ -39,10 +40,10 @@ export function SlackLayout({
 
       <div className="flex flex-1 overflow-hidden relative">
         
-        {/* MOBILE SIDEBAR OVERLAY */}
+        {/* MOBILE SIDEBAR OVERLAY - above bottom nav */}
         {isMobileMenuOpen && (
           <div 
-            className="fixed inset-0 bg-background/80 backdrop-blur-md z-[60] md:hidden"
+            className="fixed inset-0 bg-background/80 backdrop-blur-md z-[65] md:hidden"
             onClick={() => setIsMobileMenuOpen(false)}
           />
         )}
@@ -75,9 +76,10 @@ export function SlackLayout({
           </div>
         )}
 
-        {/* MAIN CONTENT AREA - Clean */}
+        {/* MAIN CONTENT AREA */}
         <div className="flex-1 flex flex-col min-w-0 relative overflow-hidden bg-background">
-          <div className="flex-1 overflow-y-auto">
+          {/* pb-[72px] on mobile = space for bottom nav */}
+          <div className="flex-1 overflow-y-auto pb-[72px] md:pb-0">
             {children}
           </div>
         </div>
@@ -116,6 +118,9 @@ export function SlackLayout({
           </>
         )}
       </div>
+
+      {/* MOBILE BOTTOM NAVIGATION */}
+      <MobileNav />
     </div>
   )
 }

@@ -4,9 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { format, isPast, isToday, isTomorrow } from "date-fns"
 import { id } from "date-fns/locale"
-import { Badge } from "@/components/ui/badge"
 import { Avatar as UIAvatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Star, MoreHorizontal, Calendar, User, Tag, ChevronDown, ChevronRight } from "lucide-react"
+import { Star, MoreHorizontal } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,11 +63,11 @@ interface TaskItemProps {
   onPrefetch?: () => void
 }
 
-const priorityColors = {
-  P1: "bg-gradient-to-r from-red-500/20 to-red-600/10 text-red-600 border-red-300/50 shadow-sm shadow-red-100/50",
-  P2: "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-orange-600 border-orange-300/50 shadow-sm shadow-orange-100/50",
-  P3: "bg-gradient-to-r from-blue-500/20 to-blue-600/10 text-blue-600 border-blue-300/50 shadow-sm shadow-blue-100/50",
-  P4: "bg-gradient-to-r from-slate-500/20 to-slate-600/10 text-slate-600 border-slate-300/50 shadow-sm shadow-slate-100/50",
+const priorityDotColors = {
+  P1: "bg-red-500",
+  P2: "bg-orange-500",
+  P3: "bg-blue-500",
+  P4: "bg-slate-400",
 }
 
 const priorityLabels = {
@@ -79,9 +78,9 @@ const priorityLabels = {
 }
 
 const statusStyles = {
-  TODO: "border-border/50",
-  IN_PROGRESS: "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.02] to-transparent",
-  DONE: "border-emerald-500/20 bg-gradient-to-r from-emerald-500/[0.02] to-transparent opacity-75",
+  TODO: "border-transparent",
+  IN_PROGRESS: "border-l-2 border-l-amber-500/40",
+  DONE: "opacity-60",
 }
 
 export function TaskItem({
@@ -98,10 +97,8 @@ export function TaskItem({
   onPrefetch,
 }: TaskItemProps) {
   const router = useRouter()
-  const [isHovered, setIsHovered] = useState(false)
   const [showSubtasks, setShowSubtasks] = useState(false)
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
-  const [isAddingSubtask, setIsAddingSubtask] = useState(false)
   const { toast } = useToast()
 
   // Navigate to task detail when clicking on the card
@@ -151,7 +148,6 @@ export function TaskItem({
     try {
       await onSubtaskCreate?.(newSubtaskTitle.trim())
       setNewSubtaskTitle("")
-      setIsAddingSubtask(false)
       toast({
         title: "Success",
         description: "Subtask added",
@@ -168,57 +164,46 @@ export function TaskItem({
   return (
     <div
       className={cn(
-        "group relative rounded-2xl border bg-card p-4 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5 cursor-pointer overflow-hidden",
-        "before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-purple-500/5 before:opacity-0 before:transition-opacity hover:before:opacity-100",
+        "group relative rounded-lg sm:rounded-xl bg-card border border-border/40 p-3 sm:p-4 transition-all duration-200 hover:shadow-md hover:shadow-primary/5 cursor-pointer overflow-hidden",
         statusStyles[task.status]
       )}
       onClick={handleCardClick}
-      onMouseEnter={() => {
-        setIsHovered(true)
-        // Prefetch task detail data for instant load
-        onPrefetch?.()
-      }}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => onPrefetch?.()}
     >
-      <div className="flex gap-4">
-        {/* Checkbox - Premium Style with animated ring */}
+      <div className="flex gap-2 sm:gap-4">
+        {/* Checkbox - Thin refined style */}
         <button
           onClick={(e) => {
             e.stopPropagation()
             onToggleComplete?.()
           }}
           className={cn(
-            "mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-300 relative",
+            "mt-0.5 flex h-5 w-5 sm:h-5 sm:w-5 flex-shrink-0 items-center justify-center rounded border transition-all duration-200",
             task.status === "DONE"
-              ? "border-primary bg-primary text-primary-foreground scale-95 shadow-lg shadow-primary/30"
-              : "border-muted-foreground/30 bg-background hover:border-primary hover:scale-110 hover:shadow-lg hover:shadow-primary/20"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-muted-foreground/30 bg-transparent hover:border-primary/60"
           )}
         >
           {task.status === "DONE" ? (
             <svg
-              className="h-3.5 w-3.5"
+              className="h-3 w-3"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={3.5}
+              strokeWidth={3}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-          ) : (
-            <div className={cn(
-              "h-2 w-2 rounded-full bg-primary/30 transition-all duration-300",
-              isHovered && "scale-150 bg-primary"
-            )} />
-          )}
+          ) : null}
         </button>
 
         {/* Content */}
-        <div className="flex-1 space-y-3">
-          {/* Title & Star */}
-          <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 space-y-2 sm:space-y-3 min-w-0">
+          {/* Title & Star - Mobile First */}
+          <div className="flex items-start justify-between gap-2">
             <h4
               className={cn(
-                "text-[15px] font-bold tracking-tight text-foreground transition-all leading-snug",
+                "text-[14px] sm:text-[15px] font-bold tracking-tight text-foreground transition-all leading-snug line-clamp-2",
                 task.status === "DONE" && "line-through text-muted-foreground/50 font-medium decoration-emerald-500/50"
               )}
             >
@@ -230,16 +215,14 @@ export function TaskItem({
                 onToggleStar?.()
               }}
               className={cn(
-                "flex-shrink-0 transition-all duration-300 mt-0.5",
-                isHovered || task.starred
-                  ? task.starred
-                    ? "text-amber-400 scale-110 drop-shadow-lg"
-                    : "text-muted-foreground/40 hover:text-amber-400 hover:scale-110"
-                  : "opacity-0"
+                "flex-shrink-0 transition-all duration-200 mt-0.5",
+                task.starred
+                  ? "text-amber-400"
+                  : "text-muted-foreground/20 hover:text-amber-400/60"
               )}
             >
               <Star
-                className="h-4 w-4"
+                className="h-3.5 w-3.5 sm:h-4 sm:w-4"
                 fill={task.starred ? "currentColor" : "none"}
               />
             </button>
@@ -248,114 +231,95 @@ export function TaskItem({
           {/* Description */}
           {task.description && (
             <p className={cn(
-              "text-sm leading-relaxed line-clamp-2",
+              "text-[13px] sm:text-sm leading-relaxed line-clamp-2",
               task.status === "DONE" ? "text-muted-foreground/40" : "text-muted-foreground"
             )}>
               {task.description}
             </p>
           )}
 
-          {/* Meta: Priority, Due date, assignees, labels */}
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            {/* Priority Badge - Always show first with glow effect */}
-            <Badge 
-              className={cn(
-                "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border transition-all",
-                priorityColors[task.priority],
-                isHovered && task.priority === "P1" && "shadow-lg shadow-red-200/50",
-                isHovered && task.priority === "P2" && "shadow-lg shadow-orange-200/50",
-                isHovered && task.priority === "P3" && "shadow-lg shadow-blue-200/50"
-              )} 
-              variant="secondary"
-            >
-              {priorityLabels[task.priority]}
-            </Badge>
+          {/* Meta: Premium minimalis with dot separators */}
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-0.5 text-xs text-muted-foreground">
+            {/* Priority: colored dot + label */}
+            <span className="flex items-center gap-1 shrink-0">
+              <span className={cn("h-1.5 w-1.5 rounded-full", priorityDotColors[task.priority])} />
+              <span>{priorityLabels[task.priority]}</span>
+            </span>
 
-            {/* Due Date - Enhanced with icon */}
+            {/* Due Date */}
             {task.dueDate && (
-              <div
-                className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold tracking-tight transition-all",
-                  isOverdue 
-                    ? "bg-destructive/10 border-destructive/30 text-destructive" 
-                    : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted/60"
-                )}
-              >
-                <Calendar className={cn("h-3 w-3", isOverdue && "text-destructive")} />
-                <span>{formatDate(task.dueDate)}</span>
+              <>
+                <span className="text-muted-foreground/20 select-none">·</span>
+                <span className={cn("shrink-0", isOverdue && "text-destructive font-medium")}>
+                  {formatDate(task.dueDate)}
+                </span>
+              </>
+            )}
+
+            {/* Subtasks count */}
+            {totalSubtasks > 0 && (
+              <>
+                <span className="text-muted-foreground/20 select-none">·</span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setShowSubtasks(!showSubtasks) }}
+                  className={cn(
+                    "hover:text-foreground transition-colors shrink-0",
+                    showSubtasks && "text-foreground"
+                  )}
+                >
+                  {completedSubtasks}/{totalSubtasks}
+                </button>
+              </>
+            )}
+
+            {/* Spacer untuk push labels + avatars ke kanan */}
+            {(task.labels.length > 0 || task.assignees.length > 0) && (
+              <span className="flex-1 min-w-[4px]" />
+            )}
+
+            {/* Labels sebagai tiny colored dots */}
+            {task.labels.length > 0 && (
+              <div className="flex items-center gap-1">
+                {task.labels.slice(0, 3).map(({ label }) => (
+                  <div
+                    key={label.id}
+                    className="h-1.5 w-1.5 rounded-full"
+                    title={label.name}
+                    style={{ backgroundColor: label.color }}
+                  />
+                ))}
               </div>
             )}
 
-            {/* Subtasks Count - Interactive */}
-            {totalSubtasks > 0 && (
-              <button
-                onClick={() => setShowSubtasks(!showSubtasks)}
-                className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold tracking-tight transition-all",
-                  showSubtasks 
-                    ? "bg-primary/10 border-primary/30 text-primary" 
-                    : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted/60"
-                )}
-              >
-                {showSubtasks ? (
-                  <ChevronDown className="h-3 w-3" />
-                ) : (
-                  <ChevronRight className="h-3 w-3" />
-                )}
-                <span>{completedSubtasks}/{totalSubtasks} subtasks</span>
-              </button>
-            )}
-
-            <div className="flex-1" />
-
-            {/* Labels & Assignees Grouped Right */}
-            <div className="flex items-center gap-3">
-              {/* Labels - Show as colored dots with tooltip */}
-              {task.labels.length > 0 && (
-                <div className="flex items-center gap-1.5">
-                  {task.labels.slice(0, 3).map(({ label }) => (
-                    <div
-                      key={label.id}
-                      className="h-2.5 w-2.5 rounded-full shadow-md ring-1 ring-white/50 transition-transform hover:scale-125 cursor-pointer"
-                      title={label.name}
-                      style={{ backgroundColor: label.color }}
-                    />
-                  ))}
-                  {task.labels.length > 3 && (
-                    <span className="text-[10px] text-muted-foreground font-medium">
-                      +{task.labels.length - 3}
+            {/* Assignees - Small stacked avatars */}
+            {task.assignees.length > 0 && (
+              <div className="flex -space-x-1">
+                {task.assignees.slice(0, 2).map((assignment, i) => (
+                  <UIAvatar
+                    key={assignment.user.id}
+                    className="h-4 w-4 border border-background"
+                  >
+                    <AvatarImage src={assignment.user.image || ""} />
+                    <AvatarFallback className="text-[6px] font-bold bg-muted text-muted-foreground">
+                      {getInitials(assignment.user.name || "U")}
+                    </AvatarFallback>
+                  </UIAvatar>
+                ))}
+                {task.assignees.length > 2 && (
+                  <div className="h-4 w-4 rounded-full border border-background bg-muted flex items-center justify-center">
+                    <span className="text-[6px] font-bold text-muted-foreground">
+                      +{task.assignees.length - 2}
                     </span>
-                  )}
-                </div>
-              )}
-
-              {/* Assignees - Stacked Avatars */}
-              {task.assignees.length > 0 && (
-                <div className="flex -space-x-2 hover:-space-x-1 transition-all duration-300">
-                  {task.assignees.slice(0, 3).map((assignment, i) => (
-                    <UIAvatar
-                      key={assignment.user.id}
-                      className={cn(
-                        "h-7 w-7 border-2 border-background shadow-md transition-all",
-                        isHovered && "hover:scale-110 hover:z-10"
-                      )}
-                      style={{ zIndex: 3 - i }}
-                    >
-                      <AvatarImage src={assignment.user.image || ""} />
-                      <AvatarFallback className="text-[9px] font-black bg-gradient-to-br from-primary/20 to-purple-500/20 text-primary">
-                        {getInitials(assignment.user.name || "U")}
-                      </AvatarFallback>
-                    </UIAvatar>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Subtasks List - Premium Embedded Style */}
+          {/* Subtasks List - Minimal style */}
           {showSubtasks && totalSubtasks > 0 && (
             <div 
-              className="mt-4 ml-2 space-y-2 border-l-2 border-primary/20 pl-4 py-2 rounded-r-lg bg-gradient-to-r from-primary/5 to-transparent" 
+              className="mt-2 ml-1 space-y-1 border-l border-primary/20 pl-3 py-1" 
               onClick={(e) => e.stopPropagation()}
             >
               {task.subtasks.map((subtask) => (
@@ -368,7 +332,7 @@ export function TaskItem({
                 />
               ))}
               {/* Add subtask input */}
-              <div className="pt-2 border-t border-border/30 mt-3">
+              <div className="pt-1.5 border-t border-border/20 mt-2">
                 <input
                   type="text"
                   value={newSubtaskTitle}
@@ -377,7 +341,7 @@ export function TaskItem({
                     if (e.key === "Enter") handleAddSubtask()
                   }}
                   placeholder="Add a subtask..."
-                  className="w-full text-sm font-medium border-none bg-transparent outline-none placeholder:text-muted-foreground/50 py-1.5 px-2 rounded-lg hover:bg-muted/30 transition-colors"
+                  className="w-full text-xs font-medium border-none bg-transparent outline-none placeholder:text-muted-foreground/40 py-1 px-1 rounded-md hover:bg-muted/20 transition-colors"
                 />
               </div>
             </div>
@@ -392,10 +356,10 @@ export function TaskItem({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "h-9 w-9 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105 opacity-60 hover:opacity-100 shadow-sm"
+                  "h-7 w-7 sm:h-9 sm:w-9 rounded-lg sm:rounded-xl hover:bg-muted transition-all duration-300 opacity-60 hover:opacity-100"
                 )}
               >
-                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                <MoreHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-2xl border-border/60 bg-card/95 backdrop-blur-sm shadow-2xl shadow-primary/5 p-2 w-56">
