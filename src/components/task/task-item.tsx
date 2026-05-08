@@ -392,8 +392,7 @@ export function TaskItem({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "h-9 w-9 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105",
-                  isHovered ? "opacity-100 shadow-lg shadow-primary/10" : "opacity-0"
+                  "h-9 w-9 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105 opacity-60 hover:opacity-100 shadow-sm"
                 )}
               >
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
