@@ -61,13 +61,14 @@ interface TaskItemProps {
   onSubtaskDelete?: (subtaskId: string) => void
   onSubtaskCreate?: (title: string) => void
   onDetailClick?: (taskId: string) => void
+  onPrefetch?: () => void
 }
 
 const priorityColors = {
-  P1: "bg-red-500/10 text-red-600 border-red-200 shadow-sm shadow-red-100",
-  P2: "bg-orange-500/10 text-orange-600 border-orange-200 shadow-sm shadow-orange-100",
-  P3: "bg-blue-500/10 text-blue-600 border-blue-200 shadow-sm shadow-blue-100",
-  P4: "bg-slate-500/10 text-slate-600 border-slate-200 shadow-sm shadow-slate-100",
+  P1: "bg-gradient-to-r from-red-500/20 to-red-600/10 text-red-600 border-red-300/50 shadow-sm shadow-red-100/50",
+  P2: "bg-gradient-to-r from-orange-500/20 to-orange-600/10 text-orange-600 border-orange-300/50 shadow-sm shadow-orange-100/50",
+  P3: "bg-gradient-to-r from-blue-500/20 to-blue-600/10 text-blue-600 border-blue-300/50 shadow-sm shadow-blue-100/50",
+  P4: "bg-gradient-to-r from-slate-500/20 to-slate-600/10 text-slate-600 border-slate-300/50 shadow-sm shadow-slate-100/50",
 }
 
 const priorityLabels = {
@@ -75,6 +76,12 @@ const priorityLabels = {
   P2: "High",
   P3: "Medium",
   P4: "Low",
+}
+
+const statusStyles = {
+  TODO: "border-border/50",
+  IN_PROGRESS: "border-amber-500/20 bg-gradient-to-r from-amber-500/[0.02] to-transparent",
+  DONE: "border-emerald-500/20 bg-gradient-to-r from-emerald-500/[0.02] to-transparent opacity-75",
 }
 
 export function TaskItem({
@@ -88,6 +95,7 @@ export function TaskItem({
   onSubtaskDelete,
   onSubtaskCreate,
   onDetailClick,
+  onPrefetch,
 }: TaskItemProps) {
   const router = useRouter()
   const [isHovered, setIsHovered] = useState(false)
@@ -108,7 +116,7 @@ export function TaskItem({
     ) {
       return
     }
-    // Navigate to detail page
+    // Navigate to detail page - use shallow routing for speed
     router.push(`/tasks/${task.id}`)
     onDetailClick?.(task.id)
   }
@@ -160,48 +168,58 @@ export function TaskItem({
   return (
     <div
       className={cn(
-        "group relative rounded-2xl border border-border/50 bg-card p-4 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 cursor-pointer",
-        task.status === "DONE" && "bg-muted/30 border-transparent"
+        "group relative rounded-2xl border bg-card p-4 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-0.5 cursor-pointer overflow-hidden",
+        "before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:via-transparent before:to-purple-500/5 before:opacity-0 before:transition-opacity hover:before:opacity-100",
+        statusStyles[task.status]
       )}
       onClick={handleCardClick}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setIsHovered(true)
+        // Prefetch task detail data for instant load
+        onPrefetch?.()
+      }}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex gap-4">
-        {/* Checkbox - Premium Style */}
+        {/* Checkbox - Premium Style with animated ring */}
         <button
           onClick={(e) => {
             e.stopPropagation()
             onToggleComplete?.()
           }}
           className={cn(
-            "mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300",
+            "mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-300 relative",
             task.status === "DONE"
-              ? "border-primary bg-primary text-primary-foreground scale-95"
-              : "border-muted-foreground/20 bg-background hover:border-primary hover:scale-105"
+              ? "border-primary bg-primary text-primary-foreground scale-95 shadow-lg shadow-primary/30"
+              : "border-muted-foreground/30 bg-background hover:border-primary hover:scale-110 hover:shadow-lg hover:shadow-primary/20"
           )}
         >
-          {task.status === "DONE" && (
+          {task.status === "DONE" ? (
             <svg
-              className="h-3 w-3"
+              className="h-3.5 w-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={4}
+              strokeWidth={3.5}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
+          ) : (
+            <div className={cn(
+              "h-2 w-2 rounded-full bg-primary/30 transition-all duration-300",
+              isHovered && "scale-150 bg-primary"
+            )} />
           )}
         </button>
 
         {/* Content */}
         <div className="flex-1 space-y-3">
           {/* Title & Star */}
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start justify-between gap-3">
             <h4
               className={cn(
-                "text-[15px] font-bold tracking-tight text-foreground transition-all",
-                task.status === "DONE" && "line-through text-muted-foreground/60 font-medium"
+                "text-[15px] font-bold tracking-tight text-foreground transition-all leading-snug",
+                task.status === "DONE" && "line-through text-muted-foreground/50 font-medium decoration-emerald-500/50"
               )}
             >
               {task.title}
@@ -212,10 +230,10 @@ export function TaskItem({
                 onToggleStar?.()
               }}
               className={cn(
-                "flex-shrink-0 transition-all duration-300",
+                "flex-shrink-0 transition-all duration-300 mt-0.5",
                 isHovered || task.starred
                   ? task.starred
-                    ? "text-amber-400 scale-110"
+                    ? "text-amber-400 scale-110 drop-shadow-lg"
                     : "text-muted-foreground/40 hover:text-amber-400 hover:scale-110"
                   : "opacity-0"
               )}
@@ -238,37 +256,53 @@ export function TaskItem({
           )}
 
           {/* Meta: Priority, Due date, assignees, labels */}
-          <div className="flex flex-wrap items-center gap-4 pt-1">
-            {/* Priority Badge - Always show first */}
-            <Badge className={cn("px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider border transition-all", priorityColors[task.priority])} variant="secondary">
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            {/* Priority Badge - Always show first with glow effect */}
+            <Badge 
+              className={cn(
+                "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border transition-all",
+                priorityColors[task.priority],
+                isHovered && task.priority === "P1" && "shadow-lg shadow-red-200/50",
+                isHovered && task.priority === "P2" && "shadow-lg shadow-orange-200/50",
+                isHovered && task.priority === "P3" && "shadow-lg shadow-blue-200/50"
+              )} 
+              variant="secondary"
+            >
               {priorityLabels[task.priority]}
             </Badge>
 
-            {/* Due Date */}
+            {/* Due Date - Enhanced with icon */}
             {task.dueDate && (
               <div
                 className={cn(
-                  "flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/50 border border-border/50 text-[10px] font-bold uppercase tracking-tight",
-                  isOverdue ? "text-destructive border-destructive/20 bg-destructive/5" : "text-muted-foreground"
+                  "flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold tracking-tight transition-all",
+                  isOverdue 
+                    ? "bg-destructive/10 border-destructive/30 text-destructive" 
+                    : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted/60"
                 )}
               >
-                <Calendar className="h-3 w-3" />
+                <Calendar className={cn("h-3 w-3", isOverdue && "text-destructive")} />
                 <span>{formatDate(task.dueDate)}</span>
               </div>
             )}
 
-            {/* Subtasks Count */}
+            {/* Subtasks Count - Interactive */}
             {totalSubtasks > 0 && (
               <button
                 onClick={() => setShowSubtasks(!showSubtasks)}
-                className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/50 border border-border/50 text-[10px] font-bold uppercase tracking-tight text-muted-foreground hover:bg-muted transition-colors"
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold tracking-tight transition-all",
+                  showSubtasks 
+                    ? "bg-primary/10 border-primary/30 text-primary" 
+                    : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted/60"
+                )}
               >
                 {showSubtasks ? (
                   <ChevronDown className="h-3 w-3" />
                 ) : (
                   <ChevronRight className="h-3 w-3" />
                 )}
-                Tasks: {completedSubtasks}/{totalSubtasks}
+                <span>{completedSubtasks}/{totalSubtasks} subtasks</span>
               </button>
             )}
 
@@ -276,30 +310,39 @@ export function TaskItem({
 
             {/* Labels & Assignees Grouped Right */}
             <div className="flex items-center gap-3">
-              {/* Labels */}
+              {/* Labels - Show as colored dots with tooltip */}
               {task.labels.length > 0 && (
-                <div className="flex gap-1.5">
-                  {task.labels.slice(0, 2).map(({ label }) => (
+                <div className="flex items-center gap-1.5">
+                  {task.labels.slice(0, 3).map(({ label }) => (
                     <div
                       key={label.id}
-                      className="h-2 w-2 rounded-full shadow-sm"
+                      className="h-2.5 w-2.5 rounded-full shadow-md ring-1 ring-white/50 transition-transform hover:scale-125 cursor-pointer"
                       title={label.name}
                       style={{ backgroundColor: label.color }}
                     />
                   ))}
+                  {task.labels.length > 3 && (
+                    <span className="text-[10px] text-muted-foreground font-medium">
+                      +{task.labels.length - 3}
+                    </span>
+                  )}
                 </div>
               )}
 
-              {/* Assignees */}
+              {/* Assignees - Stacked Avatars */}
               {task.assignees.length > 0 && (
-                <div className="flex -space-x-1.5 hover:space-x-0.5 transition-all duration-300">
-                  {task.assignees.slice(0, 3).map((assignment) => (
+                <div className="flex -space-x-2 hover:-space-x-1 transition-all duration-300">
+                  {task.assignees.slice(0, 3).map((assignment, i) => (
                     <UIAvatar
                       key={assignment.user.id}
-                      className="h-6 w-6 border-2 border-background ring-1 ring-border/50 shadow-sm"
+                      className={cn(
+                        "h-7 w-7 border-2 border-background shadow-md transition-all",
+                        isHovered && "hover:scale-110 hover:z-10"
+                      )}
+                      style={{ zIndex: 3 - i }}
                     >
                       <AvatarImage src={assignment.user.image || ""} />
-                      <AvatarFallback className="text-[8px] font-black bg-primary/5 text-primary">
+                      <AvatarFallback className="text-[9px] font-black bg-gradient-to-br from-primary/20 to-purple-500/20 text-primary">
                         {getInitials(assignment.user.name || "U")}
                       </AvatarFallback>
                     </UIAvatar>
@@ -311,7 +354,10 @@ export function TaskItem({
 
           {/* Subtasks List - Premium Embedded Style */}
           {showSubtasks && totalSubtasks > 0 && (
-            <div className="mt-4 ml-2 space-y-2 border-l-2 border-primary/10 pl-4 py-1 animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            <div 
+              className="mt-4 ml-2 space-y-2 border-l-2 border-primary/20 pl-4 py-2 rounded-r-lg bg-gradient-to-r from-primary/5 to-transparent" 
+              onClick={(e) => e.stopPropagation()}
+            >
               {task.subtasks.map((subtask) => (
                 <SubtaskItem
                   key={subtask.id}
@@ -321,7 +367,8 @@ export function TaskItem({
                   onDelete={() => onSubtaskDelete?.(subtask.id)}
                 />
               ))}
-              <div className="pt-1">
+              {/* Add subtask input */}
+              <div className="pt-2 border-t border-border/30 mt-3">
                 <input
                   type="text"
                   value={newSubtaskTitle}
@@ -329,15 +376,15 @@ export function TaskItem({
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleAddSubtask()
                   }}
-                  placeholder="+ Add subtask..."
-                  className="w-full text-xs font-medium border-none bg-transparent outline-none placeholder:text-muted-foreground/50 py-1"
+                  placeholder="Add a subtask..."
+                  className="w-full text-sm font-medium border-none bg-transparent outline-none placeholder:text-muted-foreground/50 py-1.5 px-2 rounded-lg hover:bg-muted/30 transition-colors"
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Actions Dropdown */}
+        {/* Actions Dropdown - Premium floating menu */}
         <div className="flex flex-col justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -345,33 +392,48 @@ export function TaskItem({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "h-8 w-8 rounded-lg hover:bg-muted transition-all",
-                  isHovered ? "opacity-100" : "opacity-0"
+                  "h-9 w-9 rounded-xl hover:bg-muted transition-all duration-300 hover:scale-105",
+                  isHovered ? "opacity-100 shadow-lg shadow-primary/10" : "opacity-0"
                 )}
               >
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-xl border-border shadow-2xl p-1.5 w-48">
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/tasks/${task.id}`) }} className="rounded-lg gap-2 text-xs font-medium cursor-pointer">
+            <DropdownMenuContent align="end" className="rounded-2xl border-border/60 bg-card/95 backdrop-blur-sm shadow-2xl shadow-primary/5 p-2 w-56">
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); router.push(`/tasks/${task.id}`) }} 
+                className="rounded-xl gap-2.5 text-sm font-medium cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
+              >
                 View Details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setShowSubtasks(!showSubtasks)} className="rounded-lg gap-2 text-xs font-medium">
+              <DropdownMenuItem 
+                onClick={() => setShowSubtasks(!showSubtasks)} 
+                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
+              >
                 {showSubtasks ? "Hide Subtasks" : "Show Subtasks"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleComplete?.() }} className="rounded-lg gap-2 text-xs font-medium">
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); onToggleComplete?.() }} 
+                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
+              >
                 {task.status === "DONE" ? "Mark as Active" : "Mark as Done"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleStar?.() }} className="rounded-lg gap-2 text-xs font-medium">
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); onToggleStar?.() }} 
+                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-amber-500/10 hover:text-amber-600 transition-colors"
+              >
                 {task.starred ? "Remove Star" : "Add Star"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit?.() }} className="rounded-lg gap-2 text-xs font-medium">
+              <DropdownMenuItem 
+                onClick={(e) => { e.stopPropagation(); onEdit?.() }} 
+                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
+              >
                 Edit Task Details
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-border/50" />
+              <DropdownMenuSeparator className="bg-border/50 my-2" />
               <DropdownMenuItem
                 onClick={(e) => { e.stopPropagation(); onDelete?.() }}
-                className="rounded-lg gap-2 text-xs font-bold text-destructive focus:bg-destructive/5"
+                className="rounded-xl gap-2.5 text-sm font-bold text-destructive/80 hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 transition-colors"
               >
                 Delete Task
               </DropdownMenuItem>

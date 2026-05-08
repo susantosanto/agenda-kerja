@@ -31,10 +31,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000,
-            refetchOnWindowFocus: false,
+            // Optimized: 5 min stale time, no background polling
+            staleTime: 5 * 60 * 1000,
+            gcTime: 30 * 60 * 1000, // Keep unused data for 30 min
+            refetchOnWindowFocus: false, // Don't refetch when tab gains focus
             retry: 1,
-            refetchInterval: 30000,
+            // Removed refetchInterval to save bandwidth
           },
         },
       })

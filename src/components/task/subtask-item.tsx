@@ -63,12 +63,30 @@ export function SubtaskItem({ subtask, onToggle, onUpdate, onDelete }: SubtaskIt
   }
 
   return (
-    <div className="group flex items-center gap-2 rounded-md p-2 hover:bg-muted/50">
-      <Checkbox
-        checked={subtask.completed}
-        onCheckedChange={onToggle}
-        className="h-4 w-4"
-      />
+    <div className="group flex items-center gap-3 rounded-lg p-2 hover:bg-muted/40 transition-all duration-200">
+      {/* Premium Checkbox */}
+      <button
+        onClick={onToggle}
+        className={cn(
+          "flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-300",
+          subtask.completed
+            ? "border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/30"
+            : "border-muted-foreground/30 bg-background hover:border-primary hover:scale-110"
+        )}
+      >
+        {subtask.completed && (
+          <svg
+            className="h-3 w-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={3.5}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        )}
+      </button>
+      
       {isEditing ? (
         <div className="flex flex-1 items-center gap-2">
           <Input
@@ -77,59 +95,62 @@ export function SubtaskItem({ subtask, onToggle, onUpdate, onDelete }: SubtaskIt
             onKeyDown={handleKeyDown}
             onBlur={handleSave}
             autoFocus
-            className="h-8 text-sm"
+            className="h-8 text-sm rounded-lg border-border/60 focus:border-primary focus:ring-primary/20"
           />
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8"
+            className="h-8 w-8 hover:bg-emerald-500/10"
             onClick={handleSave}
             disabled={isSaving}
           >
             {isSaving ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <span className="text-green-600">✓</span>
+              <span className="text-emerald-600 font-bold text-sm">✓</span>
             )}
           </Button>
           <Button
             size="icon"
             variant="ghost"
-            className="h-8 w-8"
+            className="h-8 w-8 hover:bg-destructive/10"
             onClick={() => {
               setEditTitle(subtask.title)
               setIsEditing(false)
             }}
           >
-            ✕
+            <span className="text-muted-foreground font-medium text-sm">✕</span>
           </Button>
         </div>
       ) : (
         <>
           <span
             className={cn(
-              "flex-1 text-sm",
-              subtask.completed && "line-through text-muted-foreground"
+              "flex-1 text-sm font-medium transition-all",
+              subtask.completed 
+                ? "line-through text-muted-foreground/50 decoration-emerald-500/50" 
+                : "text-foreground"
             )}
           >
             {subtask.title}
           </span>
-          <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          {/* Action buttons - visible on hover */}
+          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-all duration-200 -mr-1">
             <Button
               size="icon"
               variant="ghost"
-              className="h-7 w-7"
+              className="h-7 w-7 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
               onClick={() => setIsEditing(true)}
             >
-              <Pencil className="h-3 w-3" />
+              <Pencil className="h-3.5 w-3.5" />
             </Button>
             <Button
               size="icon"
               variant="ghost"
-              className="h-7 w-7 text-destructive"
+              className="h-7 w-7 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors"
               onClick={onDelete}
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
         </>

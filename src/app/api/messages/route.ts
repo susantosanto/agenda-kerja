@@ -58,15 +58,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "User not found" }, { status: 404 })
   }
 
-  const { content } = await request.json()
-  if (!content || !content.trim()) {
-    return NextResponse.json({ error: "Content is required" }, { status: 400 })
+  const { content, imageUrl } = await request.json()
+  if (!content?.trim() && !imageUrl) {
+    return NextResponse.json({ error: "Content or image is required" }, { status: 400 })
   }
 
   try {
     const message = await prisma.chatMessage.create({
       data: {
-        content: content.trim(),
+        content: content?.trim() || "",
+        imageUrl: imageUrl || null,
         userId: user.id,
         communityId: null,
       },

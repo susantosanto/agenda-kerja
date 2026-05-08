@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { format, formatDistanceToNow } from "date-fns"
 import { id } from "date-fns/locale"
-import { Send, Loader2, MessageSquare, Trash2 } from "lucide-react"
+import { Send, Loader2, MessageSquare, Trash2, Image as ImageIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
 import { useSession } from "next-auth/react"
 import { cn } from "@/lib/utils"
+import { ClipboardImage } from "@/components/ui/clipboard-image"
 
 interface ChatBoxProps {
   // Global chat - no community or task association
@@ -19,6 +20,7 @@ interface ChatBoxProps {
 interface Message {
   id: string
   content: string
+  imageUrl?: string | null
   createdAt: Date
   user: {
     id: string
@@ -28,11 +30,18 @@ interface Message {
   }
 }
 
+interface ImageAttachment {
+  id: string
+  url: string
+  preview: string
+}
+
 export function ChatBox(_props: ChatBoxProps = {}) {
   const { toast } = useToast()
   const { data: session } = useSession()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
+  const [attachedImages, setAttachedImages] = useState<ImageAttachment[]>([])
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
@@ -85,10 +94,12 @@ export function ChatBox(_props: ChatBoxProps = {}) {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newMessage.trim() || sending) return
+    if ((!newMessage.trim() && attachedImages.length === 0) || sending) return
 
     const content = newMessage.trim()
+    const imageUrls = attachedImages.map((img) => img.url)
     setNewMessage("")
+    setAttachedImages([])
     setSending(true)
 
     // Optimistic update
@@ -96,6 +107,7 @@ export function ChatBox(_props: ChatBoxProps = {}) {
     const optimisticMessage: Message = {
       id: tempId,
       content,
+      imageUrl: imageUrls.length > 0 ? imageUrls[0] : null,
       createdAt: new Date(),
       user: {
         id: "self",
@@ -110,7 +122,7 @@ export function ChatBox(_props: ChatBoxProps = {}) {
       const res = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, imageUrl: imageUrls.length > 0 ? imageUrls[0] : null }),
       })
 
       if (!res.ok) {
@@ -259,6 +271,15 @@ export function ChatBox(_props: ChatBoxProps = {}) {
                           : "bg-card text-card-foreground border-border/50 rounded-tl-none hover:bg-muted/30"
                       )}
                     >
+                      {/* Image attachment */}
+                      {message.imageUrl && (
+                        <img
+                          src={message.imageUrl}
+                          alt="Attachment"
+                          className="mb-2 max-w-[280px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => window.open(message.imageUrl!, "_blank")}
+                        />
+                      )}
                       <p className="leading-relaxed whitespace-pre-wrap break-words">
                         {message.content}
                       </p>
@@ -274,16 +295,23 @@ export function ChatBox(_props: ChatBoxProps = {}) {
 
       {/* Input - Premium Floating Style */}
       <div className="p-4 relative z-10">
+        {/* Clipboard Image Preview */}
+        <ClipboardImage
+          onImagesChange={setAttachedImages}
+          disabled={sending}
+          className="mb-2"
+        />
+        
         <form onSubmit={handleSend} className="relative group">
           <div className="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
           <div className="relative flex items-end gap-2 bg-card/50 backdrop-blur-xl border border-border/50 rounded-[1.5rem] p-2 pr-3 focus-within:border-primary/50 transition-all duration-300 shadow-sm focus-within:shadow-lg focus-within:shadow-primary/5">
             <Textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
+              placeholder="Type a message... (Ctrl+V untuk paste screenshot)"
               className="min-h-[44px] max-h-[200px] resize-none border-none bg-transparent focus-visible:ring-0 px-4 py-3 text-sm font-medium"
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+                if (e.key === "Enter" && !e.shiftKey && (newMessage.trim() || attachedImages.length > 0)) {
                   e.preventDefault()
                   handleSend(e)
                 }
@@ -292,7 +320,7 @@ export function ChatBox(_props: ChatBoxProps = {}) {
             <Button
               type="submit"
               size="icon"
-              disabled={sending || !newMessage.trim()}
+              disabled={sending || (!newMessage.trim() && attachedImages.length === 0)}
               className="h-10 w-10 shrink-0 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20 active:scale-90 transition-all"
             >
               {sending ? (
@@ -302,6 +330,9 @@ export function ChatBox(_props: ChatBoxProps = {}) {
               )}
             </Button>
           </div>
+          <p className="text-[10px] text-muted-foreground/50 mt-2 text-center">
+            💡 Tekan Ctrl+V untuk paste screenshot langsung
+          </p>
         </form>
       </div>
     </div>

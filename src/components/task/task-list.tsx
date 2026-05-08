@@ -1,17 +1,36 @@
 "use client"
 
+import { useState } from "react"
 import { TaskItem } from "./task-item"
 import { Button } from "@/components/ui/button"
-import { Plus, Loader2 } from "lucide-react"
+import { 
+  Plus, 
+  Loader2, 
+  LayoutGrid,
+  List,
+  SortAsc,
+  SlidersHorizontal,
+  Sparkles,
+  Target,
+  CalendarDays,
+  CheckCircle2,
+  Clock,
+  Flame,
+  AlertCircle,
+  TrendingUp,
+  Minus,
+  ArrowDown
+} from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useState } from "react"
 import { TaskFormModal } from "./task-form-modal"
 import { useToast } from "@/components/ui/use-toast"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface TaskListProps {
   tasks: Array<{
@@ -50,10 +69,25 @@ interface TaskListProps {
 }
 
 type SortOption = "dueDate" | "priority" | "title" | "createdAt"
-type GroupOption = "none" | "status" | "priority" | "assignee"
+type ViewMode = "list" | "grid"
+type GroupOption = "none" | "status" | "priority"
+
+const statusGroups = {
+  TODO: { label: "To Do", icon: Clock, color: "text-slate-500", bg: "bg-slate-500/10" },
+  IN_PROGRESS: { label: "In Progress", icon: Flame, color: "text-amber-500", bg: "bg-amber-500/10" },
+  DONE: { label: "Completed", icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" }
+}
+
+const priorityGroups = {
+  P1: { label: "Urgent", icon: AlertCircle, color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/30" },
+  P2: { label: "High", icon: TrendingUp, color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/30" },
+  P3: { label: "Medium", icon: Minus, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/30" },
+  P4: { label: "Low", icon: ArrowDown, color: "text-slate-500", bg: "bg-slate-500/10", border: "border-slate-500/30" }
+}
 
 export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
   const { toast } = useToast()
+  const queryClient = useQueryClient()
   const [createTaskOpen, setCreateTaskOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<{
     id: string
@@ -68,7 +102,8 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
     status: "TODO" | "IN_PROGRESS" | "DONE"
   } | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>("dueDate")
-  const [groupBy, setGroupBy] = useState<GroupOption>("none")
+  const [viewMode, setViewMode] = useState<ViewMode>("list")
+  const [groupBy, setGroupBy] = useState<GroupOption>("status")
 
   const sortedTasks = [...tasks].sort((a, b) => {
     switch (sortBy) {
@@ -89,28 +124,14 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
     }
   })
 
-  const groupedTasks = groupBy === "none" ? { "": sortedTasks } : sortedTasks.reduce(
-    (acc, task) => {
-      let key: string
-      switch (groupBy) {
-        case "status":
-          key = task.status
-          break
-        case "priority":
-          key = task.priority
-          break
-        case "assignee":
-          key = task.assignees[0]?.user.id || "unassigned"
-          break
-        default:
-          key = ""
-      }
-      if (!acc[key]) acc[key] = []
-      acc[key].push(task)
-      return acc
-    },
-    {} as Record<string, typeof sortedTasks>
-  )
+  const groupedTasks = groupBy === "none" 
+    ? { "": sortedTasks } 
+    : sortedTasks.reduce((acc, task) => {
+        const key = groupBy === "status" ? task.status : task.priority
+        if (!acc[key]) acc[key] = []
+        acc[key].push(task)
+        return acc
+      }, {} as Record<string, typeof sortedTasks>)
 
   const handleToggleComplete = async (taskId: string, currentStatus: string) => {
     try {
@@ -121,7 +142,6 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
           status: currentStatus === "DONE" ? "TODO" : "DONE",
         }),
       })
-
       if (!res.ok) throw new Error("Gagal update status")
       onTaskUpdated?.()
     } catch (error) {
@@ -140,7 +160,6 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ starred: !currentStar }),
       })
-
       if (!res.ok) throw new Error("Gagal update star")
       onTaskUpdated?.()
     } catch (error) {
@@ -152,12 +171,39 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
     }
   }
 
+  const handlePrefetchTask = async (taskId: string) => {
+    await queryClient.prefetchQuery({
+      queryKey: ["task", taskId],
+      queryFn: async () => {
+        const res = await fetch(`/api/tasks/${taskId}`)
+        if (!res.ok) throw new Error()
+        return res.json()
+      },
+      staleTime: 5 * 60 * 1000,
+    })
+    await queryClient.prefetchQuery({
+      queryKey: ["task-comments", taskId],
+      queryFn: async () => {
+        const res = await fetch(`/api/tasks/${taskId}/comments`)
+        if (!res.ok) throw new Error()
+        return res.json()
+      },
+      staleTime: 5 * 60 * 1000,
+    })
+    await queryClient.prefetchQuery({
+      queryKey: ["task-activity", taskId],
+      queryFn: async () => {
+        const res = await fetch(`/api/tasks/${taskId}/activity`)
+        if (!res.ok) throw new Error()
+        return res.json()
+      },
+      staleTime: 5 * 60 * 1000,
+    })
+  }
+
   const handleDelete = async (taskId: string) => {
     try {
-      const res = await fetch(`/api/tasks/${taskId}`, {
-        method: "DELETE",
-      })
-
+      const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" })
       if (!res.ok) throw new Error("Gagal hapus task")
       toast({ title: "Berhasil", description: "Task dihapus" })
       onTaskUpdated?.()
@@ -170,170 +216,250 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
     }
   }
 
+  const completedCount = tasks.filter(t => t.status === "DONE").length
+  const inProgressCount = tasks.filter(t => t.status === "IN_PROGRESS").length
+  const pendingCount = tasks.filter(t => t.status === "TODO").length
+
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Premium Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-muted/30 p-4 rounded-2xl border border-border/50">
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-9 rounded-xl hover:bg-background shadow-sm border border-border/50 font-semibold text-xs">
-                Sort: {sortBy === "dueDate" ? "Date" : sortBy === "priority" ? "Priority" : sortBy === "title" ? "Name" : "Newest"}
+    <div className="min-h-screen bg-background">
+      {/* Premium Header */}
+      <div className="bg-transparent">
+        <div className="max-w-6xl mx-auto px-6 pt-6 pb-4">
+          {/* Stats Pills */}
+          <div className="flex items-center gap-3 mb-4 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/20">
+              <Clock className="h-4 w-4 text-slate-500" />
+              <span className="text-xs font-bold text-slate-500">{pendingCount} Pending</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20">
+              <Flame className="h-4 w-4 text-amber-500" />
+              <span className="text-xs font-bold text-amber-500">{inProgressCount} In Progress</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span className="text-xs font-bold text-emerald-500">{completedCount} Completed</span>
+            </div>
+            <div className="ml-auto">
+              <Button 
+                onClick={() => setCreateTaskOpen(true)} 
+                size="sm"
+                className="h-10 px-6 rounded-xl bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 text-white font-bold shadow-lg shadow-primary/25 transition-all active:scale-95"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                New Task
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="rounded-xl border-border shadow-lg">
-              <DropdownMenuItem onClick={() => setSortBy("dueDate")} className="rounded-lg">
-                Due Date
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("priority")} className="rounded-lg">
-                Priority
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("title")} className="rounded-lg">
-                Title
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("createdAt")} className="rounded-lg">
-                Recently Added
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-9 rounded-xl hover:bg-background shadow-sm border border-border/50 font-semibold text-xs">
-                Group: {groupBy === "none" ? "Off" : groupBy === "status" ? "Status" : groupBy === "priority" ? "Priority" : "Assignee"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="rounded-xl border-border shadow-lg">
-              <DropdownMenuItem onClick={() => setGroupBy("none")} className="rounded-lg">
-                No Grouping
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setGroupBy("status")} className="rounded-lg">
-                Status
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setGroupBy("priority")} className="rounded-lg">
-                Priority
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setGroupBy("assignee")} className="rounded-lg">
-                Assignee
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <Button onClick={() => setCreateTaskOpen(true)} size="sm" className="h-10 px-5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/20 transition-all active:scale-95">
-          <Plus className="mr-2 h-4 w-4" />
-          Create Task
-        </Button>
-      </div>
-
-      {/* Task Groups - Premium Layout */}
-      <div className="space-y-10">
-        {Object.entries(groupedTasks).map(([groupName, groupTasks]) => (
-          <div key={groupName} className="space-y-4">
-            {groupBy !== "none" && (
-              <div className="flex items-center gap-3">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] bg-muted/50 px-3 py-1 rounded-full border border-border/50">
-                  {groupName === "TODO"
-                    ? "To Do"
-                    : groupName === "IN_PROGRESS"
-                    ? "In Progress"
-                    : groupName === "DONE"
-                    ? "Completed"
-                    : groupName === "P1"
-                    ? "Urgent"
-                    : groupName === "P2"
-                    ? "High"
-                    : groupName === "P3"
-                    ? "Medium"
-                    : groupName === "P4"
-                    ? "Low"
-                    : groupName === "unassigned"
-                    ? "Unassigned"
-                    : groupName}
-                </h3>
-                <div className="h-px flex-1 bg-border/30" />
-                <span className="text-[10px] font-bold text-muted-foreground/60">{groupTasks.length} tasks</span>
-              </div>
-            )}
-            <div className="grid gap-3">
-              {groupTasks.map((task, index) => (
-                <div key={task.id} className="animate-slide-up" style={{ animationDelay: `${index * 50}ms` }}>
-                  <TaskItem
-                    task={task}
-                    onToggleComplete={() => handleToggleComplete(task.id, task.status)}
-                    onToggleStar={() => handleToggleStar(task.id, task.starred)}
-                    onEdit={() => {
-                      // Transform task to match editing state shape
-                      setEditingTask({
-                        id: task.id,
-                        title: task.title,
-                        description: task.description,
-                        priority: task.priority,
-                        startDate: task.startDate,
-                        dueDate: task.dueDate,
-                        duration: task.duration,
-                        assigneeIds: task.assignees?.map((a) => a.user.id) || [],
-                        labelIds: task.labels?.map((l) => l.label.id) || [],
-                        status: task.status,
-                      })
-                    }}
-                    onDelete={() => handleDelete(task.id)}
-                  />
-                </div>
-              ))}
             </div>
           </div>
-        ))}
+
+          {/* Toolbar */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              {/* Sort */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9 rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-xs gap-2">
+                    <SortAsc className="h-4 w-4 text-muted-foreground" />
+                    Sort
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1">
+                  <DropdownMenuItem onClick={() => setSortBy("dueDate")} className={cn("rounded-lg", sortBy === "dueDate" && "bg-primary/10 text-primary")}>
+                    <CalendarDays className="mr-2 h-4 w-4" />
+                    Due Date
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("priority")} className={cn("rounded-lg", sortBy === "priority" && "bg-primary/10 text-primary")}>
+                    <Flame className="mr-2 h-4 w-4" />
+                    Priority
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("title")} className={cn("rounded-lg", sortBy === "title" && "bg-primary/10 text-primary")}>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Title
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("createdAt")} className={cn("rounded-lg", sortBy === "createdAt" && "bg-primary/10 text-primary")}>
+                    <Clock className="mr-2 h-4 w-4" />
+                    Recently Added
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Group */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-9 rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-xs gap-2">
+                    <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+                    {groupBy === "none" ? "No Group" : groupBy === "status" ? "Status" : "Priority"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1">
+                  <DropdownMenuItem onClick={() => setGroupBy("none")} className={cn("rounded-lg", groupBy === "none" && "bg-primary/10 text-primary")}>
+                    No Grouping
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setGroupBy("status")} className={cn("rounded-lg", groupBy === "status" && "bg-primary/10 text-primary")}>
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Group by Status
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setGroupBy("priority")} className={cn("rounded-lg", groupBy === "priority" && "bg-primary/10 text-primary")}>
+                    <Flame className="mr-2 h-4 w-4" />
+                    Group by Priority
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* View Toggle */}
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/30 border border-border/50">
+              <button
+                onClick={() => setViewMode("list")}
+                className={cn(
+                  "p-2 rounded-lg transition-all",
+                  viewMode === "list" ? "bg-background shadow-md" : "hover:bg-muted/50"
+                )}
+              >
+                <List className={cn("h-4 w-4", viewMode === "list" ? "text-primary" : "text-muted-foreground")} />
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={cn(
+                  "p-2 rounded-lg transition-all",
+                  viewMode === "grid" ? "bg-background shadow-md" : "hover:bg-muted/50"
+                )}
+              >
+                <LayoutGrid className={cn("h-4 w-4", viewMode === "grid" ? "text-primary" : "text-muted-foreground")} />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {tasks.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-[2rem] border-2 border-dashed border-border/50 p-20 text-center bg-muted/5 animate-fade-in">
-          <div className="h-20 w-20 rounded-3xl bg-muted/50 flex items-center justify-center mb-6">
-             <Plus className="h-8 w-8 text-muted-foreground/40" />
-          </div>
-          <h4 className="text-xl font-bold text-foreground">No tasks found</h4>
-          <p className="text-muted-foreground mt-2 max-w-xs">
-            Start organizing your workflow by creating your first premium task.
-          </p>
-          <Button onClick={() => setCreateTaskOpen(true)} variant="outline" className="mt-8 rounded-xl border-2 font-bold px-8">
-            Get Started
-          </Button>
-        </div>
-      )}
+      {/* Task List - CSS Animation instead of framer-motion */}
+      <div className="max-w-6xl mx-auto px-6 py-6 pb-20">
+          {tasks.length === 0 ? (
+            <div
+              className="flex flex-col items-center justify-center py-24 text-center animate-in fade-in slide-in-from-top-4 duration-500"
+            >
+              <div className="relative mb-8">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl scale-150" />
+                <div className="relative h-24 w-24 rounded-3xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 flex items-center justify-center">
+                  <Target className="h-10 w-10 text-primary/50" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-2">No tasks yet</h3>
+              <p className="text-muted-foreground mb-8 max-w-md">
+                Start organizing your work by creating your first task.
+              </p>
+              <Button 
+                onClick={() => setCreateTaskOpen(true)}
+                className="h-12 px-8 rounded-xl bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 text-white font-bold shadow-lg shadow-primary/25"
+              >
+                <Plus className="mr-2 h-5 w-5" />
+                Create First Task
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-8 animate-in fade-in duration-300">
+              {Object.entries(groupedTasks).map(([groupKey, groupTasks]) => {
+                const groupConfig = groupBy === "status" 
+                  ? statusGroups[groupKey as keyof typeof statusGroups]
+                  : groupBy === "priority"
+                  ? priorityGroups[groupKey as keyof typeof priorityGroups]
+                  : null
+
+                return (
+                  <div
+                    key={groupKey || "all"}
+                    className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                  >
+                    {/* Group Header */}
+                    {groupBy !== "none" && groupConfig && (
+                      <div className="flex items-center gap-3">
+                        <div className={cn("flex items-center gap-2 px-4 py-2 rounded-xl", groupConfig.bg)}>
+                          <groupConfig.icon className={cn("h-4 w-4", groupConfig.color)} />
+                          <span className={cn("text-sm font-bold", groupConfig.color)}>{groupConfig.label}</span>
+                        </div>
+                        <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
+                        <span className="text-xs font-medium text-muted-foreground/60">{groupTasks.length} tasks</span>
+                      </div>
+                    )}
+
+                    {/* Tasks */}
+                    <div className={cn(
+                      viewMode === "grid" 
+                        ? "grid grid-cols-1 md:grid-cols-2 gap-4"
+                        : "space-y-3"
+                    )}>
+                      {groupTasks.map((task) => (
+                        <div
+                          key={task.id}
+                          className="animate-in fade-in slide-in-from-bottom-2 duration-200"
+                        >
+                          <TaskItem
+                            task={task}
+                            onToggleComplete={() => handleToggleComplete(task.id, task.status)}
+                            onToggleStar={() => handleToggleStar(task.id, task.starred)}
+                            onEdit={() => {
+                              setEditingTask({
+                                id: task.id,
+                                title: task.title,
+                                description: task.description,
+                                priority: task.priority,
+                                startDate: task.startDate,
+                                dueDate: task.dueDate,
+                                duration: task.duration,
+                                assigneeIds: task.assignees?.map((a) => a.user.id) || [],
+                                labelIds: task.labels?.map((l) => l.label.id) || [],
+                                status: task.status,
+                              })
+                            }}
+                            onDelete={() => handleDelete(task.id)}
+                            onPrefetch={() => handlePrefetchTask(task.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+      </div>
 
       {/* Create Task Modal */}
-<TaskFormModal
-          open={createTaskOpen}
-          onOpenChange={setCreateTaskOpen}
+      <TaskFormModal
+        open={createTaskOpen}
+        onOpenChange={setCreateTaskOpen}
+        onSuccess={() => {
+          setCreateTaskOpen(false)
+          onTaskUpdated?.()
+        }}
+      />
+
+      {/* Edit Task Modal */}
+      {editingTask && (
+        <TaskFormModal
+          open={!!editingTask}
+          onOpenChange={(open) => {
+            if (!open) setEditingTask(null)
+          }}
+          taskId={editingTask.id}
+          defaultValues={{
+            title: editingTask.title,
+            description: editingTask.description || "",
+            priority: editingTask.priority,
+            startDate: editingTask.startDate ? editingTask.startDate.toISOString().split('T')[0] + 'T' + editingTask.startDate.toTimeString().slice(0,5) : null,
+            dueDate: editingTask.dueDate ? editingTask.dueDate.toISOString().split('T')[0] + 'T' + editingTask.dueDate.toTimeString().slice(0,5) : null,
+            duration: editingTask.duration,
+            status: editingTask.status,
+          }}
           onSuccess={() => {
-            setCreateTaskOpen(false)
+            setEditingTask(null)
             onTaskUpdated?.()
           }}
-        />
-
-        {/* Edit Task Modal */}
-        {editingTask && (
-          <TaskFormModal
-            open={!!editingTask}
-            onOpenChange={(open) => {
-              if (!open) setEditingTask(null)
-            }}
-            taskId={editingTask.id}
-            defaultValues={{
-              title: editingTask.title,
-              description: editingTask.description || "",
-              priority: editingTask.priority,
-              startDate: editingTask.startDate ? editingTask.startDate.toISOString().split('T')[0] + 'T' + editingTask.startDate.toTimeString().slice(0,5) : null,
-              dueDate: editingTask.dueDate ? editingTask.dueDate.toISOString().split('T')[0] + 'T' + editingTask.dueDate.toTimeString().slice(0,5) : null,
-              duration: editingTask.duration,
-              status: editingTask.status,
-            }}
-            onSuccess={() => {
-              setEditingTask(null)
-              onTaskUpdated?.()
-            }}
         />
       )}
     </div>
   )
+}
+
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(' ')
 }

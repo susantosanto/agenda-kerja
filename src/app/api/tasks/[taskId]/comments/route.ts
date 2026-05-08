@@ -39,15 +39,16 @@ export async function POST(
 
   const { taskId } = await params
   const body = await request.json()
-  const { content } = body
+  const { content, imageUrl } = body
 
-  if (!content?.trim()) {
-    return NextResponse.json({ error: "Content is required" }, { status: 400 })
+  if (!content?.trim() && !imageUrl) {
+    return NextResponse.json({ error: "Content or image is required" }, { status: 400 })
   }
 
   const comment = await prisma.comment.create({
     data: {
-      content: content.trim(),
+      content: content?.trim() || "",
+      imageUrl: imageUrl || null,
       taskId,
       userId: session.user.id,
     },

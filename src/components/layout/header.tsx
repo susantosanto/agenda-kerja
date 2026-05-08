@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { LogOut, Settings, User, Menu, Search, Bell, Zap } from "lucide-react"
+import { LogOut, Settings, User, Menu, Search, Bell, Zap, Info } from "lucide-react"
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -23,6 +23,16 @@ export function Header({ onMenuClick }: HeaderProps) {
   const router = useRouter()
 
   const handleSignOut = async () => {
+    // Clear nextauth cookies first
+    const cookies = document.cookie.split(";")
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i]
+      const eqPos = cookie.indexOf("=")
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
+      if (name.trim().includes("nextauth")) {
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/"
+      }
+    }
     await signOut({ redirectTo: "/signin" })
   }
 
@@ -46,14 +56,6 @@ export function Header({ onMenuClick }: HeaderProps) {
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]" />
               <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.12em] hidden sm:inline">Active</span>
             </div>
-            <div className="h-4 w-px bg-border/50 hidden lg:block" />
-            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden lg:block">
-              AGENDA KERJA OPS GUGUS KH. ZAENAL MUSTOFA
-            </span>
-            {/* Mobile compact version */}
-            <span className="text-[9px] font-bold text-primary tracking-wide sm:hidden">
-              AGENDA KERJA
-            </span>
           </div>
         </div>
 
@@ -96,12 +98,25 @@ export function Header({ onMenuClick }: HeaderProps) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-border" />
-              <DropdownMenuItem className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted">
-                <User className="mr-2 h-4 w-4 text-muted-foreground" />
+              <DropdownMenuItem 
+                className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted"
+                onClick={() => router.push("/dashboard/about")}
+              >
+                <Info className="mr-2 h-4 w-4 text-foreground/70" />
+                <span className="text-sm">About Us</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted"
+                onClick={() => router.push("/dashboard/profile")}
+              >
+                <User className="mr-2 h-4 w-4 text-foreground/70" />
                 <span className="text-sm">Account</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted">
-                <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
+              <DropdownMenuItem 
+                className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted"
+                onClick={() => router.push("/dashboard/settings")}
+              >
+                <Settings className="mr-2 h-4 w-4 text-foreground/70" />
                 <span className="text-sm">Preferences</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border" />

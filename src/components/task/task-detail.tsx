@@ -41,6 +41,7 @@ import { SubtaskItem } from "./subtask-item"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { SkeletonLoader } from "@/components/ui/premium-loader"
+import { ClipboardImage } from "@/components/ui/clipboard-image"
 import { createRealtimeClient, requestNotificationPermission, playNotificationSound, showBrowserNotification } from "@/lib/realtime"
 
 interface TaskDetailProps {
@@ -50,8 +51,15 @@ interface TaskDetailProps {
 type CommentType = {
   id: string
   content: string
+  imageUrl?: string | null
   createdAt: string
   user: { id: string; name: string | null; image: string | null }
+}
+
+interface ImageAttachment {
+  id: string
+  url: string
+  preview: string
 }
 
 type ActivityType = {
@@ -105,6 +113,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
   const [addingSubtask, setAddingSubtask] = useState(false)
   const [newComment, setNewComment] = useState("")
+  const [attachedImages, setAttachedImages] = useState<ImageAttachment[]>([])
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const realtimeRef = useRef<ReturnType<typeof createRealtimeClient> | null>(null)
 
@@ -113,48 +122,54 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
     requestNotificationPermission()
   }, [])
 
-  // Set up real-time connection
+  // Set up real-time connection - delay slightly to not block initial render
   useEffect(() => {
     if (!taskId) return
 
-    const realtimeClient = createRealtimeClient()
-    realtimeRef.current = realtimeClient
+    // Small delay to not block initial render
+    const connectTimer = setTimeout(() => {
+      const realtimeClient = createRealtimeClient()
+      realtimeRef.current = realtimeClient
 
-    realtimeClient.connect(taskId, {
-      onCommentAdded: (comment) => {
-        // Don't add if it's our own comment (already added optimistically)
-        if (comment.user.id === session?.user?.id) return
+      realtimeClient.connect(taskId, {
+        onCommentAdded: (comment) => {
+          // Don't add if it's our own comment (already added optimistically)
+          if (comment.user.id === session?.user?.id) return
 
-        // Add comment to list
-        queryClient.setQueryData<CommentType[]>(["task-comments", taskId], (old) => {
-          if (!old) return [comment]
-          // Check if already exists
-          if (old.some((c) => c.id === comment.id)) return old
-          return [...old, comment]
-        })
+          // Add comment to list
+          queryClient.setQueryData<CommentType[]>(["task-comments", taskId], (old) => {
+            if (!old) return [comment]
+            // Check if already exists
+            if (old.some((c) => c.id === comment.id)) return old
+            return [...old, comment]
+          })
 
-        // Show notification
-        if (notificationsEnabled) {
-          playNotificationSound("comment")
-          showBrowserNotification(
-            "Komentar Baru",
-            `${comment.user.name} mengomentari task`,
-            taskId
-          )
-        }
+          // Show notification
+          if (notificationsEnabled) {
+            playNotificationSound("comment")
+            showBrowserNotification(
+              "Komentar Baru",
+              `${comment.user.name} mengomentari task`,
+              taskId
+            )
+          }
 
-        toast({
-          title: "Komentar Baru",
-          description: `${comment.user.name} mengomentari task ini`,
-        })
-      },
-      onError: () => {
-        // Silently fail - will reconnect on next page load
-      },
-    })
+          toast({
+            title: "Komentar Baru",
+            description: `${comment.user.name} mengomentari task ini`,
+          })
+        },
+        onError: () => {
+          // Silently fail - will reconnect on next page load
+        },
+      })
+    }, 500) // 500ms delay
 
     return () => {
-      realtimeClient.disconnect(taskId)
+      clearTimeout(connectTimer)
+      if (realtimeRef.current) {
+        realtimeRef.current.disconnect(taskId)
+      }
     }
   }, [taskId, session?.user?.id, notificationsEnabled])
 
@@ -166,7 +181,9 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       return res.json()
     },
     enabled: !!taskId,
-    staleTime: 30000,
+    staleTime: 5 * 60 * 1000, // 5 min cache
+    gcTime: 10 * 60 * 1000, // 10 min garbage collection
+    placeholderData: (previousData) => previousData, // Keep old data while fetching
   })
 
   const { data: comments = [], refetch: refetchComments } = useQuery<CommentType[]>({
@@ -177,7 +194,9 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       return res.json()
     },
     enabled: !!taskId,
-    staleTime: 10000,
+    staleTime: 5 * 60 * 1000, // 5 min cache
+    gcTime: 10 * 60 * 1000,
+    placeholderData: (previousData) => previousData ?? [],
   })
 
   const { data: activities = [] } = useQuery<ActivityType[]>({
@@ -188,7 +207,9 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       return res.json()
     },
     enabled: !!taskId,
-    staleTime: 10000,
+    staleTime: 5 * 60 * 1000, // 5 min cache
+    gcTime: 10 * 60 * 1000,
+    placeholderData: (previousData) => previousData ?? [],
   })
 
   // Toggle star mutation
@@ -211,16 +232,16 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
   // Add comment mutation with optimistic update
   const addCommentMutation = useMutation({
-    mutationFn: async (content: string) => {
+    mutationFn: async ({ content, imageUrl }: { content: string; imageUrl?: string }) => {
       const res = await fetch(`/api/tasks/${taskId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, imageUrl }),
       })
       if (!res.ok) throw new Error()
       return res.json()
     },
-    onMutate: async (content) => {
+    onMutate: async ({ content, imageUrl }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ["task-comments", taskId] })
 
@@ -231,6 +252,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       const optimisticComment: CommentType = {
         id: `temp-${Date.now()}`,
         content,
+        imageUrl,
         createdAt: new Date().toISOString(),
         user: {
           id: session?.user?.id || "",
@@ -244,10 +266,11 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       )
 
       setNewComment("")
+      setAttachedImages([])
 
       return { previousComments }
     },
-    onError: (_err, _content, context) => {
+    onError: (_err, _vars, context) => {
       // Rollback on error
       if (context?.previousComments) {
         queryClient.setQueryData(["task-comments", taskId], context.previousComments)
@@ -656,22 +679,33 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 space-y-3">
+                {/* Image attachments */}
+                <ClipboardImage
+                  onImagesChange={setAttachedImages}
+                  disabled={addCommentMutation.isPending}
+                />
                 <Textarea
-                  placeholder="Tulis komentar..."
+                  placeholder="Tulis komentar... (Ctrl+V untuk paste screenshot)"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey && newComment.trim()) {
+                    if (e.key === "Enter" && !e.shiftKey && (newComment.trim() || attachedImages.length > 0)) {
                       e.preventDefault()
-                      addCommentMutation.mutate(newComment.trim())
+                      addCommentMutation.mutate({
+                        content: newComment.trim(),
+                        imageUrl: attachedImages.length > 0 ? attachedImages[0].url : undefined
+                      })
                     }
                   }}
                   className="min-h-[80px] resize-none rounded-xl"
                 />
                 <div className="flex justify-end">
                   <Button
-                    onClick={() => addCommentMutation.mutate(newComment.trim())}
-                    disabled={addCommentMutation.isPending || !newComment.trim()}
+                    onClick={() => addCommentMutation.mutate({
+                      content: newComment.trim(),
+                      imageUrl: attachedImages.length > 0 ? attachedImages[0].url : undefined
+                    })}
+                    disabled={addCommentMutation.isPending || (!newComment.trim() && attachedImages.length === 0)}
                     className="rounded-xl font-bold"
                   >
                     {addCommentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -721,6 +755,15 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                           </Button>
                         )}
                       </div>
+                      {/* Image attachment */}
+                      {comment.imageUrl && (
+                        <img
+                          src={comment.imageUrl}
+                          alt="Attachment"
+                          className="mb-2 max-w-[300px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-border/50"
+                          onClick={() => window.open(comment.imageUrl!, "_blank")}
+                        />
+                      )}
                       <p className="text-sm leading-relaxed bg-muted/30 rounded-xl p-3">
                         {comment.content}
                       </p>

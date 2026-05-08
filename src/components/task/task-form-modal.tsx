@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Loader2, X } from "lucide-react"
+import { Loader2, X, Calendar } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -368,15 +368,18 @@ export function TaskFormModal({
                     <FormItem>
                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Tanggal Mulai</FormLabel>
                       <FormControl>
-                        <Input
-                          type="datetime-local"
-                          className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 font-bold"
-                          {...field}
-                          value={field.value || ""}
-                          onChange={(e) =>
-                            field.onChange(e.target.value || null)
-                          }
-                        />
+                        <div className="relative">
+                          <Input
+                            type="datetime-local"
+                            className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 font-bold pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-inner-spin-button]:hidden"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) =>
+                              field.onChange(e.target.value || null)
+                            }
+                          />
+                          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/60 pointer-events-none" />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -390,15 +393,18 @@ export function TaskFormModal({
                     <FormItem>
                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Tenggat Waktu</FormLabel>
                       <FormControl>
-                        <Input
-                          type="datetime-local"
-                          className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 font-bold text-primary"
-                          {...field}
-                          value={field.value || ""}
-                          onChange={(e) =>
-                            field.onChange(e.target.value || null)
-                          }
-                        />
+                        <div className="relative">
+                          <Input
+                            type="datetime-local"
+                            className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 font-bold text-primary pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:w-5 [&::-webkit-calendar-picker-indicator]:h-5 [&::-webkit-inner-spin-button]:hidden"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) =>
+                              field.onChange(e.target.value || null)
+                            }
+                          />
+                          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary pointer-events-none" />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

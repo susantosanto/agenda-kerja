@@ -197,6 +197,7 @@ model TaskAssignee {
 model Comment {
   id        String   @id @default(cuid())
   content   String   @db.Text
+  imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   taskId    String
@@ -219,6 +220,7 @@ model Activity {
 model ChatMessage {
   id          String     @id @default(cuid())
   content     String     @db.Text
+  imageUrl    String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   communityId String?
