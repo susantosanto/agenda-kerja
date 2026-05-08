@@ -1,9 +1,14 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
-import { Image as ImageIcon, Loader2, X, ExternalLink } from "lucide-react"
+import { useState, useEffect } from "react"
+import { X, Loader2, Image as ImageIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
+import { UploadButton } from "@/components/ui/upload-button"
+import { generateReactHelpers } from "@uploadthing/react"
+import { OurFileRouter } from "@/app/api/uploadthing/core"
+
+const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 interface ImageAttachment {
   id: string
@@ -24,13 +29,42 @@ export function ClipboardImage({
 }: ClipboardImageProps) {
   const { toast } = useToast()
   const [images, setImages] = useState<ImageAttachment[]>([])
-  const [uploading, setUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+
+  const { startUpload, isUploading: isUploadThingUploading } = useUploadThing("chatImage", {
+    onClientUploadComplete: (res) => {
+      if (res && res.length > 0) {
+        const uploadedUrl = res[0].url
+        const newImage: ImageAttachment = {
+          id: uploadedUrl,
+          url: uploadedUrl,
+          preview: uploadedUrl,
+        }
+        const updatedImages = [...images, newImage]
+        setImages(updatedImages)
+        onImagesChange(updatedImages)
+        toast({
+          title: "Screenshot attached",
+          description: "Gambar berhasil diupload",
+        })
+      }
+      setIsUploading(false)
+    },
+    onUploadError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Gagal mengupload gambar",
+        variant: "destructive",
+      })
+      setIsUploading(false)
+    },
+  })
 
   // Handle paste from clipboard
   useEffect(() => {
     const handlePaste = async (e: ClipboardEvent) => {
-      if (disabled || uploading) return
-      
+      if (disabled || isUploading || isUploadThingUploading) return
+
       const items = e.clipboardData?.items
       if (!items) return
 
@@ -39,7 +73,8 @@ export function ClipboardImage({
           e.preventDefault()
           const blob = item.getAsFile()
           if (blob) {
-            await uploadImage(blob)
+            setIsUploading(true)
+            startUpload([blob])
           }
           break
         }
@@ -48,78 +83,15 @@ export function ClipboardImage({
 
     document.addEventListener("paste", handlePaste)
     return () => document.removeEventListener("paste", handlePaste)
-  }, [disabled, uploading])
-
-  const uploadImage = async (blob: Blob) => {
-    setUploading(true)
-
-    try {
-      // Create preview
-      const preview = URL.createObjectURL(blob)
-      const tempId = `temp-${Date.now()}`
-      
-      // Add to state immediately for preview
-      const newImage: ImageAttachment = {
-        id: tempId,
-        url: preview,
-        preview,
-      }
-      setImages((prev) => [...prev, newImage])
-      onImagesChange([...images, newImage])
-
-      // Upload to server
-      const formData = new FormData()
-      formData.append("file", blob, "screenshot.png")
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
-
-      if (!res.ok) {
-        throw new Error("Upload failed")
-      }
-
-      const { url } = await res.json()
-      
-      // Update with real URL
-      setImages((prev) =>
-        prev.map((img) =>
-          img.id === tempId ? { ...img, id: url, url } : img
-        )
-      )
-      onImagesChange(
-        images.map((img) =>
-          img.id === tempId ? { ...img, id: url, url } : img
-        )
-      )
-
-      toast({
-        title: "Screenshot attached",
-        description: "Gambar berhasil dilampirkan",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal mengupload gambar",
-        variant: "destructive",
-      })
-    } finally {
-      setUploading(false)
-    }
-  }
+  }, [disabled, isUploading, isUploadThingUploading, startUpload, images])
 
   const removeImage = (id: string) => {
-    const image = images.find((img) => img.id === id)
-    if (image?.preview.startsWith("blob:")) {
-      URL.revokeObjectURL(image.preview)
-    }
     const updated = images.filter((img) => img.id !== id)
     setImages(updated)
     onImagesChange(updated)
   }
 
-  if (images.length === 0) {
+  if (images.length === 0 && !isUploading && !isUploadThingUploading) {
     return null
   }
 
@@ -135,7 +107,6 @@ export function ClipboardImage({
             alt="Attachment"
             className="h-20 w-auto rounded-xl object-cover"
           />
-          {/* Remove button */}
           <button
             type="button"
             onClick={() => removeImage(image.id)}
@@ -145,8 +116,8 @@ export function ClipboardImage({
           </button>
         </div>
       ))}
-      
-      {uploading && (
+
+      {(isUploading || isUploadThingUploading) && (
         <div className="h-20 w-20 rounded-xl border border-border/50 bg-muted/50 flex items-center justify-center">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
