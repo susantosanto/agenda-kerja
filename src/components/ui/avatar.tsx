@@ -21,6 +21,8 @@ function AvatarImage({
   className,
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement>) {
+  if (!src) return null
+  
   return (
     <img
       src={src}

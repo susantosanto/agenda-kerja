@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { authOptions } from "@/lib/auth"
 import { endOfDay, startOfDay, startOfWeek, endOfWeek } from "date-fns"
 
 export async function GET(request: Request) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
@@ -17,17 +16,13 @@ export async function GET(request: Request) {
     const today = new Date()
     const userId = session.user.id
 
-    let whereClause: any = {
-      list: {
-        community: {
-          members: {
-            some: { userId },
-          },
-        },
-      },
-    }
+    let whereClause: any = {}
 
     switch (filter) {
+      case "all":
+        // No additional where clause - return all tasks in communities user is member of
+        break
+
       case "my-tasks":
         whereClause.assignees = {
           some: { userId },
@@ -56,7 +51,7 @@ export async function GET(request: Request) {
         break
 
       case "starred":
-        whereClause.starred = true
+        whereClause.isStarred = true
         break
 
       case "high-priority":
@@ -73,18 +68,11 @@ export async function GET(request: Request) {
     const tasks = await prisma.task.findMany({
       where: whereClause,
       orderBy: [
-        { starred: "desc" },
+        { isStarred: "desc" },
         { priority: "asc" },
         { dueDate: "asc" },
       ],
       include: {
-        list: {
-          select: {
-            id: true,
-            name: true,
-            color: true,
-          },
-        },
         assignees: {
           include: {
             user: {
@@ -101,10 +89,21 @@ export async function GET(request: Request) {
             label: true,
           },
         },
+        subtasks: true,
       },
     })
 
-    return NextResponse.json(tasks)
+    // Map database fields to frontend field names
+    const mappedTasks = tasks.map(task => ({
+      ...task,
+      starred: task.isStarred,
+      subtasks: task.subtasks.map(st => ({
+        ...st,
+        completed: st.isDone
+      }))
+    }))
+
+    return NextResponse.json(mappedTasks)
   } catch (error) {
     console.error("Error fetching filtered tasks:", error)
     return NextResponse.json(

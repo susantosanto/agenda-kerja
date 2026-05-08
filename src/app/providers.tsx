@@ -45,7 +45,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider delayDuration={200}>
           <ToastProvider>
-            {children}
+            <div className="dark min-h-screen bg-background text-foreground">
+              {children}
+            </div>
           </ToastProvider>
         </TooltipProvider>
       </QueryClientProvider>

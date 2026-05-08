@@ -3,114 +3,81 @@
 @tailwind utilities;
 
 @layer base {
-  /* Superlist-Inspired Premium Design System */
+  /* ZENITH CORE - Super Premium Design System */
   :root {
-    /* Background & Foreground */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Background & Foreground - Default Dark Premium 2026 */
+    --background: 240 15% 6%;
+    --foreground: 0 0% 95%;
     
-    /* Surface Colors */
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --surface: 0 0% 98%;
-    --surface-elevated: 0 0% 100%;
+    /* Surface Colors - Layered elevations */
+    --card: 240 15% 8%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 15% 8%;
+    --popover-foreground: 0 0% 95%;
+    --surface: 240 15% 10%;
+    --surface-elevated: 240 15% 12%;
     
-    /* Primary - Medium Purple (Superlist signature) */
-    --primary: 248 100% 65%;
+    /* Primary - Obsidian Indigo Premium (New 2026 Trend) */
+    --primary: 255 85% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 248 100% 55%;
-    --primary-subtle: 248 100% 97%;
+    --primary-hover: 255 85% 50%;
+    --primary-subtle: 255 85% 15%;
+    --primary-glow: 255 85% 60% / 0.15;
     
-    /* Secondary & Accent */
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --accent: 0 72% 51%;
+    /* Secondary & Accent - Dark Premium Mix */
+    --secondary: 240 15% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --accent: 255 40% 15%;
     --accent-foreground: 0 0% 100%;
     
     /* Muted Colors */
-    --muted: 0 0% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 240 15% 15%;
+    --muted-foreground: 220 15% 60%;
     
-    /* Borders & Inputs */
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 248 100% 65%;
+    /* Borders & Inputs - Subtle Dark */
+    --border: 240 15% 18%;
+    --input: 240 15% 18%;
+    --ring: 255 85% 60%;
     
-    /* Destructive */
-    --destructive: 0 84% 60%;
+    /* Status Colors */
+    --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
-    
-    /* Success */
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-    
-    /* Warning */
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 0%;
     
-    /* Radius - Pill shape for premium feel */
-    --radius: 9999px;
-    --radius-sm: 0.75rem;
-    --radius-md: 1rem;
-    --radius-lg: 1.5rem;
+    /* Radius - Modern rounded */
+    --radius: 0.75rem;
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
     
-    /* Shadows - Subtle and premium */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    /* Shadows - Premium Dark depth */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 20px rgba(124, 58, 237, 0.15);
     
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 248 100% 65%;
+    --sidebar-background: 240 15% 5%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 255 85% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
+    
+    /* Typography */
+    --font-sans: var(--font-inter);
+    --font-mono: var(--font-mono);
   }
 
-  /* Dark Mode - Refined premium dark */
-  .dark {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    
-    --card: 240 10% 6%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 6%;
-    --popover-foreground: 0 0% 98%;
-    --surface: 240 10% 8%;
-    --surface-elevated: 240 10% 10%;
-    
-    --primary: 248 100% 65%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 248 100% 75%;
-    --primary-subtle: 248 100% 20%;
-    
-    --secondary: 240 10% 15%;
-    --secondary-foreground: 0 0% 98%;
-    --accent: 0 72% 51%;
-    --accent-foreground: 0 0% 100%;
-    
-    --muted: 240 10% 15%;
-    --muted-foreground: 215 20% 65%;
-    
-    --border: 240 10% 18%;
-    --input: 240 10% 18%;
-    --ring: 248 100% 65%;
-    
-    --destructive: 0 62% 40%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-    
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 0%;
-    
-    --sidebar-background: 240 10% 5%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 248 100% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
+  /* Light Mode - Optional override if needed later */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 10%;
+    /* ... rest of light theme ... */
   }
 }
 

@@ -80,6 +80,8 @@ model User {
   comments      Comment[]
   activities    Activity[]
   ownedCommunities Community[] @relation("CommunityOwner")
+  messages      ChatMessage[]
+  notes         Note[]
 }
 
 model VerificationToken {
@@ -101,7 +103,8 @@ model Community {
   owner       User     @relation("CommunityOwner", fields: [ownerId], references: [id])
   members     CommunityMember[]
   lists       List[]
-  labels      Label[]
+  labels     Label[]
+  messages    ChatMessage[]
 }
 
 model CommunityMember {
@@ -144,8 +147,8 @@ model Task {
   order       Int        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  listId      String
-  list        List       @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId      String?
+  list        List?      @relation(fields: [listId], references: [id], onDelete: SetNull)
   createdById String
   createdBy   User       @relation("CreatedTasks", fields: [createdById], references: [id])
   assignees   TaskAssignee[]
@@ -214,14 +217,28 @@ model Activity {
 }
 
 model ChatMessage {
-  id          String   @id @default(cuid())
-  content     String   @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  communityId String
-  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  id          String     @id @default(cuid())
+  content     String     @db.Text
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id], onDelete: Cascade)
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
 
-  @@index([communityId, createdAt])
+  @@index([createdAt])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  color     String?
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

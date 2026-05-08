@@ -27,7 +27,7 @@ export async function GET(
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
   }
 
-  const isMember = task.list.community.members.some((m) => m.userId === user.id)
+  const isMember = task.list?.community?.members?.some((m) => m.userId === user.id) ?? true
   if (!isMember) {
     return NextResponse.json({ error: "Not a member" }, { status: 403 })
   }

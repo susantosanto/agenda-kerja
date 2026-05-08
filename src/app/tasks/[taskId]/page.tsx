@@ -1,13 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { Header } from "@/components/layout/header"
+import { SlackLayout } from "@/components/layout/slack-layout"
 import { Sidebar } from "@/components/layout/sidebar"
-import { MobileNav } from "@/components/layout/mobile-nav"
 import { TaskDetail } from "@/components/task/task-detail"
-import { Loader2 } from "lucide-react"
+import { PremiumLoader } from "@/components/ui/premium-loader"
 
 export default function TaskDetailPage() {
   const params = useParams()
@@ -17,11 +15,7 @@ export default function TaskDetailPage() {
   const taskId = params.taskId as string
 
   if (status === "loading") {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
+    return <PremiumLoader fullScreen size="xl" text="Memuat..." />
   }
 
   if (status === "unauthenticated") {
@@ -30,15 +24,12 @@ export default function TaskDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-6 lg:pl-72">
+    <SlackLayout sidebar={<Sidebar />}>
+      <div className="flex flex-col h-full bg-background overflow-hidden">
+        <main className="flex-1 overflow-y-auto p-6 md:p-10">
           <TaskDetail taskId={taskId} />
         </main>
       </div>
-      <MobileNav />
-    </div>
+    </SlackLayout>
   )
 }

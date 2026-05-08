@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { format } from "date-fns"
-import { Loader2, Plus, X } from "lucide-react"
+import { Loader2, X } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import {
   Dialog,
@@ -22,12 +22,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
@@ -35,10 +33,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+import { useToast } from "@/components/ui/use-toast"
+import { useQueryClient, useMutation } from "@tanstack/react-query"
 
 const taskSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi").max(255),
@@ -48,8 +44,6 @@ const taskSchema = z.object({
   dueDate: z.string().nullable().optional(),
   duration: z.number().min(0).max(1440).optional().nullable(),
   status: z.enum(["TODO", "IN_PROGRESS", "DONE"]),
-  assigneeIds: z.array(z.string()).default([]),
-  labelIds: z.array(z.string()).default([]),
 })
 
 type TaskFormData = z.infer<typeof taskSchema>
@@ -57,38 +51,22 @@ type TaskFormData = z.infer<typeof taskSchema>
 interface TaskFormModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  listId?: string
   taskId?: string
   defaultValues?: Partial<TaskFormData>
   onSuccess?: () => void
 }
 
-interface Assignee {
-  id: string
-  name: string | null
-  image: string | null
-}
-
-interface Label {
-  id: string
-  name: string
-  color: string
-}
-
 export function TaskFormModal({
   open,
   onOpenChange,
-  listId,
   taskId,
   defaultValues,
   onSuccess,
 }: TaskFormModalProps) {
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
+  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [assignees, setAssignees] = useState<Assignee[]>([])
-  const [labels, setLabels] = useState<Label[]>([])
-  const [loadingData, setLoadingData] = useState(false)
-  const [assigneeOpen, setAssigneeOpen] = useState(false)
-  const [labelOpen, setLabelOpen] = useState(false)
 
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
@@ -100,16 +78,144 @@ export function TaskFormModal({
       dueDate: null,
       duration: null,
       status: "TODO",
-      assigneeIds: [],
-      labelIds: [],
       ...defaultValues,
+    },
+  })
+
+  // Optimistic create mutation
+  const createTaskMutation = useMutation({
+    mutationFn: async (data: TaskFormData) => {
+      const payload = {
+        ...data,
+        startDate: data.startDate || null,
+        dueDate: data.dueDate || null,
+        duration: data.duration || null,
+      }
+      const res = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || error.message || "Gagal menyimpan task")
+      }
+      return res.json()
+    },
+    onMutate: async (data) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["all-tasks-view"] })
+      await queryClient.cancelQueries({ queryKey: ["tasks"] })
+
+      // Snapshot previous values
+      const previousTasksView = queryClient.getQueryData(["all-tasks-view"])
+      const previousTasks = queryClient.getQueryData(["tasks"])
+
+      // Optimistically add new task
+      const optimisticTask = {
+        id: `temp-${Date.now()}`,
+        title: data.title,
+        description: data.description || null,
+        status: data.status || "TODO",
+        priority: data.priority || "P3",
+        startDate: data.startDate ? new Date(data.startDate) : null,
+        dueDate: data.dueDate ? new Date(data.dueDate) : null,
+        duration: data.duration || null,
+        starred: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        assignees: [],
+        labels: [],
+        subtasks: [],
+      }
+
+      queryClient.setQueryData(["all-tasks-view"], (old: any[]) => {
+        const newData = old ? [...old] : []
+        // Add at the beginning
+        newData.unshift(optimisticTask)
+        return newData
+      })
+      queryClient.setQueryData(["tasks"], (old: any[]) => {
+        const newData = old ? [...old] : []
+        newData.unshift(optimisticTask)
+        return newData
+      })
+
+      return { previousTasksView, previousTasks }
+    },
+    onError: (err, data, context) => {
+      // Rollback on error
+      if (context?.previousTasksView) {
+        queryClient.setQueryData(["all-tasks-view"], context.previousTasksView)
+      }
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks"], context.previousTasks)
+      }
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Gagal membuat task",
+        variant: "destructive",
+      })
+    },
+    onSuccess: (savedTask, variables, context) => {
+      // Replace optimistic task with real one
+      queryClient.setQueryData(["all-tasks-view"], (old: any[]) => {
+        if (!old) return [savedTask]
+        return old.map((t) => (t.id.startsWith("temp-") ? savedTask : t))
+      })
+      queryClient.setQueryData(["tasks"], (old: any[]) => {
+        if (!old) return [savedTask]
+        return old.map((t) => (t.id.startsWith("temp-") ? savedTask : t))
+      })
+      
+      // Instant feedback - no delay
+      onOpenChange(false)
+      onSuccess?.()
+    },
+    onSettled: () => {
+      // Always refetch to ensure consistency
+      queryClient.invalidateQueries({ queryKey: ["all-tasks-view"] })
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
+    },
+  })
+
+  // Optimistic update mutation
+  const updateTaskMutation = useMutation({
+    mutationFn: async (data: TaskFormData) => {
+      const payload = {
+        ...data,
+        startDate: data.startDate || null,
+        dueDate: data.dueDate || null,
+        duration: data.duration || null,
+      }
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || error.message || "Gagal menyimpan task")
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all-tasks-view"] })
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
+      onOpenChange(false)
+      onSuccess?.()
+    },
+    onError: (err) => {
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Gagal memperbarui task",
+        variant: "destructive",
+      })
     },
   })
 
   useEffect(() => {
     if (open) {
-      fetchAssignees()
-      fetchLabels()
       if (defaultValues) {
         form.reset({
           ...defaultValues,
@@ -126,115 +232,57 @@ export function TaskFormModal({
           dueDate: null,
           duration: null,
           status: "TODO",
-          assigneeIds: [],
-          labelIds: [],
         })
       }
     }
   }, [open, defaultValues, form])
 
-  const fetchAssignees = async () => {
-    setLoadingData(true)
-    try {
-      const res = await fetch("/api/members")
-      if (!res.ok) throw new Error("Gagal fetch members")
-      const data = await res.json()
-      setAssignees(data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoadingData(false)
-    }
-  }
-
-  const fetchLabels = async () => {
-    try {
-      const res = await fetch("/api/labels")
-      if (!res.ok) throw new Error("Gagal fetch labels")
-      const data = await res.json()
-      setLabels(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
   const onSubmit = async (data: TaskFormData) => {
-    setIsSubmitting(true)
-    try {
-      const payload = {
-        ...data,
-        listId,
-        startDate: data.startDate || null,
-        dueDate: data.dueDate || null,
-        duration: data.duration || null,
-      }
-
-      const url = taskId ? `/api/tasks/${taskId}` : "/api/tasks"
-      const method = taskId ? "PATCH" : "POST"
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+    if (taskId) {
+      setIsSubmitting(true)
+      updateTaskMutation.mutate(data, {
+        onSettled: () => setIsSubmitting(false),
       })
-
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || "Gagal menyimpan task")
-      }
-
-      toast({
-        title: "Berhasil",
-        description: taskId ? "Task diperbarui" : "Task dibuat",
+    } else {
+      // Create - use optimistic mutation
+      setIsSubmitting(true)
+      createTaskMutation.mutate(data, {
+        onSettled: () => setIsSubmitting(false),
       })
-
-      onOpenChange(false)
-      onSuccess?.()
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
+  const isLoading = createTaskMutation.isPending || updateTaskMutation.isPending
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border shadow-2xl rounded-3xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogHeader>
-              <DialogTitle>
-                {taskId ? "Edit Task" : "Buat Task Baru"}
+            <DialogHeader className="border-b border-border/50 pb-4">
+              <DialogTitle className="text-2xl font-black tracking-tight text-foreground">
+                {taskId ? "Ubah Tugas" : "Buat Tugas Baru"}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-muted-foreground font-medium">
                 {taskId
-                  ? "Perbarui detail task Anda."
-                  : "Buat task baru dan tambahkan ke list."}
+                  ? "Perbarui detail rencana tugas Anda."
+                  : "Tambahkan tugas baru ke dalam agenda kerja."}
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-6 py-6">
               {/* Title */}
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Judul Task</FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Judul Tugas</FormLabel>
                     <FormControl>
-                      <Input placeholder="Contoh: Buat landing page" {...field} />
+                      <Input 
+                        placeholder="Contoh: Menyusun laporan bulanan" 
+                        {...field} 
+                        className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 text-base font-bold"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -247,12 +295,13 @@ export function TaskFormModal({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Deskripsi (Opsional)</FormLabel>
+                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Deskripsi (Opsional)</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Deskripsi detail task..."
+                        placeholder="Detail informasi tugas..."
                         {...field}
                         value={field.value || ""}
+                        className="resize-none min-h-[120px] bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 text-sm font-medium leading-relaxed"
                       />
                     </FormControl>
                     <FormMessage />
@@ -261,24 +310,24 @@ export function TaskFormModal({
               />
 
               {/* Priority & Status */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="priority"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Prioritas</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Prioritas</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="h-12 bg-muted/30 border-border/50 rounded-xl focus:ring-primary/20 font-bold">
                             <SelectValue placeholder="Pilih prioritas" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="P1">P1 - Tinggi</SelectItem>
-                          <SelectItem value="P2">P2 - Sedang</SelectItem>
-                          <SelectItem value="P3">P3 - Rendah</SelectItem>
-                          <SelectItem value="P4">P4 - Minimal</SelectItem>
+                        <SelectContent className="rounded-xl border-border">
+                          <SelectItem value="P1" className="font-bold text-red-500">P1 - Sangat Penting</SelectItem>
+                          <SelectItem value="P2" className="font-bold text-orange-500">P2 - Penting</SelectItem>
+                          <SelectItem value="P3" className="font-bold text-blue-500">P3 - Normal</SelectItem>
+                          <SelectItem value="P4" className="font-bold text-slate-500">P4 - Rendah</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -291,17 +340,17 @@ export function TaskFormModal({
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Status</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="h-12 bg-muted/30 border-border/50 rounded-xl focus:ring-primary/20 font-bold">
                             <SelectValue placeholder="Pilih status" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="TODO">To Do</SelectItem>
-                          <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                          <SelectItem value="DONE">Done</SelectItem>
+                        <SelectContent className="rounded-xl border-border font-bold">
+                          <SelectItem value="TODO">Belum Dimulai</SelectItem>
+                          <SelectItem value="IN_PROGRESS">Sedang Dikerjakan</SelectItem>
+                          <SelectItem value="DONE">Selesai</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -310,17 +359,18 @@ export function TaskFormModal({
                 />
               </div>
 
-              {/* Dates & Duration */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Dates */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="startDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tanggal Mulai</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Tanggal Mulai</FormLabel>
                       <FormControl>
                         <Input
                           type="datetime-local"
+                          className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 font-bold"
                           {...field}
                           value={field.value || ""}
                           onChange={(e) =>
@@ -338,10 +388,11 @@ export function TaskFormModal({
                   name="dueDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tanggal Jatuh Tempo</FormLabel>
+                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Tenggat Waktu</FormLabel>
                       <FormControl>
                         <Input
                           type="datetime-local"
+                          className="h-12 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20 font-bold text-primary"
                           {...field}
                           value={field.value || ""}
                           onChange={(e) =>
@@ -354,214 +405,22 @@ export function TaskFormModal({
                   )}
                 />
               </div>
-
-              {/* Duration */}
-              <FormField
-                control={form.control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Durasi (menit, opsional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="60"
-                        {...field}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : null
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Estimasi waktu diperlukan (dalam menit)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Assignees */}
-              <FormField
-                control={form.control}
-                name="assigneeIds"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Assignee (Opsional)</FormLabel>
-                    <Popover open={assigneeOpen} onOpenChange={setAssigneeOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className="w-full justify-between"
-                          >
-                            {form.watch("assigneeIds").length > 0
-                              ? `${form.watch("assigneeIds").length} dipilih`
-                              : "Pilih assignee..."}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder="Cari member..." />
-                          <CommandList>
-                            <CommandEmpty>Tidak ada member.</CommandEmpty>
-                            <CommandGroup>
-                              {assignees.map((assignee) => (
-                                <CommandItem
-                                  key={assignee.id}
-                                  onSelect={() => {
-                                    const current = form.getValues("assigneeIds")
-                                    const newSelection = current.includes(assignee.id)
-                                      ? current.filter((id) => id !== assignee.id)
-                                      : [...current, assignee.id]
-                                    form.setValue("assigneeIds", newSelection)
-                                  }}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <Avatar className="h-6 w-6">
-                                      <AvatarImage src={assignee.image || ""} />
-                                      <AvatarFallback className="text-xs">
-                                        {getInitials(assignee.name || "U")}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <span>{assignee.name}</span>
-                                  </div>
-                                  {form.watch("assigneeIds").includes(assignee.id) && (
-                                    <Badge variant="secondary">✓</Badge>
-                                  )}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {form.watch("assigneeIds").map((id) => {
-                        const assignee = assignees.find((a) => a.id === id)
-                        return assignee ? (
-                          <Badge
-                            key={id}
-                            variant="secondary"
-                            className="gap-1 cursor-pointer"
-                            onClick={() => {
-                              const current = form.getValues("assigneeIds")
-                              form.setValue(
-                                "assigneeIds",
-                                current.filter((aid) => aid !== id)
-                              )
-                            }}
-                          >
-                            {assignee.name}
-                            <X className="h-3 w-3" />
-                          </Badge>
-                        ) : null
-                      })}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Labels */}
-              <FormField
-                control={form.control}
-                name="labelIds"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Labels (Opsional)</FormLabel>
-                    <Popover open={labelOpen} onOpenChange={setLabelOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className="w-full justify-between"
-                          >
-                            {form.watch("labelIds").length > 0
-                              ? `${form.watch("labelIds").length} dipilih`
-                              : "Pilih label..."}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder="Cari label..." />
-                          <CommandList>
-                            <CommandEmpty>Tidak ada label.</CommandEmpty>
-                            <CommandGroup>
-                              {labels.map((label) => (
-                                <CommandItem
-                                  key={label.id}
-                                  onSelect={() => {
-                                    const current = form.getValues("labelIds")
-                                    const newSelection = current.includes(label.id)
-                                      ? current.filter((lid) => lid !== label.id)
-                                      : [...current, label.id]
-                                    form.setValue("labelIds", newSelection)
-                                  }}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <div
-                                      className="h-3 w-3 rounded-full"
-                                      style={{ backgroundColor: label.color }}
-                                    />
-                                    <span>{label.name}</span>
-                                  </div>
-                                  {form.watch("labelIds").includes(label.id) && (
-                                    <Badge variant="secondary">✓</Badge>
-                                  )}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {form.watch("labelIds").map((id) => {
-                        const label = labels.find((l) => l.id === id)
-                        return label ? (
-                          <Badge
-                            key={id}
-                            variant="outline"
-                            className="gap-1 cursor-pointer"
-                            style={{ borderColor: label.color, color: label.color }}
-                            onClick={() => {
-                              const current = form.getValues("labelIds")
-                              form.setValue(
-                                "labelIds",
-                                current.filter((lid) => lid !== id)
-                              )
-                            }}
-                          >
-                            {label.name}
-                            <X className="h-3 w-3" />
-                          </Badge>
-                        ) : null
-                      })}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
-            <DialogFooter>
+            <DialogFooter className="border-t border-border/50 pt-6 gap-3 sm:gap-0">
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 onClick={() => onOpenChange(false)}
-                disabled={isSubmitting}
+                disabled={isLoading}
+                className="font-bold text-muted-foreground hover:bg-muted"
               >
                 Batal
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {taskId ? "Simpan Perubahan" : "Buat Task"}
+              <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary/90 text-white font-black px-10 rounded-xl shadow-xl shadow-primary/20 active:scale-95 transition-all h-12">
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : null}
+                {taskId ? "Simpan Perubahan" : "Buat Tugas Sekarang"}
               </Button>
             </DialogFooter>
           </form>

@@ -12,9 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { LogOut, Settings, User } from "lucide-react"
+import { LogOut, Settings, User, Menu, Search, Bell, Zap } from "lucide-react"
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -23,61 +27,87 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-card/80 backdrop-blur-xl">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-xl shrink-0">
+      <div className="px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30">
-            <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
+          {/* MOBILE MENU TRIGGER - Premium */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden h-9 w-9 rounded-lg hover:bg-muted/50 transition-colors"
+            onClick={onMenuClick}
+          >
+            <Menu className="h-4 w-4 text-muted-foreground" />
+          </Button>
+
+          {/* System Status - Minimal */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]" />
+              <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.12em] hidden sm:inline">Active</span>
+            </div>
+            <div className="h-4 w-px bg-border/50 hidden lg:block" />
+            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] hidden lg:block">
+              AGENDA KERJA OPS GUGUS KH. ZAENAL MUSTOFA
+            </span>
+            {/* Mobile compact version */}
+            <span className="text-[9px] font-bold text-primary tracking-wide sm:hidden">
+              AGENDA KERJA
+            </span>
           </div>
-          <span className="font-bold text-xl hidden sm:block">
-            AGENDA KERJA OPS GUGUS KH. ZAENAL MUSTOFA
-          </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="h-9 w-9">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </Button>
+          {/* Quick Actions - Hidden on mobile */}
+          <div className="hidden sm:flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-muted/50">
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-muted/50">
+              <Bell className="h-4 w-4 text-muted-foreground" />
+            </Button>
+          </div>
+          
+          <div className="h-6 w-px bg-border mx-1 hidden sm:block" />
+
+          {/* User Menu - Premium Compact */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-9 w-9 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={session?.user?.image || ""} />
-                  <AvatarFallback>
-                    {session?.user?.name?.[0] || "U"}
-                  </AvatarFallback>
-                </Avatar>
+              <Button variant="ghost" className="p-0.5 rounded-xl hover:bg-muted/50 transition-colors">
+                <div className="flex items-center gap-2 pl-1 pr-2 py-0.5">
+                  <Avatar className="h-8 w-8 ring-2 ring-border">
+                    <AvatarImage src={session?.user?.image || ""} />
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px]">
+                      {session?.user?.name?.[0] || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="hidden lg:flex flex-col items-start">
+                    <span className="text-xs font-semibold text-foreground">{session?.user?.name?.split(' ')[0]}</span>
+                    <span className="text-[9px] text-muted-foreground font-medium">Premium</span>
+                  </div>
+                </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-56 rounded-xl border-border shadow-lg p-1.5">
+              <DropdownMenuLabel className="px-2 py-2">
                 <div className="flex flex-col">
-                  <span className="font-medium">{session?.user?.name}</span>
-                  <span className="text-xs text-muted-foreground">{session?.user?.email}</span>
+                  <span className="font-semibold text-sm">{session?.user?.name}</span>
+                  <span className="text-[11px] text-muted-foreground">{session?.user?.email}</span>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                Profile
+              <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuItem className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted">
+                <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Account</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
+              <DropdownMenuItem className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted">
+                <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">Preferences</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>
+              <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuItem onClick={handleSignOut} className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-destructive/10 text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign out
+                <span className="text-sm font-medium">Sign out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

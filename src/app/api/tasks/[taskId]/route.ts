@@ -1,42 +1,28 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 // GET /api/tasks/[taskId]
 export async function GET(
-  request: Request,
-  { params }: { params: { taskId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const session = await auth()
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const taskId = params.taskId
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  })
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const { taskId } = await params
 
   const task = await prisma.task.findUnique({
     where: { id: taskId },
     include: {
-      list: {
-        include: {
-          community: {
-            include: { members: true },
-          },
-        },
-      },
       createdBy: { select: { id: true, name: true, email: true, image: true } },
       assignees: { include: { user: { select: { id: true, name: true, email: true, image: true } } } },
       subtasks: { orderBy: { order: "asc" } },
       labels: { include: { label: true } },
       comments: {
-        include: { user: { select: { id: true, name: true, image: true } } },
+        include: { user: { select: { id: true, name: true, email: true, image: true } } },
         orderBy: { createdAt: "desc" },
         take: 50,
       },
@@ -47,55 +33,38 @@ export async function GET(
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
   }
 
-  // Check membership
-  const isMember = task.list.community.members.some(
-    (m) => m.userId === user.id
-  )
-  if (!isMember) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+  // Map fields for frontend
+  const mappedTask = {
+    ...task,
+    starred: task.isStarred,
+    subtasks: task.subtasks.map(st => ({
+      ...st,
+      completed: st.isDone
+    }))
   }
 
-  return NextResponse.json(task)
+  return NextResponse.json(mappedTask)
 }
 
 // PATCH /api/tasks/[taskId]
 export async function PATCH(
-  request: Request,
-  { params }: { params: { taskId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const session = await auth()
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const taskId = params.taskId
+  const { taskId } = await params
   const body = await request.json()
-  const { title, description, status, priority, startDate, dueDate, duration, isStarred, assigneeIds, labelIds } = body
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  })
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const { title, description, status, priority, startDate, dueDate, duration, isStarred, starred, assigneeIds, labelIds } = body
 
   const existingTask = await prisma.task.findUnique({
     where: { id: taskId },
-    include: { list: { include: { community: true } } },
   })
   if (!existingTask) {
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
-  }
-
-  // Verify membership
-  const member = await prisma.communityMember.findFirst({
-    where: {
-      userId: user.id,
-      communityId: existingTask.list.communityId,
-    },
-  })
-  if (!member) {
-    return NextResponse.json({ error: "Not a member" }, { status: 403 })
   }
 
   const updates: Record<string, unknown> = {}
@@ -106,7 +75,9 @@ export async function PATCH(
   if (startDate !== undefined) updates.startDate = startDate ? new Date(startDate) : null
   if (dueDate !== undefined) updates.dueDate = dueDate ? new Date(dueDate) : null
   if (duration !== undefined) updates.duration = duration
+  
   if (isStarred !== undefined) updates.isStarred = isStarred
+  else if (starred !== undefined) updates.isStarred = starred
 
   // Handle assignees
   if (assigneeIds !== undefined) {
@@ -139,52 +110,27 @@ export async function PATCH(
     },
   })
 
-  await prisma.activity.create({
-    data: {
-      type: "TASK_UPDATED",
-      details: `Task updated`,
-      taskId,
-      userId: user.id,
-    },
-  })
-
   return NextResponse.json(task)
 }
 
 // DELETE /api/tasks/[taskId]
 export async function DELETE(
-  request: Request,
-  { params }: { params: { taskId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const session = await auth()
-  if (!session?.user?.email) {
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const taskId = params.taskId
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  })
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 })
-  }
+  const { taskId } = await params
 
   const task = await prisma.task.findUnique({
     where: { id: taskId },
-    include: { list: { include: { community: { include: { members: true } } } } },
   })
 
   if (!task) {
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
-  }
-
-  // Check membership (any member can delete for now)
-  const isMember = task.list.community.members.some(
-    (m) => m.userId === user.id
-  )
-  if (!isMember) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
   await prisma.task.delete({ where: { id: taskId } })

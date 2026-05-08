@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { authOptions } from "@/lib/auth"
 
 // PATCH /api/subtasks/[subtaskId]
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { subtaskId: string } }
+  { params }: { params: Promise<{ subtaskId: string }> }
 ) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const subtaskId = params.subtaskId
+  const { subtaskId } = await params
   const body = await request.json()
   const { title, completed } = body
 
@@ -40,9 +39,9 @@ export async function PATCH(
     }
 
     // Check membership
-    const isMember = subtask.task.list.community.members.some(
+    const isMember = subtask.task.list?.community?.members?.some(
       (m) => m.userId === session.user.id
-    )
+    ) ?? true
     if (!isMember) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
@@ -51,7 +50,7 @@ export async function PATCH(
       where: { id: subtaskId },
       data: {
         ...(title !== undefined && { title }),
-        ...(completed !== undefined && { completed }),
+        ...(completed !== undefined && { isDone: completed }),
       },
     })
 
@@ -68,14 +67,14 @@ export async function PATCH(
 // DELETE /api/subtasks/[subtaskId]
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { subtaskId: string } }
+  { params }: { params: Promise<{ subtaskId: string }> }
 ) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const subtaskId = params.subtaskId
+  const { subtaskId } = await params
 
   try {
     const subtask = await prisma.subtask.findUnique({
@@ -100,10 +99,10 @@ export async function DELETE(
     }
 
     // Check membership
-    const isMember = subtask.task.list.community.members.some(
+    const isMemberDelete = subtask.task.list?.community?.members?.some(
       (m) => m.userId === session.user.id
-    )
-    if (!isMember) {
+    ) ?? true
+    if (!isMemberDelete) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 

@@ -1,75 +1,257 @@
 "use client"
 
-import { useState } from "react"
-import { signIn, signOut } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { Loader2 } from "lucide-react"
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState, useEffect, Suspense } from "react"
+import { Loader2, ShieldCheck, Sparkles, ChevronRight, Zap, Box, Lock, Users, FileCode, MessageSquare, Globe, Mail, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast"
+import { PremiumLoader } from "@/components/ui/premium-loader"
 
-export default function SignInPage() {
+function SignInForm() {
+  const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const { toast } = useToast()
+
+  const error = searchParams.get("error")
+
+  useEffect(() => {
+    if (error === "CredentialsSignin") {
+      toast({
+        title: "Login Gagal",
+        description: "Email atau password salah.",
+        variant: "destructive",
+      })
+    }
+  }, [error, toast])
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/dashboard/all-tasks")
+    }
+  }, [status, router])
 
   const handleGoogleSignIn = async () => {
     setLoading(true)
-    await signIn("google", { callbackUrl: "/dashboard" })
+    try {
+      // If already logged in, sign out first to ensure fresh login
+      if (session) {
+        await signOut({ redirect: false })
+      }
+      
+      // Clear any stale cookies before sign in
+      const cookies = document.cookie.split(";")
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i]
+        const eqPos = cookie.indexOf("=")
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
+        if (name.includes("nextauth")) {
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/"
+        }
+      }
+      
+      // Add a small delay to ensure cookies are cleared
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      await signIn("google", { callbackUrl: "/dashboard/all-tasks" })
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/dashboard/all-tasks",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat login.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4">
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-30" />
+    <div className="min-h-screen w-full flex relative overflow-hidden bg-[#0A0A0B] font-sans selection:bg-primary/20 selection:text-primary">
       
-      <Card className="w-full max-w-md relative glass animate-scale-in">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30">
-            <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
+      {/* --- BACKGROUND ENGINE - DARK PREMIUM --- */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[70%] h-[70%] bg-primary/5 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-500/5 rounded-full blur-[100px]" />
+        
+        {/* Premium Grid Pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" 
+          style={{ 
+            backgroundImage: `linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)`,
+            backgroundSize: '100px 100px',
+            transform: 'perspective(1200px) rotateX(60deg) translateY(-100px) scale(2)',
+            maskImage: 'radial-gradient(ellipse at center, black, transparent 80%)'
+          }} 
+        />
+      </div>
+
+      {/* --- LEFT HERO CONTENT --- */}
+      <div className="hidden lg:flex absolute left-24 top-0 bottom-0 z-20 flex-col justify-center max-w-2xl animate-in fade-in slide-in-from-left-10 duration-1000">
+        <div className="space-y-8">
+          <div className="flex items-center gap-3 mb-4 animate-fade-in">
+             <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-2xl shadow-primary/20">
+                <Zap className="h-6 w-6 text-white" />
+             </div>
+             <span className="text-sm font-black text-white uppercase tracking-[0.4em]">Zenith Core</span>
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-            AGENDA KERJA OPS GUGUS KH. ZAENAL MUSTOFA
-          </CardTitle>
-          <CardDescription className="text-slate-600 dark:text-slate-400">
-            Collaborative task management for your community
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button
+          <h1 className="text-8xl font-black tracking-[-0.05em] text-white leading-[1.05]">
+            Next Gen<br />
+            <span className="text-white/40">Productivity</span><br />
+            <span className="text-primary">Workspace</span>
+          </h1>
+          
+          <div className="h-1 w-32 bg-gradient-to-r from-primary to-transparent rounded-full" />
+          
+          <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-md pt-4">
+            Exclusive workspace for modern engineering communities. Premium performance meets elegant design.
+          </p>
+        </div>
+      </div>
+
+      {/* --- RIGHT LOGIN PANEL --- */}
+      <div className="relative z-30 ml-auto w-full lg:w-[550px] h-screen flex flex-col bg-[#0F0F11]/80 backdrop-blur-3xl border-l border-white/5 shadow-[-100px_0_100px_rgba(0,0,0,0.5)]">
+        
+        <div className="p-16 pb-0 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.5)]" />
+            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.4em]">Quantum Auth</span>
+          </div>
+          <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">v2026.1.0</span>
+        </div>
+
+        <div className="flex-1 flex flex-col justify-center px-12 lg:px-20">
+          <div className="mb-12">
+            <h2 className="text-4xl font-black tracking-tighter text-white leading-tight mb-3">
+              Elite <span className="text-primary">Access</span>
+            </h2>
+            <p className="text-slate-500 text-sm font-medium">Enter your credentials to access the workspace.</p>
+          </div>
+
+          <form onSubmit={handleEmailSignIn} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-[10px] uppercase tracking-widest font-black text-slate-500 ml-1">Identity Identifier</Label>
+              <div className="relative group">
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-primary transition-colors" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="agent@zenith.core" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-12 h-14 bg-white/[0.03] border-white/5 rounded-2xl focus-visible:ring-2 focus-visible:ring-primary/20 text-white placeholder:text-slate-700 transition-all font-medium"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <Label htmlFor="password" className="text-[10px] uppercase tracking-widest font-black text-slate-500">Security Key</Label>
+                <button type="button" className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-widest">Restore?</button>
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-primary transition-colors" />
+                <Input 
+                  id="password" 
+                  type={showPassword ? "text" : "password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-12 h-14 bg-white/[0.03] border-white/5 rounded-2xl focus-visible:ring-2 focus-visible:ring-primary/20 text-white placeholder:text-slate-700 transition-all font-medium"
+                  required
+                />
+                <button 
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading || !email || !password}
+              className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black shadow-2xl shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 group"
+            >
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                <span className="flex items-center gap-2">
+                  Initialize Session <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              )}
+            </Button>
+          </form>
+
+          <div className="py-10 flex items-center gap-4">
+            <div className="h-px flex-1 bg-white/5" />
+            <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em]">Quantum Bridge</span>
+            <div className="h-px flex-1 bg-white/5" />
+          </div>
+
+          <button
+            type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full h-12 text-base bg-white text-slate-900 hover:bg-slate-100 border border-slate-200 transition-all duration-200"
+            className="w-full h-14 flex items-center justify-center gap-4 bg-white/[0.02] hover:bg-white/[0.05] text-white border border-white/5 shadow-sm transition-all duration-300 rounded-2xl group active:scale-[0.98] disabled:opacity-50"
           >
-            {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <>
-                <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.96 20.53 7.7 23 12 23z" />
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.38 8.55 1 10.22 1 12s.38 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.96 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>
-                Continue with Google
-              </>
-            )}
-          </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+            <div className="bg-white rounded-xl p-1.5 group-hover:scale-110 transition-transform duration-300">
+              <svg className="h-4 w-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.96 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.38 8.55 1 10.22 1 12s.38 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.96 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-slate-500">Free for communities</span>
+            <span className="font-bold text-sm tracking-widest uppercase">Login with Account</span>
+          </button>
+        </div>
+
+        {/* FOOTER SIGNATURE */}
+        <div className="p-16 pt-0">
+          <div className="pt-10 border-t border-white/5 flex flex-col items-center">
+            <div className="flex flex-col items-center opacity-30 hover:opacity-100 transition-opacity duration-700 cursor-default">
+              <span className="text-[7px] uppercase tracking-[0.6em] text-slate-500 font-black mb-2">Architectural Engineering</span>
+              <div className="flex items-center gap-3">
+                <div className="h-px w-6 bg-primary/30" />
+                <span className="text-[10px] tracking-[0.4em] text-white font-light">
+                  SANTO <span className="text-primary font-black">X/CODE</span>
+                </span>
+                <div className="h-px w-6 bg-primary/30" />
+              </div>
             </div>
           </div>
-
-          <p className="text-xs text-center text-slate-500">
-            By signing in, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<PremiumLoader fullScreen size="xl" text="Memuat..." />}>
+      <SignInForm />
+    </Suspense>
   )
 }

@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { format, formatDistanceToNow } from "date-fns"
 import { id } from "date-fns/locale"
 import {
@@ -17,11 +18,17 @@ import {
   MoreHorizontal,
   Trash2,
   Edit,
+  CheckCircle2,
+  Circle,
+  Plus,
+  Bell,
+  BellOff,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,195 +37,263 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
-import { TaskItem } from "./task-item"
 import { SubtaskItem } from "./subtask-item"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
+import { SkeletonLoader } from "@/components/ui/premium-loader"
+import { createRealtimeClient, requestNotificationPermission, playNotificationSound, showBrowserNotification } from "@/lib/realtime"
 
 interface TaskDetailProps {
   taskId: string
 }
 
-interface Comment {
+type CommentType = {
   id: string
   content: string
-  createdAt: Date
-  user: {
-    id: string
-    name: string | null
-    image: string | null
-  }
+  createdAt: string
+  user: { id: string; name: string | null; image: string | null }
 }
 
-interface Activity {
+type ActivityType = {
   id: string
   type: string
   details: string
-  createdAt: Date
-  user: {
-    id: string
-    name: string | null
-    image: string | null
-  }
+  createdAt: string
+  user: { id: string; name: string | null; image: string | null }
+}
+
+const priorityConfig = {
+  P1: {
+    label: "Kritis",
+    bg: "bg-red-500/10 text-red-500 border-red-500/20",
+    glow: "shadow-red-500/20",
+    icon: "🔥",
+  },
+  P2: {
+    label: "Tinggi",
+    bg: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+    glow: "shadow-orange-500/20",
+    icon: "⚡",
+  },
+  P3: {
+    label: "Medium",
+    bg: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    glow: "shadow-blue-500/20",
+    icon: "📋",
+  },
+  P4: {
+    label: "Rendah",
+    bg: "bg-slate-500/10 text-slate-500 border-slate-500/20",
+    glow: "shadow-slate-500/20",
+    icon: "📌",
+  },
+}
+
+const statusConfig = {
+  TODO: { label: "Belum Dimulai", bg: "bg-slate-500/10 text-slate-500 border-slate-500/20" },
+  IN_PROGRESS: { label: "Sedang Dikerjakan", bg: "bg-amber-500/10 text-amber-500 border-amber-500/20" },
+  DONE: { label: "Selesai", bg: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
 }
 
 export function TaskDetail({ taskId }: TaskDetailProps) {
   const { data: session } = useSession()
   const { toast } = useToast()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
-  const [task, setTask] = useState<any>(null)
-  const [comments, setComments] = useState<Comment[]>([])
-  const [activities, setActivities] = useState<Activity[]>([])
-  const [loading, setLoading] = useState(true)
-  const [newComment, setNewComment] = useState("")
-  const [submittingComment, setSubmittingComment] = useState(false)
   const [showSubtasks, setShowSubtasks] = useState(true)
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
+  const [addingSubtask, setAddingSubtask] = useState(false)
+  const [newComment, setNewComment] = useState("")
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const realtimeRef = useRef<ReturnType<typeof createRealtimeClient> | null>(null)
 
+  // Request notification permission on mount
   useEffect(() => {
-    fetchTask()
-    fetchComments()
-    fetchActivity()
-  }, [taskId])
+    requestNotificationPermission()
+  }, [])
 
-  const fetchTask = async () => {
-    try {
+  // Set up real-time connection
+  useEffect(() => {
+    if (!taskId) return
+
+    const realtimeClient = createRealtimeClient()
+    realtimeRef.current = realtimeClient
+
+    realtimeClient.connect(taskId, {
+      onCommentAdded: (comment) => {
+        // Don't add if it's our own comment (already added optimistically)
+        if (comment.user.id === session?.user?.id) return
+
+        // Add comment to list
+        queryClient.setQueryData<CommentType[]>(["task-comments", taskId], (old) => {
+          if (!old) return [comment]
+          // Check if already exists
+          if (old.some((c) => c.id === comment.id)) return old
+          return [...old, comment]
+        })
+
+        // Show notification
+        if (notificationsEnabled) {
+          playNotificationSound("comment")
+          showBrowserNotification(
+            "Komentar Baru",
+            `${comment.user.name} mengomentari task`,
+            taskId
+          )
+        }
+
+        toast({
+          title: "Komentar Baru",
+          description: `${comment.user.name} mengomentari task ini`,
+        })
+      },
+      onError: () => {
+        // Silently fail - will reconnect on next page load
+      },
+    })
+
+    return () => {
+      realtimeClient.disconnect(taskId)
+    }
+  }, [taskId, session?.user?.id, notificationsEnabled])
+
+  const { data: task, isLoading: taskLoading, refetch: refetchTask } = useQuery({
+    queryKey: ["task", taskId],
+    queryFn: async () => {
       const res = await fetch(`/api/tasks/${taskId}`)
       if (!res.ok) throw new Error("Task tidak ditemukan")
-      const data = await res.json()
-      setTask(data)
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal memuat task",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+      return res.json()
+    },
+    enabled: !!taskId,
+    staleTime: 30000,
+  })
 
-  const fetchComments = async () => {
-    try {
+  const { data: comments = [], refetch: refetchComments } = useQuery<CommentType[]>({
+    queryKey: ["task-comments", taskId],
+    queryFn: async () => {
       const res = await fetch(`/api/tasks/${taskId}/comments`)
       if (!res.ok) throw new Error()
-      const data = await res.json()
-      setComments(data)
-    } catch (error) {
-      console.error("Failed to fetch comments:", error)
-    }
-  }
+      return res.json()
+    },
+    enabled: !!taskId,
+    staleTime: 10000,
+  })
 
-  const fetchActivity = async () => {
-    try {
+  const { data: activities = [] } = useQuery<ActivityType[]>({
+    queryKey: ["task-activity", taskId],
+    queryFn: async () => {
       const res = await fetch(`/api/tasks/${taskId}/activity`)
       if (!res.ok) throw new Error()
-      const data = await res.json()
-      setActivities(data)
-    } catch (error) {
-      console.error("Failed to fetch activity:", error)
-    }
-  }
+      return res.json()
+    },
+    enabled: !!taskId,
+    staleTime: 10000,
+  })
 
-  const handleAddComment = async () => {
-    if (!newComment.trim()) return
-    setSubmittingComment(true)
-    try {
+  // Toggle star mutation
+  const toggleStarMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ starred: !task?.starred }),
+      })
+      if (!res.ok) throw new Error()
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task", taskId] })
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
+      queryClient.invalidateQueries({ queryKey: ["all-tasks-view"] })
+    },
+  })
+
+  // Add comment mutation with optimistic update
+  const addCommentMutation = useMutation({
+    mutationFn: async (content: string) => {
       const res = await fetch(`/api/tasks/${taskId}/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: newComment.trim() }),
+        body: JSON.stringify({ content }),
       })
-      if (!res.ok) throw new Error("Gagal mengirim komentar")
+      if (!res.ok) throw new Error()
+      return res.json()
+    },
+    onMutate: async (content) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["task-comments", taskId] })
+
+      // Snapshot previous value
+      const previousComments = queryClient.getQueryData<CommentType[]>(["task-comments", taskId])
+
+      // Optimistically add comment
+      const optimisticComment: CommentType = {
+        id: `temp-${Date.now()}`,
+        content,
+        createdAt: new Date().toISOString(),
+        user: {
+          id: session?.user?.id || "",
+          name: session?.user?.name || "Anda",
+          image: session?.user?.image || null,
+        },
+      }
+
+      queryClient.setQueryData<CommentType[]>(["task-comments", taskId], (old) => 
+        old ? [...old, optimisticComment] : [optimisticComment]
+      )
+
       setNewComment("")
-      fetchComments()
-      fetchActivity()
-      toast({ title: "Berhasil", description: "Komentar ditambahkan" })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal mengirim komentar",
-        variant: "destructive",
-      })
-    } finally {
-      setSubmittingComment(false)
-    }
-  }
 
-  const handleSubtaskToggle = async (subtaskId: string, completed: boolean) => {
-    try {
-      const res = await fetch(`/api/subtasks/${subtaskId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completed }),
-      })
-      if (!res.ok) throw new Error()
-      fetchTask()
-      fetchActivity()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal mengubah status subtask",
-        variant: "destructive",
-      })
-    }
-  }
+      return { previousComments }
+    },
+    onError: (_err, _content, context) => {
+      // Rollback on error
+      if (context?.previousComments) {
+        queryClient.setQueryData(["task-comments", taskId], context.previousComments)
+      }
+      toast({ title: "Error", description: "Gagal mengirim komentar", variant: "destructive" })
+    },
+    onSettled: () => {
+      // Always refetch to ensure data is sync
+      queryClient.invalidateQueries({ queryKey: ["task-comments", taskId] })
+      queryClient.invalidateQueries({ queryKey: ["task-activity", taskId] })
+    },
+  })
 
-  const handleSubtaskUpdate = async (subtaskId: string, title: string) => {
-    try {
-      const res = await fetch(`/api/subtasks/${subtaskId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
-      })
+  // Delete comment mutation
+  const deleteCommentMutation = useMutation({
+    mutationFn: async (commentId: string) => {
+      const res = await fetch(`/api/comments/${commentId}`, { method: "DELETE" })
       if (!res.ok) throw new Error()
-      fetchTask()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal memperbarui subtask",
-        variant: "destructive",
-      })
-    }
-  }
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task-comments", taskId] })
+      queryClient.invalidateQueries({ queryKey: ["task-activity", taskId] })
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Gagal menghapus komentar", variant: "destructive" })
+    },
+  })
 
-  const handleSubtaskDelete = async (subtaskId: string) => {
-    try {
-      const res = await fetch(`/api/subtasks/${subtaskId}`, {
-        method: "DELETE",
-      })
+  // Delete task mutation
+  const deleteTaskMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/tasks/${taskId}`, { method: "DELETE" })
       if (!res.ok) throw new Error()
-      fetchTask()
-      fetchActivity()
-      toast({ title: "Berhasil", description: "Subtask dihapus" })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal menghapus subtask",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const handleSubtaskCreate = async (title: string) => {
-    try {
-      const res = await fetch(`/api/tasks/${taskId}/subtasks`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
-      })
-      if (!res.ok) throw new Error()
-      fetchTask()
-      fetchActivity()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Gagal menambahkan subtask",
-        variant: "destructive",
-      })
-      throw error
-    }
-  }
+      return res.json()
+    },
+    onSuccess: () => {
+      toast({ title: "Berhasil", description: "Task dihapus" })
+      queryClient.invalidateQueries({ queryKey: ["tasks"] })
+      queryClient.invalidateQueries({ queryKey: ["all-tasks-view"] })
+      router.back()
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Gagal menghapus task", variant: "destructive" })
+    },
+  })
 
   const getInitials = (name: string) => {
     return name
@@ -229,31 +304,32 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       .slice(0, 2)
   }
 
-  const priorityColors = {
-    P1: "bg-red-500 text-white",
-    P2: "bg-orange-500 text-white",
-    P3: "bg-blue-500 text-white",
-    P4: "bg-gray-500 text-white",
-  }
-
-  const priorityLabels = {
-    P1: "P1 - Tinggi",
-    P2: "P2 - Sedang",
-    P3: "P3 - Rendah",
-    P4: "P4 - Minimal",
-  }
-
-  if (loading) {
+  if (taskLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div className="h-10 w-32 bg-muted rounded-lg animate-pulse" />
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="rounded-2xl border bg-card p-6 shadow-sm space-y-4">
+              <SkeletonLoader className="w-3/4 h-8" />
+              <SkeletonLoader className="w-full h-4" />
+              <div className="flex gap-2 pt-4">
+                <div className="h-7 w-24 bg-muted rounded-full animate-pulse" />
+                <div className="h-7 w-24 bg-muted rounded-full animate-pulse" />
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <SkeletonLoader />
+          </div>
+        </div>
       </div>
     )
   }
 
   if (!task) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[50vh] items-center justify-center">
         <p className="text-muted-foreground">Task tidak ditemukan</p>
       </div>
     )
@@ -261,252 +337,393 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
   const completedSubtasks = task.subtasks?.filter((s: any) => s.completed).length || 0
   const totalSubtasks = task.subtasks?.length || 0
+  const progress = totalSubtasks > 0 ? Math.round((completedSubtasks / totalSubtasks) * 100) : 0
+  const priority = priorityConfig[task.priority as keyof typeof priorityConfig]
+  const status = statusConfig[task.status as keyof typeof statusConfig]
+  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "DONE"
 
   return (
     <div className="mx-auto max-w-5xl">
-      {/* Back button */}
-      <Button
-        variant="ghost"
-        className="mb-4 gap-2"
-        onClick={() => router.back()}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Kembali
-      </Button>
+      {/* Premium Header */}
+      <div className="flex items-center justify-between mb-8">
+        <Button
+          variant="ghost"
+          className="gap-2 hover:bg-muted/50 rounded-xl"
+          onClick={() => router.back()}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Kembali
+        </Button>
+        
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "rounded-xl hover:bg-muted/50",
+              notificationsEnabled && "text-primary"
+            )}
+            onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+            title={notificationsEnabled ? "Matikan notifikasi" : "Aktifkan notifikasi"}
+          >
+            {notificationsEnabled ? (
+              <Bell className="h-5 w-5" />
+            ) : (
+              <BellOff className="h-5 w-5" />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-xl hover:bg-muted/50"
+            onClick={() => toggleStarMutation.mutate()}
+          >
+            <Star
+              className={cn(
+                "h-5 w-5 transition-all",
+                task.starred
+                  ? "fill-amber-400 text-amber-400 scale-110"
+                  : "text-muted-foreground"
+              )}
+            />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-xl hover:bg-muted/50">
+                <MoreHorizontal className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-xl border-border shadow-xl p-1.5 w-48">
+              <DropdownMenuItem className="rounded-lg gap-2 text-sm font-medium cursor-pointer">
+                <Edit className="h-4 w-4" />
+                Edit Task
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-border/50" />
+              <DropdownMenuItem
+                onClick={() => deleteTaskMutation.mutate()}
+                className="rounded-lg gap-2 text-sm font-medium text-destructive cursor-pointer focus:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+                Hapus Task
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
 
+      {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Main Content */}
+        {/* Left Column - Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Task Header */}
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h1 className="text-2xl font-bold tracking-tight">
-                    {task.title}
-                  </h1>
-                  {task.description && (
-                    <p className="mt-2 text-muted-foreground">
-                      {task.description}
-                    </p>
-                  )}
-                </div>
-
-                {/* Meta info */}
-                <div className="flex flex-wrap items-center gap-4 text-sm">
-                  <Badge className={priorityColors[task.priority]}>
-                    {priorityLabels[task.priority]}
+          {/* Task Header Card */}
+          <div className="rounded-2xl border bg-card/80 backdrop-blur-sm p-8 shadow-sm relative overflow-hidden">
+            {/* Glow Effect */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="relative z-10 space-y-6">
+              {/* Badges Row */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge className={cn("px-3 py-1 rounded-lg text-xs font-bold border", priority.bg, priority.glow)}>
+                  {priority.icon} {priority.label}
+                </Badge>
+                <Badge className={cn("px-3 py-1 rounded-lg text-xs font-bold border", status.bg)}>
+                  {status.label}
+                </Badge>
+                {task.starred && (
+                  <Badge className="px-3 py-1 rounded-lg text-xs font-bold bg-amber-500/10 text-amber-500 border-amber-500/20">
+                    ⭐ Di starred
                   </Badge>
-                  <Badge variant="outline">
-                    {task.status === "TODO"
-                      ? "To Do"
-                      : task.status === "IN_PROGRESS"
-                      ? "In Progress"
-                      : "Done"}
+                )}
+                {isOverdue && (
+                  <Badge className="px-3 py-1 rounded-lg text-xs font-bold bg-red-500/10 text-red-500 border-red-500/20">
+                    ⚠️ Terlambat
                   </Badge>
-                  {task.dueDate && (
-                    <div
-                      className={cn(
-                        "flex items-center gap-1",
-                        new Date(task.dueDate) < new Date() && task.status !== "DONE"
-                          ? "text-destructive font-medium"
-                          : ""
-                      )}
-                    >
-                      <Calendar className="h-4 w-4" />
-                      <span>
-                        {format(new Date(task.dueDate), "d MMMM yyyy, HH:mm", {
-                          locale: id,
-                        })}
-                      </span>
-                    </div>
-                  )}
-                  {task.startDate && (
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      <span>
-                        Mulai:{" "}
-                        {format(new Date(task.startDate), "d MMM yyyy, HH:mm", {
-                          locale: id,
-                        })}
-                      </span>
-                    </div>
-                  )}
-                </div>
+                )}
+              </div>
 
-                {/* Assignees */}
-                {task.assignees?.length > 0 && (
+              {/* Title */}
+              <h1 className="text-3xl font-black tracking-tight text-foreground leading-tight">
+                {task.title}
+              </h1>
+
+              {/* Description */}
+              {task.description && (
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  {task.description}
+                </p>
+              )}
+
+              {/* Dates Info */}
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                {task.startDate && (
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 border border-border/50 text-sm">
+                    <Calendar className="h-4 w-4 text-emerald-500" />
+                    <span className="text-muted-foreground">Mulai:</span>
+                    <span className="font-semibold">
+                      {format(new Date(task.startDate), "d MMM yyyy, HH:mm", { locale: id })}
+                    </span>
+                  </div>
+                )}
+                {task.dueDate && (
+                  <div className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-xl border text-sm",
+                    isOverdue
+                      ? "bg-red-500/5 border-red-500/20"
+                      : "bg-muted/50 border-border/50"
+                  )}>
+                    <Calendar className={cn("h-4 w-4", isOverdue ? "text-red-500" : "text-amber-500")} />
+                    <span className={cn("text-muted-foreground", isOverdue && "text-red-500")}>Tenggat:</span>
+                    <span className={cn("font-semibold", isOverdue && "text-red-500")}>
+                      {format(new Date(task.dueDate), "d MMM yyyy, HH:mm", { locale: id })}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Assignees */}
+              {task.assignees?.length > 0 && (
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/30 border border-border/50">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground font-medium">Penanggung Jawab:</span>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <div className="flex -space-x-2">
                       {task.assignees.map((assignment: any) => (
                         <Avatar
                           key={assignment.user.id}
-                          className="h-8 w-8 border-2 border-background"
+                          className="h-8 w-8 border-2 border-card"
                           title={assignment.user.name || ""}
                         >
                           <AvatarImage src={assignment.user.image || ""} />
-                          <AvatarFallback className="text-xs">
+                          <AvatarFallback className="text-xs bg-primary/10 text-primary font-bold">
                             {getInitials(assignment.user.name || "U")}
                           </AvatarFallback>
                         </Avatar>
                       ))}
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      {task.assignees.length} assignee
+                    <span className="text-sm font-semibold">
+                      {task.assignees.map((a: any) => a.user.name || "Anonim").join(", ")}
                     </span>
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* Labels */}
-                {task.labels?.length > 0 && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Tag className="h-4 w-4 text-muted-foreground" />
-                    <div className="flex gap-2">
-                      {task.labels.map(({ label }: any) => (
-                        <Badge
-                          key={label.id}
-                          variant="outline"
-                          style={{
-                            borderColor: label.color,
-                            color: label.color,
-                          }}
-                        >
-                          {label.name}
-                        </Badge>
-                      ))}
-                    </div>
+              {/* Labels */}
+              {task.labels?.length > 0 && (
+                <div className="flex flex-wrap items-center gap-3">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex flex-wrap gap-2">
+                    {task.labels.map(({ label }: any) => (
+                      <Badge
+                        key={label.id}
+                        className="px-3 py-1 rounded-lg text-xs font-bold"
+                        style={{
+                          backgroundColor: `${label.color}15`,
+                          color: label.color,
+                          borderColor: `${label.color}30`,
+                        }}
+                      >
+                        {label.name}
+                      </Badge>
+                    ))}
                   </div>
-                )}
-              </div>
-
-              {/* Actions */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="gap-2">
-                    <Star className="h-4 w-4" />
-                    {task.starred ? "Unstar" : "Star"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="gap-2">
-                    <Edit className="h-4 w-4" />
-                    Edit Task
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="gap-2 text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                    Hapus Task
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          {/* Subtasks */}
-          {totalSubtasks > 0 && (
-            <div className="rounded-lg border bg-card p-4 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-semibold">
-                  Subtasks ({completedSubtasks}/{totalSubtasks})
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSubtasks(!showSubtasks)}
-                >
-                  {showSubtasks ? "Sembunyikan" : "Tampilkan"}
-                </Button>
-              </div>
-              {showSubtasks && (
-                <div className="space-y-1">
-                  {task.subtasks?.map((subtask: any) => (
-                    <SubtaskItem
-                      key={subtask.id}
-                      subtask={subtask}
-                      onToggle={(completed) =>
-                        handleSubtaskToggle(subtask.id, completed)
-                      }
-                      onUpdate={(title) =>
-                        handleSubtaskUpdate(subtask.id, title)
-                      }
-                      onDelete={() => handleSubtaskDelete(subtask.id)}
-                    />
-                  ))}
                 </div>
               )}
             </div>
-          )}
+          </div>
+
+          {/* Subtasks Section */}
+          <div className="rounded-2xl border bg-card/80 backdrop-blur-sm p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <h3 className="text-lg font-bold">Subtasks</h3>
+                <Badge variant="secondary" className="rounded-lg font-bold">
+                  {completedSubtasks}/{totalSubtasks}
+                </Badge>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSubtasks(!showSubtasks)}
+                className="rounded-lg text-xs font-medium"
+              >
+                {showSubtasks ? "Sembunyikan" : "Tampilkan"}
+              </Button>
+            </div>
+
+            {/* Progress Bar */}
+            {totalSubtasks > 0 && (
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-medium text-muted-foreground">Progress</span>
+                  <span className="text-xs font-bold text-primary">{progress}%</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-primary to-emerald-500 rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Subtasks List */}
+            {showSubtasks && (
+              <div className="space-y-2">
+                {task.subtasks?.map((subtask: any) => (
+                  <SubtaskItem
+                    key={subtask.id}
+                    subtask={subtask}
+                    onToggle={() => handleSubtaskToggle(subtask.id, !subtask.completed)}
+                    onUpdate={(title) => handleSubtaskUpdate(subtask.id, title)}
+                    onDelete={() => handleSubtaskDelete(subtask.id)}
+                  />
+                ))}
+
+                {/* Add Subtask */}
+                <div className="pt-4 border-t border-border/50 mt-4">
+                  {addingSubtask ? (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        placeholder="Judul subtask..."
+                        value={newSubtaskTitle}
+                        onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && newSubtaskTitle.trim()) {
+                            handleSubtaskCreate()
+                          }
+                          if (e.key === "Escape") {
+                            setAddingSubtask(false)
+                            setNewSubtaskTitle("")
+                          }
+                        }}
+                        className="flex-1 rounded-xl"
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleSubtaskCreate}
+                        disabled={!newSubtaskTitle.trim()}
+                        className="rounded-xl"
+                      >
+                        Tambah
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setAddingSubtask(false)
+                          setNewSubtaskTitle("")
+                        }}
+                        className="rounded-xl"
+                      >
+                        Batal
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground rounded-xl"
+                      onClick={() => setAddingSubtask(true)}
+                    >
+                      <Plus className="h-4 w-4" />
+                      Tambah subtask
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Comments Section */}
-          <div className="rounded-lg border bg-card p-4 shadow-sm">
-            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-              <MessageSquare className="h-5 w-5" />
-              Komentar ({comments.length})
-            </h3>
+          <div className="rounded-2xl border bg-card/80 backdrop-blur-sm p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold">Komentar</h3>
+              <Badge variant="secondary" className="rounded-lg font-bold">
+                {comments.length}
+              </Badge>
+            </div>
 
             {/* Comment Form */}
-            <div className="mb-4 flex gap-3">
-              <Avatar className="h-8 w-8">
+            <div className="flex gap-3 mb-6">
+              <Avatar className="h-10 w-10 shrink-0">
                 <AvatarImage src={session?.user?.image || ""} />
-                <AvatarFallback>
+                <AvatarFallback className="bg-primary/10 text-primary font-bold">
                   {getInitials(session?.user?.name || "U")}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1">
+              <div className="flex-1 space-y-3">
                 <Textarea
                   placeholder="Tulis komentar..."
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  className="mb-2 min-h-[80px]"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey && newComment.trim()) {
+                      e.preventDefault()
+                      addCommentMutation.mutate(newComment.trim())
+                    }
+                  }}
+                  className="min-h-[80px] resize-none rounded-xl"
                 />
                 <div className="flex justify-end">
                   <Button
-                    size="sm"
-                    onClick={handleAddComment}
-                    disabled={submittingComment || !newComment.trim()}
+                    onClick={() => addCommentMutation.mutate(newComment.trim())}
+                    disabled={addCommentMutation.isPending || !newComment.trim()}
+                    className="rounded-xl font-bold"
                   >
-                    {submittingComment && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Kirim
+                    {addCommentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Kirim Komentar
                   </Button>
                 </div>
               </div>
             </div>
 
             {/* Comments List */}
-            <Separator className="my-4" />
-            <div className="space-y-4">
+            <Separator className="my-6" />
+            <div className="space-y-6">
               {comments.length === 0 ? (
-                <p className="text-center text-muted-foreground">
-                  Belum ada komentar
-                </p>
+                <div className="text-center py-8">
+                  <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
+                  <p className="text-muted-foreground text-sm">Belum ada komentar</p>
+                </div>
               ) : (
                 comments.map((comment) => (
-                  <div key={comment.id} className="flex gap-3">
-                    <Avatar className="h-8 w-8">
+                  <div key={comment.id} className="flex gap-3 animate-in fade-in slide-in-from-bottom-2">
+                    <Avatar className="h-10 w-10 shrink-0">
                       <AvatarImage src={comment.user.image || ""} />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold">
                         {getInitials(comment.user.name || "U")}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">
-                          {comment.user.name || "Anonim"}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(comment.createdAt), {
-                            addSuffix: true,
-                            locale: id,
-                          })}
-                        </span>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm">{comment.user.name || "Anonim"}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(comment.createdAt), {
+                              addSuffix: true,
+                              locale: id,
+                            })}
+                          </span>
+                        </div>
+                        {comment.user.id === session?.user?.id && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                            onClick={() => deleteCommentMutation.mutate(comment.id)}
+                            disabled={deleteCommentMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
-                      <p className="text-sm">{comment.content}</p>
+                      <p className="text-sm leading-relaxed bg-muted/30 rounded-xl p-3">
+                        {comment.content}
+                      </p>
                     </div>
                   </div>
                 ))
@@ -515,36 +732,40 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
           </div>
 
           {/* Activity Log */}
-          <div className="rounded-lg border bg-card p-4 shadow-sm">
-            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-              <Activity className="h-5 w-5" />
-              Aktivitas
-            </h3>
-            <div className="space-y-3">
+          <div className="rounded-2xl border bg-card/80 backdrop-blur-sm p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <Activity className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-bold">Aktivitas</h3>
+              <Badge variant="secondary" className="rounded-lg font-bold">
+                {activities.length}
+              </Badge>
+            </div>
+            <div className="space-y-4">
               {activities.length === 0 ? (
-                <p className="text-center text-muted-foreground">
-                  Belum ada aktivitas
-                </p>
+                <div className="text-center py-8">
+                  <Activity className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
+                  <p className="text-muted-foreground text-sm">Belum ada aktivitas</p>
+                </div>
               ) : (
-                activities.map((activity) => (
-                  <div key={activity.id} className="flex gap-3 text-sm">
-                    <Avatar className="h-6 w-6">
+                activities.map((activity, index) => (
+                  <div key={activity.id} className="flex gap-3 animate-in fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                    <Avatar className="h-8 w-8 shrink-0">
                       <AvatarImage src={activity.user.image || ""} />
-                      <AvatarFallback className="text-xs">
+                      <AvatarFallback className="text-xs bg-muted text-muted-foreground">
                         {getInitials(activity.user.name || "U")}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <span className="font-medium">
-                        {activity.user.name || "Anonim"}
-                      </span>{" "}
-                      {activity.details}
-                      <div className="text-xs text-muted-foreground">
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm">
+                        <span className="font-bold">{activity.user.name || "Anonim"}</span>{" "}
+                        <span className="text-muted-foreground">{activity.details}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
                         {formatDistanceToNow(new Date(activity.createdAt), {
                           addSuffix: true,
                           locale: id,
                         })}
-                      </div>
+                      </p>
                     </div>
                   </div>
                 ))
@@ -553,28 +774,42 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* Right Column - Sidebar */}
         <div className="space-y-6">
-          {/* Quick Info */}
-          <div className="rounded-lg border bg-card p-4 shadow-sm">
-            <h3 className="mb-3 font-semibold">Info Cepat</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Dibuat</span>
-                <span>
+          {/* Quick Info Card */}
+          <div className="rounded-2xl border bg-card/80 backdrop-blur-sm p-6 shadow-sm sticky top-6">
+            <h3 className="font-bold text-sm mb-4 uppercase tracking-wider text-muted-foreground">Info Task</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-2 border-b border-border/50">
+                <span className="text-sm text-muted-foreground">Dibuat</span>
+                <span className="text-sm font-semibold">
                   {format(new Date(task.createdAt), "d MMM yyyy", { locale: id })}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Diperbarui</span>
-                <span>
+              <div className="flex items-center justify-between py-2 border-b border-border/50">
+                <span className="text-sm text-muted-foreground">Diperbarui</span>
+                <span className="text-sm font-semibold">
                   {format(new Date(task.updatedAt), "d MMM yyyy", { locale: id })}
                 </span>
               </div>
               {task.createdBy && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Dibuat oleh</span>
-                  <span>{task.createdBy.name || "Anonim"}</span>
+                <div className="flex items-center justify-between py-2 border-b border-border/50">
+                  <span className="text-sm text-muted-foreground">Pembuat</span>
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={task.createdBy.image || ""} />
+                      <AvatarFallback className="text-[10px]">
+                        {getInitials(task.createdBy.name || "U")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-semibold">{task.createdBy.name || "Anonim"}</span>
+                  </div>
+                </div>
+              )}
+              {task.duration && (
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm text-muted-foreground">Durasi</span>
+                  <span className="text-sm font-semibold">{task.duration} menit</span>
                 </div>
               )}
             </div>
@@ -583,4 +818,100 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
       </div>
     </div>
   )
+
+  // Handler functions
+  function handleSubtaskToggle(subtaskId: string, completed: boolean) {
+    // Optimistic update
+    queryClient.setQueryData(["task", taskId], (old: any) => ({
+      ...old,
+      subtasks: old?.subtasks?.map((s: any) => 
+        s.id === subtaskId ? { ...s, completed } : s
+      ),
+    }))
+
+    fetch(`/api/subtasks/${subtaskId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error()
+        queryClient.invalidateQueries({ queryKey: ["task", taskId] })
+        queryClient.invalidateQueries({ queryKey: ["task-activity", taskId] })
+      })
+      .catch(() => {
+        // Rollback
+        queryClient.invalidateQueries({ queryKey: ["task", taskId] })
+        toast({ title: "Error", description: "Gagal mengubah status subtask", variant: "destructive" })
+      })
+  }
+
+  function handleSubtaskUpdate(subtaskId: string, title: string) {
+    return fetch(`/api/subtasks/${subtaskId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error()
+        refetchTask()
+      })
+      .catch(() => {
+        toast({ title: "Error", description: "Gagal memperbarui subtask", variant: "destructive" })
+        throw new Error()
+      })
+  }
+
+  function handleSubtaskDelete(subtaskId: string) {
+    fetch(`/api/subtasks/${subtaskId}`, { method: "DELETE" })
+      .then((res) => {
+        if (!res.ok) throw new Error()
+        refetchTask()
+        queryClient.invalidateQueries({ queryKey: ["task-activity", taskId] })
+        toast({ title: "Berhasil", description: "Subtask dihapus" })
+      })
+      .catch(() => {
+        toast({ title: "Error", description: "Gagal menghapus subtask", variant: "destructive" })
+      })
+  }
+
+  function handleSubtaskCreate() {
+    if (!newSubtaskTitle.trim()) return
+    
+    const tempId = `temp-${Date.now()}`
+    const optimisticSubtask = {
+      id: tempId,
+      title: newSubtaskTitle.trim(),
+      completed: false,
+    }
+
+    // Optimistic add
+    queryClient.setQueryData(["task", taskId], (old: any) => ({
+      ...old,
+      subtasks: [...(old?.subtasks || []), optimisticSubtask],
+    }))
+
+    setNewSubtaskTitle("")
+    setAddingSubtask(false)
+
+    fetch(`/api/tasks/${taskId}/subtasks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: newSubtaskTitle.trim() }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error()
+        queryClient.invalidateQueries({ queryKey: ["task", taskId] })
+        queryClient.invalidateQueries({ queryKey: ["task-activity", taskId] })
+        toast({ title: "Berhasil", description: "Subtask ditambahkan" })
+      })
+      .catch(() => {
+        // Rollback - remove temp subtask
+        queryClient.setQueryData(["task", taskId], (old: any) => ({
+          ...old,
+          subtasks: old?.subtasks?.filter((s: any) => s.id !== tempId),
+        }))
+        toast({ title: "Error", description: "Gagal menambahkan subtask", variant: "destructive" })
+      })
+  }
 }

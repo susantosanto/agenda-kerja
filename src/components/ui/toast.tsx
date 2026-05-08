@@ -129,11 +129,13 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   return (
-    <ToastProviderContext.Provider
-      value={{ toasts, addToast, updateToast, dismissToast, removeToast }}
-    >
-      {children}
-    </ToastProviderContext.Provider>
+    <ToastPrimitives.Provider>
+      <ToastProviderContext.Provider
+        value={{ toasts, addToast, updateToast, dismissToast, removeToast }}
+      >
+        {children}
+      </ToastProviderContext.Provider>
+    </ToastPrimitives.Provider>
   )
 }
 
@@ -142,7 +144,10 @@ const useToast = () => {
   if (!context) {
     throw new Error("useToast must be used within a ToastProvider")
   }
-  return context
+  return {
+    ...context,
+    toast: context.addToast,
+  }
 }
 
 const toastVariants = cva(
@@ -164,13 +169,18 @@ const toastVariants = cva(
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   ToastProps
->(({ className, variant, ...props }, ref) => (
-  <ToastPrimitives.Root
-    ref={ref}
-    className={cn(toastVariants({ variant }), className)}
-    {...props}
-  />
-))
+>(({ className, variant, ...props }, ref) => {
+  // Filter out custom props that shouldn't go to the DOM
+  const { onDismiss, ...rest } = props as any
+  
+  return (
+    <ToastPrimitives.Root
+      ref={ref}
+      className={cn(toastVariants({ variant }), className)}
+      {...rest}
+    />
+  )
+})
 Toast.displayName = ToastPrimitives.Root.displayName
 
 const ToastAction = React.forwardRef<

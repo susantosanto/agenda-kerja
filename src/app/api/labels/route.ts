@@ -9,7 +9,13 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url)
-  const communityId = searchParams.get("communityId")
+  let communityId = searchParams.get("communityId")
+
+  // Fallback to the first community if not provided (Single Community Model)
+  if (!communityId) {
+    const firstCommunity = await prisma.community.findFirst()
+    communityId = firstCommunity?.id || null
+  }
 
   if (!communityId) {
     return NextResponse.json({ error: "Missing communityId" }, { status: 400 })
