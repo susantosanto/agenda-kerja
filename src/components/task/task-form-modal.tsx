@@ -4,8 +4,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Loader2, Calendar } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Loader2, X } from "lucide-react"
 
 import {
   Dialog,
@@ -142,65 +141,83 @@ export function TaskFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl w-[95vw] sm:w-full bg-black border-zinc-800/30 shadow-2xl rounded-[2.5rem] p-0 overflow-hidden flex flex-col max-h-[90vh]">
+      <DialogContent className="max-w-xl w-[95vw] sm:w-full bg-zinc-950 border border-zinc-800/50 shadow-2xl rounded-2xl p-0 overflow-hidden flex flex-col max-h-[85vh]">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full overflow-hidden">
-            <DialogHeader className="px-8 pt-8 pb-6 bg-white/[0.01] shrink-0 border-b border-zinc-800/20">
-              <DialogTitle className="text-3xl font-black tracking-tighter text-white">
-                {taskId ? "Ubah Tugas" : "Buat Tugas Baru"}
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800/30 shrink-0">
+              <DialogTitle className="text-sm font-medium text-zinc-300 tracking-tight">
+                {taskId ? "Ubah Tugas" : "Tugas Baru"}
               </DialogTitle>
-              <DialogDescription className="text-white/20 font-bold uppercase tracking-widest text-[9px] mt-2">
-                {taskId ? "Sinkronisasi alur kerja premium" : "Inisialisasi tugas baru"}
-              </DialogDescription>
-            </DialogHeader>
+              <button 
+                type="button" 
+                onClick={() => onOpenChange(false)}
+                className="h-8 w-8 flex items-center justify-center rounded-lg text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-200"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
-            <div className="flex-1 overflow-y-auto px-8 space-y-8 py-8 scrollbar-hide">
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-6 space-y-5 py-6 scrollbar-hide">
+              {/* Judul Tugas */}
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10 ml-2">Judul Tugas</FormLabel>
+                  <FormItem className="space-y-1.5">
+                    <FormLabel className="text-xs font-medium text-zinc-400">Judul tugas</FormLabel>
                     <FormControl>
-                      <Input placeholder="Contoh: Menyusun laporan bulanan" {...field} className="h-14 text-base font-black tracking-tight" />
+                      <Input 
+                        placeholder="contoh: Menyusun laporan bulanan" 
+                        {...field} 
+                        className="h-11 text-sm rounded-xl" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
+              {/* Detail Strategis */}
               <FormField
                 control={form.control}
                 name="description"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10 ml-2">Detail Strategis</FormLabel>
+                  <FormItem className="space-y-1.5">
+                    <FormLabel className="text-xs font-medium text-zinc-400">Detail strategis</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Detail informasi tugas..." {...field} value={field.value || ""} className="min-h-[160px]" />
+                      <Textarea 
+                        placeholder="deskripsi tugas..." 
+                        {...field} 
+                        value={field.value || ""} 
+                        className="min-h-[120px] text-sm rounded-xl" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              {/* Priority & Status */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="priority"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10 ml-2">Tingkat Prioritas</FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-medium text-zinc-400">Prioritas</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="h-14 font-black">
+                          <SelectTrigger className="h-11 text-sm rounded-xl">
                             <SelectValue placeholder="Pilih" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="rounded-[1.5rem] border-zinc-800/50 bg-zinc-950 text-white">
-                          <SelectItem value="P1" className="font-bold text-red-500">P1 - Sangat Penting</SelectItem>
-                          <SelectItem value="P2" className="font-bold text-orange-500">P2 - Penting</SelectItem>
-                          <SelectItem value="P3" className="font-bold text-blue-500">P3 - Normal</SelectItem>
-                          <SelectItem value="P4" className="font-bold text-zinc-500">P4 - Rendah</SelectItem>
+                        <SelectContent className="rounded-xl border-zinc-800/50 bg-zinc-900 text-white">
+                          <SelectItem value="P1" className="text-sm text-red-400">P1 — Sangat Penting</SelectItem>
+                          <SelectItem value="P2" className="text-sm text-orange-400">P2 — Penting</SelectItem>
+                          <SelectItem value="P3" className="text-sm text-blue-400">P3 — Normal</SelectItem>
+                          <SelectItem value="P4" className="text-sm text-zinc-500">P4 — Rendah</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormItem>
@@ -211,18 +228,18 @@ export function TaskFormModal({
                   control={form.control}
                   name="status"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10 ml-2">Status Tugas</FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-medium text-zinc-400">Status</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="h-14 font-black">
+                          <SelectTrigger className="h-11 text-sm rounded-xl">
                             <SelectValue placeholder="Pilih" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="rounded-[1.5rem] border-zinc-800/50 bg-zinc-950 text-white">
-                          <SelectItem value="TODO" className="font-bold">Belum Dimulai</SelectItem>
-                          <SelectItem value="IN_PROGRESS" className="font-bold text-amber-500">Sedang Dikerjakan</SelectItem>
-                          <SelectItem value="DONE" className="font-bold text-emerald-500">Selesai</SelectItem>
+                        <SelectContent className="rounded-xl border-zinc-800/50 bg-zinc-900 text-white">
+                          <SelectItem value="TODO" className="text-sm text-zinc-300">Belum Dimulai</SelectItem>
+                          <SelectItem value="IN_PROGRESS" className="text-sm text-amber-400">Sedang Dikerjakan</SelectItem>
+                          <SelectItem value="DONE" className="text-sm text-emerald-400">Selesai</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormItem>
@@ -230,17 +247,23 @@ export function TaskFormModal({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pb-4">
+              {/* Dates */}
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="startDate"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10 ml-2">Waktu Dimulai</FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-medium text-zinc-400">Mulai</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type="datetime-local" className="h-14 font-black pr-12" {...field} value={field.value || ""} onChange={(e) => field.onChange(e.target.value || null)} />
-                          <Calendar className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/10 pointer-events-none" />
+                          <Input 
+                            type="date" 
+                            className="h-11 text-sm rounded-xl [color-scheme:dark]" 
+                            {...field} 
+                            value={field.value || ""} 
+                            onChange={(e) => field.onChange(e.target.value || null)} 
+                          />
                         </div>
                       </FormControl>
                     </FormItem>
@@ -251,12 +274,17 @@ export function TaskFormModal({
                   control={form.control}
                   name="dueDate"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.4em] text-white/10 ml-2">Tenggat Akhir</FormLabel>
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-xs font-medium text-zinc-400">Selesai</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type="datetime-local" className="h-14 font-black pr-12 text-red-500" {...field} value={field.value || ""} onChange={(e) => field.onChange(e.target.value || null)} />
-                          <Calendar className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-red-500/20 pointer-events-none" />
+                          <Input 
+                            type="date" 
+                            className="h-11 text-sm rounded-xl [color-scheme:dark]" 
+                            {...field} 
+                            value={field.value || ""} 
+                            onChange={(e) => field.onChange(e.target.value || null)} 
+                          />
                         </div>
                       </FormControl>
                     </FormItem>
@@ -265,17 +293,26 @@ export function TaskFormModal({
               </div>
             </div>
 
-            <div className="px-8 pb-10 pt-4 bg-white/[0.01] shrink-0 flex flex-col items-center gap-6 border-t border-zinc-800/20">
-              <div className="flex flex-col-reverse sm:flex-row items-center justify-center gap-6 w-full max-w-md mx-auto">
-                <button type="button" onClick={() => onOpenChange(false)} disabled={isLoading} className="w-full sm:w-auto px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-white transition-all duration-300">
-                  Batalkan
-                </button>
-                
-                <Button type="submit" disabled={isLoading} className="w-full sm:w-64 h-14 bg-zinc-800 text-white font-black rounded-full border-t border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:bg-zinc-700 active:scale-95 transition-all duration-500">
-                  {isLoading ? <Loader2 className="mr-3 h-5 w-5 animate-spin" /> : null}
-                  {taskId ? "SIMPAN PERUBAHAN" : "INISIALISASI TUGAS"}
-                </Button>
-              </div>
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-zinc-800/30 shrink-0">
+              <button 
+                type="button" 
+                onClick={() => onOpenChange(false)} 
+                disabled={isLoading}
+                className="px-5 py-2.5 text-sm font-medium text-zinc-500 hover:text-zinc-300 transition-colors duration-200"
+              >
+                Batal
+              </button>
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+                className="h-11 px-6 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium rounded-xl border border-zinc-700/50 shadow-sm active:scale-[0.97] transition-all duration-200"
+              >
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                {taskId ? "Simpan" : "Buat Tugas"}
+              </Button>
             </div>
           </form>
         </Form>
