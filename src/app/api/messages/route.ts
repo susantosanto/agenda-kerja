@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
     const senderId = session.user.id
     const senderName = session.user.name || user.name || "User"
-    const senderImage = session.user.image || user.image || null
+    const senderImage = session.user.image || user.image || undefined
 
     // ✅ BROADCAST ke SEMUA user KECUALI pengirim (global notification)
     createServerClient().broadcastToAll(senderId, {

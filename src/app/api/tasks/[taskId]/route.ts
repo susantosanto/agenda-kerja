@@ -146,7 +146,7 @@ export async function PATCH(
         link: `/tasks/${taskId}`,
         senderId,
         senderName,
-        senderImage: session.user.image || null,
+        senderImage: session.user.image || undefined,
         timestamp: new Date().toISOString(),
         metadata: {
           taskId,
@@ -191,7 +191,7 @@ export async function PATCH(
       link: `/tasks/${taskId}`,
       senderId,
       senderName,
-      senderImage: session.user.image || null,
+      senderImage: session.user.image || undefined,
       timestamp: new Date().toISOString(),
       metadata: { taskId },
     })
@@ -219,7 +219,7 @@ export async function PATCH(
     link: `/tasks/${taskId}`,
     senderId: session.user.id,
     senderName: session.user.name || "User",
-    senderImage: session.user.image,
+    senderImage: session.user.image ?? undefined,
     timestamp: new Date().toISOString(),
     metadata: { taskId },
   })
@@ -267,7 +267,7 @@ export async function DELETE(
     link: "/dashboard/all-tasks",
     senderId,
     senderName,
-    senderImage: user?.image,
+    senderImage: user?.image ?? undefined,
     timestamp: new Date().toISOString(),
     metadata: {
       deletedTaskId: taskId,
@@ -283,7 +283,7 @@ export async function DELETE(
     link: "/dashboard/all-tasks",
     senderId,
     senderName,
-    senderImage: user?.image,
+    senderImage: user?.image ?? undefined,
     timestamp: new Date().toISOString(),
     metadata: {
       deletedTaskId: taskId,

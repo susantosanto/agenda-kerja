@@ -76,7 +76,7 @@ export async function POST(
   // ✅ BROADCAST ke SEMUA user KECUALI pengirim - SAMA SEPERTI CHAT (yang работа)!
   const senderId = session.user.id
   const senderName = session.user.name || "User"
-  const senderImage = session.user.image || null
+  const senderImage = session.user.image || undefined
 
   // Get single server client instance
   const serverClient = createServerClient()

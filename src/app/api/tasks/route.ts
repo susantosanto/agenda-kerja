@@ -119,8 +119,8 @@ export async function POST(request: Request) {
     body: `${user.name} membuat task baru: ${title}`,
     link: `/tasks/${task.id}`,
     senderId: user.id,
-    senderName: user.name,
-    senderImage: user.image,
+    senderName: user.name ?? undefined,
+    senderImage: user.image ?? undefined,
     timestamp: new Date().toISOString(),
     metadata: {
       taskId: task.id,
@@ -134,8 +134,8 @@ export async function POST(request: Request) {
     body: `${user.name} membuat task baru: ${title}`,
     link: `/tasks/${task.id}`,
     senderId: user.id,
-    senderName: user.name,
-    senderImage: user.image,
+    senderName: user.name ?? undefined,
+    senderImage: user.image ?? undefined,
     timestamp: new Date().toISOString(),
     metadata: {
       taskId: task.id,

@@ -5,8 +5,10 @@
 // Event types for real-time updates
 export type RealtimeEventType = 
   | "comment-added"
+  | "comment-deleted"
   | "task-updated"
   | "task-created"
+  | "task-deleted"
   | "subtask-updated"
   | "mention"
   | "chat-message"
@@ -50,11 +52,11 @@ export const SOUND_PRESETS = {
 type EventListener = (event: RealtimeEvent) => void
 
 class RealtimeServer {
-  private listeners: Map<string, Set<EventListener>> = new Map()
+  listeners: Map<string, Set<EventListener>> = new Map()
   // Map userId to Set of controllers for user-specific subscriptions
   private userSubscriptions: Map<string, Set<ReadableStreamDefaultController>> = new Map()
   // Global subscriptions (all users get these)
-  private globalSubscriptions: Set<ReadableStreamDefaultController> = new Map()
+  private globalSubscriptions: Set<ReadableStreamDefaultController> = new Set()
   // Legacy task subscriptions (for backwards compatibility)
   // Key: taskId, Value: Map<userId, controller>
   private taskSubscriptions: Map<string, Map<string, ReadableStreamDefaultController>> = new Map()
@@ -255,8 +257,8 @@ class RealtimeServer {
         }
         
         try {
-          if (controller && controller.enqueue) {
-            controller.enqueue(encoded)
+          if (controller && typeof (controller as any).enqueue === 'function') {
+            ;(controller as any).enqueue(encoded)
             console.log(`[broadcastToTask] ✅ SENT to user: ${subscribedUserId}`)
           } else {
             console.log(`[broadcastToTask] ❌ Invalid controller for:`, subscribedUserId)
@@ -462,6 +464,7 @@ export function createGlobalRealtimeClient() {
 // Legacy compatibility - keeps task-specific subscriptions working
 export function createRealtimeClient() {
   const eventSource: Map<string, EventSource> = new Map()
+  let currentTaskId: string | null = null
 
   function connect(taskId: string, callbacks: {
     onCommentAdded?: (comment: any) => void
@@ -472,6 +475,7 @@ export function createRealtimeClient() {
     onMention?: (data: any) => void
     onError?: (error: Event) => void
   }) {
+    currentTaskId = taskId
     if (eventSource.has(taskId)) {
       return
     }
@@ -567,9 +571,10 @@ export function createRealtimeClient() {
       callbacks.onError?.(error)
       
       // Attempt reconnect after 5 seconds
-      if (source?.readyState === EventSource.CLOSED) {
+      if (source?.readyState === EventSource.CLOSED && currentTaskId) {
+        const reconnectTaskId = currentTaskId
         setTimeout(() => {
-          connect(callbacks)
+          connect(reconnectTaskId, callbacks)
         }, 5000)
       }
     }

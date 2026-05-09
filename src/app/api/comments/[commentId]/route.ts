@@ -96,7 +96,7 @@ export async function DELETE(
     link: `/tasks/${taskId}`,
     senderId,
     senderName,
-    senderImage: user.image,
+    senderImage: user.image ?? undefined,
     timestamp: new Date().toISOString(),
     metadata: {
       taskId,
