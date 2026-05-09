@@ -111,7 +111,6 @@ export function TaskItem({
       onMouseEnter={() => onPrefetch?.()}
     >
       <div className="flex gap-5">
-        {/* Checkbox - Ultra Refined */}
         <button
           onClick={(e) => { e.stopPropagation(); onToggleComplete?.(); }}
           className={cn(
@@ -124,7 +123,6 @@ export function TaskItem({
           {task.status === "DONE" && <CheckCircle2 className="h-3 w-3" strokeWidth={4} />}
         </button>
 
-        {/* Content */}
         <div className="flex-1 space-y-4 min-w-0">
           <div className="flex items-start justify-between gap-4">
             <h4 className={cn("text-[16px] font-black tracking-tight text-white leading-tight transition-all duration-500", task.status === "DONE" && "text-white/20 font-medium line-through")}>
@@ -144,7 +142,6 @@ export function TaskItem({
             </p>
           )}
 
-          {/* Meta: Black Uppercase Precision */}
           <div className="flex items-center gap-4 pt-2 text-[10px] font-black uppercase tracking-[0.3em] text-white/10">
             <span className="flex items-center gap-2 shrink-0">
               <span className={cn("h-1 w-1 rounded-full", priorityDotColors[task.priority])} />
@@ -175,7 +172,6 @@ export function TaskItem({
           </div>
         </div>
 
-        {/* Actions - Minimalist */}
         <div className="flex flex-col justify-start">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
