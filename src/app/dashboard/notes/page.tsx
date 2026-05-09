@@ -215,7 +215,7 @@ export default function NotesPage() {
                     className="pl-10 w-full md:w-[300px] h-11 bg-muted/30 border-border/50 rounded-xl focus-visible:ring-primary/20"
                   />
                </div>
-               <Button onClick={handleOpenCreate} className="h-11 px-6 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-xl shadow-primary/20 active:scale-95 transition-all">
+               <Button onClick={handleOpenCreate} className="h-11 px-6 bg-primary text-primary-foreground font-black rounded-xl shadow-xl shadow-primary/20 active:scale-95 transition-all">
                   <Plus className="mr-2 h-5 w-5" />
                   Baru
                </Button>
@@ -310,7 +310,7 @@ export default function NotesPage() {
             </div>
             <DialogFooter className="p-8 pt-0 border-t border-border/50 flex justify-between items-center bg-muted/5">
               <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)} className="font-bold text-muted-foreground">Batal</Button>
-              <Button type="submit" className="h-12 px-10 bg-primary hover:bg-primary/90 text-white font-black rounded-xl shadow-xl shadow-primary/20">
+              <Button type="submit" className="h-12 px-10 bg-primary text-primary-foreground font-black rounded-xl shadow-xl shadow-primary/20">
                 {editingNote ? "Simpan Perubahan" : "Simpan Catatan"}
               </Button>
             </DialogFooter>

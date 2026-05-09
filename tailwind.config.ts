@@ -13,6 +13,16 @@ export default {
         xs: "475px",
       },
       colors: {
+        obsidian: {
+          DEFAULT: "#050505",
+          elevated: "#121214",
+          surface: "#1A1A1D",
+        },
+        prism: {
+          emerald: "#00FF95",
+          silver: "#E5E7EB",
+          slate: "#3F3F46",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -62,14 +72,20 @@ export default {
         full: "var(--radius)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
+        mono: ["Geist Mono", "monospace"],
       },
       animation: {
         "fade-in": "fadeIn 0.3s ease-out",
         "slide-up": "slideUp 0.3s ease-out",
         "scale-in": "scaleIn 0.2s ease-out",
+        "shimmer": "shimmer 2s linear infinite",
       },
       keyframes: {
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
         fadeIn: {
           from: { opacity: "0" },
           to: { opacity: "1" },

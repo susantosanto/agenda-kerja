@@ -221,140 +221,75 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
   const pendingCount = tasks.filter(t => t.status === "TODO").length
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Premium Header */}
-      <div className="bg-transparent">
-        <div className="max-w-6xl mx-auto px-6 pt-6 pb-4">
-          {/* Stats Bar - Mobile First (no scroll) */}
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-slate-500/10 border border-slate-500/20">
-              <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-slate-500 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-sm sm:text-base font-black text-slate-500 tabular-nums">{pendingCount}</span>
-                <span className="text-[9px] sm:text-[10px] font-semibold text-slate-500/70 ml-1">Pending</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-amber-500/10 border border-amber-500/20">
-              <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-sm sm:text-base font-black text-amber-500 tabular-nums">{inProgressCount}</span>
-                <span className="text-[9px] sm:text-[10px] font-semibold text-amber-500/70 ml-1">Progress</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-              <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-emerald-500 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-sm sm:text-base font-black text-emerald-500 tabular-nums">{completedCount}</span>
-                <span className="text-[9px] sm:text-[10px] font-semibold text-emerald-500/70 ml-1">Selesai</span>
-              </div>
-            </div>
+    <div className="min-h-screen bg-black selection:bg-white/10 selection:text-white">
+      {/* ─── PREMIUM TOOLBAR ─── */}
+      <div className="sticky top-0 z-30 bg-black/60 backdrop-blur-3xl border-b border-white/[0.02]">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-4">
+          
+          {/* Brand/View Title - Minimalist */}
+          <div className="flex items-center gap-3">
+            <div className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.4em]">Agenda Kerja</span>
           </div>
 
-          {/* Toolbar - Mobile First */}
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 flex-1 min-w-0">
-              {/* Sort */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 sm:h-9 rounded-lg sm:rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-[11px] sm:text-xs gap-1.5 px-2.5 sm:px-3">
-                    <SortAsc className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="hidden xs:inline">Sort</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1 min-w-[160px]">
-                  <DropdownMenuItem onClick={() => setSortBy("dueDate")} className={cn("rounded-lg text-sm", sortBy === "dueDate" && "bg-primary/10 text-primary")}>
-                    <CalendarDays className="mr-2 h-4 w-4" />
-                    Due Date
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("priority")} className={cn("rounded-lg text-sm", sortBy === "priority" && "bg-primary/10 text-primary")}>
-                    <Flame className="mr-2 h-4 w-4" />
-                    Priority
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("title")} className={cn("rounded-lg text-sm", sortBy === "title" && "bg-primary/10 text-primary")}>
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Title
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("createdAt")} className={cn("rounded-lg text-sm", sortBy === "createdAt" && "bg-primary/10 text-primary")}>
-                    <Clock className="mr-2 h-4 w-4" />
-                    Recently Added
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+          {/* Controls - Icon Only for Mobile */}
+          <div className="flex items-center gap-1 bg-white/[0.03] p-1 rounded-2xl border border-white/[0.02]">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5">
+                  <SortAsc className="h-4 w-4 text-white/60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 rounded-[1.5rem] border-white/5 bg-zinc-950/98 backdrop-blur-3xl p-2 shadow-2xl">
+                <DropdownMenuItem onClick={() => setSortBy("dueDate")} className="rounded-xl px-3 py-2.5">
+                  <CalendarDays className="mr-3 h-4 w-4 text-white/40" />
+                  <span className="text-sm font-bold">Urutkan Tenggat</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("priority")} className="rounded-xl px-3 py-2.5">
+                  <Flame className="mr-3 h-4 w-4 text-white/40" />
+                  <span className="text-sm font-bold">Urutkan Prioritas</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              {/* Group */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 sm:h-9 rounded-lg sm:rounded-xl border-border/60 bg-muted/30 hover:bg-muted/50 font-medium text-[11px] sm:text-xs gap-1.5 px-2.5 sm:px-3">
-                    <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
-                    {groupBy === "none" ? "Group" : groupBy === "status" ? "Status" : "Priority"}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="rounded-xl border-border/60 bg-card/95 backdrop-blur-sm shadow-xl p-1 min-w-[160px]">
-                  <DropdownMenuItem onClick={() => setGroupBy("none")} className={cn("rounded-lg text-sm", groupBy === "none" && "bg-primary/10 text-primary")}>
-                    No Grouping
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setGroupBy("status")} className={cn("rounded-lg text-sm", groupBy === "status" && "bg-primary/10 text-primary")}>
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Group by Status
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setGroupBy("priority")} className={cn("rounded-lg text-sm", groupBy === "priority" && "bg-primary/10 text-primary")}>
-                    <Flame className="mr-2 h-4 w-4" />
-                    Group by Priority
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <div className="h-4 w-px bg-white/[0.05] mx-1" />
 
-            {/* View Toggle */}
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/30 border border-border/50 shrink-0">
-              <button
-                onClick={() => setViewMode("list")}
-                className={cn(
-                  "p-1.5 sm:p-2 rounded-lg transition-all",
-                  viewMode === "list" ? "bg-background shadow-md" : "hover:bg-muted/50"
-                )}
-                title="List view"
-              >
-                <List className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", viewMode === "list" ? "text-primary" : "text-muted-foreground")} />
-              </button>
-              <button
-                onClick={() => setViewMode("grid")}
-                className={cn(
-                  "p-1.5 sm:p-2 rounded-lg transition-all",
-                  viewMode === "grid" ? "bg-background shadow-md" : "hover:bg-muted/50"
-                )}
-                title="Grid view"
-              >
-                <LayoutGrid className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", viewMode === "grid" ? "text-primary" : "text-muted-foreground")} />
-              </button>
-            </div>
+            <button
+              onClick={() => setViewMode(viewMode === "list" ? "grid" : "list")}
+              className="h-10 w-10 flex items-center justify-center rounded-xl hover:bg-white/5 transition-all text-white/60"
+            >
+              {viewMode === "list" ? <LayoutGrid className="h-4 w-4" /> : <List className="h-4 w-4" />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Task List - Mobile First */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-20">
+      {/* ─── TASK FEED ─── */}
+      <div className="max-w-6xl mx-auto px-4 pt-8 pb-32">
           {tasks.length === 0 ? (
             <div
               className="flex flex-col items-center justify-center py-16 sm:py-24 text-center animate-in fade-in slide-in-from-top-4 duration-500"
             >
               <div className="relative mb-6 sm:mb-8">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl scale-150" />
-                <div className="relative h-16 w-16 sm:h-24 sm:w-24 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 flex items-center justify-center">
-                  <Target className="h-7 w-7 sm:h-10 sm:w-10 text-primary/50" />
+                <div className="absolute inset-0 bg-white/5 rounded-full blur-3xl scale-150" />
+                <div className="relative h-16 w-16 sm:h-24 sm:w-24 rounded-2xl sm:rounded-3xl bg-white/[0.02] border border-white/5 flex items-center justify-center">
+                  <div className="text-4xl sm:text-6xl grayscale opacity-20 group-hover:opacity-100 transition-all duration-500">✨</div>
                 </div>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">No tasks yet</h3>
-              <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-md">
-                Start organizing your work by creating your first task.
-              </p>
+              <div className="text-center space-y-2">
+                <h3 className="text-xl sm:text-2xl font-black text-white/90 tracking-tight">Agenda Anda bersih</h3>
+                <p className="text-xs text-white/30 max-w-[280px] mx-auto leading-relaxed font-bold uppercase tracking-widest">
+                  Nikmati ketenangan ini.
+                </p>
+              </div>
               <Button 
-                onClick={() => setCreateTaskOpen(true)}
-                className="h-12 px-8 rounded-xl bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 text-white font-bold shadow-lg shadow-primary/25"
+                onClick={() => onTaskUpdated?.()}
+                variant="outline"
+                className="h-12 px-8 rounded-xl bg-white/[0.02] border-zinc-800 text-white hover:bg-white hover:text-black transition-all duration-300 font-bold"
               >
-                <Plus className="mr-2 h-5 w-5" />
-                Create First Task
+                Perbarui Daftar
               </Button>
+
             </div>
           ) : (
             <div className="space-y-8 animate-in fade-in duration-300">
@@ -370,15 +305,14 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
                     key={groupKey || "all"}
                     className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300"
                   >
-                    {/* Group Header - Mobile First */}
+                    {/* Group Header - High End Minimalist */}
                     {groupBy !== "none" && groupConfig && (
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <div className={cn("flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl", groupConfig.bg)}>
-                          <groupConfig.icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", groupConfig.color)} />
-                          <span className={cn("text-xs sm:text-sm font-bold", groupConfig.color)}>{groupConfig.label}</span>
+                      <div className="flex items-center justify-between pb-2 px-1">
+                        <div className="flex items-center gap-3">
+                          <span className={cn("text-xs font-black uppercase tracking-[0.3em]", groupConfig.color)}>{groupConfig.label}</span>
+                          <span className="h-1 w-1 rounded-full bg-white/10" />
+                          <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{groupTasks.length} Tugas</span>
                         </div>
-                        <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
-                        <span className="text-[10px] sm:text-xs font-medium text-muted-foreground/60">{groupTasks.length} tasks</span>
                       </div>
                     )}
 
@@ -431,18 +365,18 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
         aria-label="Create New Task"
       >
         {/* Outer glow — subtle by default, intensifies on hover */}
-        <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-primary/30 to-purple-600/30 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute -inset-4 rounded-full bg-white/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         
         {/* Pulse ring — gentle heartbeat */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-purple-600/20 animate-pulse opacity-30 group-hover:opacity-0 transition-opacity duration-500" />
+        <div className="absolute inset-0 rounded-full bg-white/10 animate-pulse opacity-30 group-hover:opacity-0 transition-opacity duration-500" />
         
         {/* Button body */}
-        <div className="relative h-14 w-14 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-primary via-primary to-purple-600 flex items-center justify-center shadow-xl shadow-primary/30 ring-1 ring-white/20 group-hover:shadow-2xl group-hover:shadow-primary/50 group-hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
+        <div className="relative h-14 w-14 md:h-16 md:w-16 rounded-full bg-white flex items-center justify-center shadow-2xl group-hover:shadow-zinc-800/10 ring-1 ring-zinc-800/20 group-hover:scale-110 active:scale-95 transition-all duration-300 ease-out">
           {/* Inner depth overlay */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 via-transparent to-white/20 pointer-events-none" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/5 via-transparent to-white/10 pointer-events-none" />
           
           {/* Plus icon */}
-          <Plus className="h-6 w-6 md:h-7 md:w-7 text-white drop-shadow-sm relative z-10 group-hover:rotate-90 transition-transform duration-300 ease-out" />
+          <Plus className="h-6 w-6 md:h-7 md:w-7 text-black drop-shadow-sm relative z-10 group-hover:rotate-90 transition-transform duration-300 ease-out" />
         </div>
 
         {/* Tooltip label — desktop only */}

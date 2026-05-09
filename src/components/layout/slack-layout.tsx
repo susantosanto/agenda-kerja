@@ -34,7 +34,7 @@ export function SlackLayout({
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background">
       {/* GLOBAL HEADER - Premium */}
-      <div className="relative z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <div className="relative z-50 border-b border-zinc-800/50 bg-background/80 backdrop-blur-xl">
         <Header onMenuClick={() => setIsMobileMenuOpen(true)} />
       </div>
 

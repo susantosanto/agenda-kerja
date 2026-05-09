@@ -126,20 +126,20 @@ export default function AllTasksPage() {
 
                 {/* Icon */}
                 <div className="flex-shrink-0">
-                  <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20 ring-1 ring-primary/10">
-                    <Target className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white" />
+                  <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-lg sm:rounded-xl bg-white flex items-center justify-center shadow-2xl shadow-white/5 ring-1 ring-white/10">
+                    <Target className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-black" />
                   </div>
                 </div>
 
                 {/* Typography */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 sm:gap-2 mb-0 sm:mb-1">
-                    <span className="text-[7px] sm:text-[8px] font-bold text-primary uppercase tracking-widest">Agenda Kerja</span>
+                    <span className="text-[7px] sm:text-[8px] font-black text-white/40 uppercase tracking-[0.4em]">Agenda Kerja</span>
                     <div className="h-0.5 w-0.5 sm:h-1 sm:w-1 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]" />
                   </div>
-                  <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-black text-foreground tracking-tight leading-tight truncate">
+                  <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-black text-white tracking-tight leading-tight truncate">
                     OPS GUGUS{' '}
-                    <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <span className="text-white/40">
                       KH. ZAENAL MUSTOFA
                     </span>
                   </h1>

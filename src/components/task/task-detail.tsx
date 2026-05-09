@@ -476,7 +476,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
               {/* Dates Info */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 {task.startDate && (
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 border border-border/50 text-sm">
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted/50 border border-zinc-800/50 text-sm">
                     <Calendar className="h-4 w-4 text-emerald-500" />
                     <span className="text-muted-foreground">Mulai:</span>
                     <span className="font-semibold">
@@ -502,7 +502,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
               {/* Assignees */}
               {task.assignees?.length > 0 && (
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/30 border border-border/50">
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/30 border border-zinc-800/50">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground font-medium">Penanggung Jawab:</span>
@@ -602,7 +602,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                 ))}
 
                 {/* Add Subtask */}
-                <div className="pt-4 border-t border-border/50 mt-4">
+                <div className="pt-4 border-t border-zinc-800/50 mt-4">
                   {addingSubtask ? (
                     <div className="flex items-center gap-2">
                       <Input

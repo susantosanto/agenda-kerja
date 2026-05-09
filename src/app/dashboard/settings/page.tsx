@@ -2,21 +2,29 @@
 
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { 
-  Settings, 
   Bell, 
   Palette, 
-  Database,
-  Clock,
-  Globe,
   ArrowRight,
   Download,
-  Trash2
+  Trash2,
+  Lock
 } from "lucide-react"
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
+
+function SettingsItem({ title, desc, checked, onChange }: any) {
+  return (
+    <div className="flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.01] shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] hover:bg-white/[0.02] transition-all duration-500">
+      <div className="space-y-1">
+        <p className="font-bold text-sm text-white/80">{title}</p>
+        <p className="text-[11px] text-white/20 font-bold uppercase tracking-widest">{desc}</p>
+      </div>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
+  )
+}
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -27,239 +35,89 @@ export default function SettingsPage() {
   const [compactMode, setCompactMode] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+    <div className="min-h-screen bg-black text-white selection:bg-white/10 selection:text-white overflow-x-hidden">
+      {/* Cinematic Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-white/[0.015] blur-[120px]" />
       </div>
 
-      <div className="relative max-w-3xl mx-auto px-6 pt-8 pb-16">
+      <main className="relative z-10 max-w-3xl mx-auto px-6 pt-12 pb-32">
         {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl"
-          >
-            <ArrowRight className="h-4 w-4 rotate-180" />
-            Kembali
-          </Button>
+        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-12">
+          <button onClick={() => router.back()} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all">
+            <ArrowRight className="h-3 w-3 rotate-180" />
+            Kembali ke Workspace
+          </button>
         </motion.div>
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-black tracking-tight">Preferences</h1>
-          <p className="text-muted-foreground mt-2">Kelola preferensi dan pengaturan aplikasi</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16">
+          <h1 className="text-5xl font-black tracking-tighter mb-4">Preferensi</h1>
+          <p className="text-white/30 text-lg font-medium tracking-tight">Kustomisasi parameter sistem dan kendali data.</p>
         </motion.div>
 
-        {/* Notifications Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden mb-5">
-            <div className="relative">
-              <CardHeader className="pb-5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-                    <Bell className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Notifikasi</CardTitle>
-                    <CardDescription>Pengaturan notifikasi dan pengingat</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Bell className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Notifikasi Desktop</p>
-                      <p className="text-xs text-muted-foreground">Tampilkan notifikasi di desktop</p>
-                    </div>
-                  </div>
-                  <Switch checked={notifications} onCheckedChange={setNotifications} />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Notifikasi Email</p>
-                      <p className="text-xs text-muted-foreground">Kirim notifikasi via email</p>
-                    </div>
-                  </div>
-                  <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Settings className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Sound</p>
-                      <p className="text-xs text-muted-foreground">Mainkan suara saat notifikasi</p>
-                    </div>
-                  </div>
-                  <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
-                </div>
-              </CardContent>
+        <div className="space-y-12">
+          {/* Notifications Section */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-3 px-1">
+              <Bell className="h-4 w-4 text-white/10" />
+              <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Lansiran Sistem</h2>
             </div>
-          </Card>
-        </motion.div>
+            <div className="grid gap-4">
+              <SettingsItem title="Notifikasi Desktop" desc="Push Alert Real-time" checked={notifications} onChange={setNotifications} />
+              <SettingsItem title="Email Ringkasan" desc="Protokol Laporan Berkala" checked={emailNotifications} onChange={setEmailNotifications} />
+              <SettingsItem title="Suara Ambient" desc="Feedback Audio ASMR" checked={soundEnabled} onChange={setSoundEnabled} />
+            </div>
+          </section>
 
-        {/* Appearance Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden mb-5">
-            <div className="relative">
-              <CardHeader className="pb-5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                    <Palette className="h-5 w-5 text-purple-500" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Tampilan</CardTitle>
-                    <CardDescription>Pengaturan tampilan aplikasi</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Palette className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Mode Compact</p>
-                      <p className="text-xs text-muted-foreground">Tampilkan lebih banyak konten</p>
-                    </div>
-                  </div>
-                  <Switch checked={compactMode} onCheckedChange={setCompactMode} />
-                </div>
-              </CardContent>
+          {/* Appearance Section */}
+          <section className="space-y-6">
+            <div className="flex items-center gap-3 px-1">
+              <Palette className="h-4 w-4 text-white/10" />
+              <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Estetika Visual</h2>
             </div>
-          </Card>
-        </motion.div>
+            <div className="grid gap-4">
+              <SettingsItem title="Mode Kompak" desc="Optimasi Densitas Layar" checked={compactMode} onChange={setCompactMode} />
+              <SettingsItem title="Simpan Otomatis" desc="Sinkronisasi Instan" checked={autoSave} onChange={setAutoSave} />
+            </div>
+          </section>
 
-        {/* General Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden mb-5">
-            <div className="relative">
-              <CardHeader className="pb-5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <Settings className="h-5 w-5 text-emerald-500" />
+          {/* Data & Security */}
+          <section className="space-y-6 pt-6">
+            <div className="flex items-center gap-3 px-1">
+              <Lock className="h-4 w-4 text-white/10" />
+              <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Kedaulatan Data</h2>
+            </div>
+            <div className="rounded-[2.5rem] bg-white/[0.01] p-3 shadow-2xl space-y-2">
+              <button className="w-full flex items-center justify-between p-6 rounded-[2rem] hover:bg-white/[0.02] transition-all group">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="h-10 w-10 rounded-xl bg-white/[0.03] flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Download className="h-5 w-5 text-white/30" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg">Umum</CardTitle>
-                    <CardDescription>Pengaturan umum aplikasi</CardDescription>
+                    <p className="font-bold text-sm">Ekspor Data Workspace</p>
+                    <p className="text-[10px] text-white/20 font-black uppercase tracking-widest mt-1">Download Archive</p>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Auto-Save</p>
-                      <p className="text-xs text-muted-foreground">Simpan otomatis perubahan</p>
-                    </div>
-                  </div>
-                  <Switch checked={autoSave} onCheckedChange={setAutoSave} />
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Zona Waktu</p>
-                      <p className="text-xs text-muted-foreground">Asia/Jakarta (GMT+7)</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="rounded-lg font-medium">
-                    Ubah
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Bahasa</p>
-                      <p className="text-xs text-muted-foreground">Bahasa Indonesia</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="rounded-lg font-medium">
-                    Ubah
-                  </Button>
-                </div>
-              </CardContent>
-            </div>
-          </Card>
-        </motion.div>
-
-        {/* Data & Privacy Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden">
-            <div className="relative">
-              <CardHeader className="pb-5">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <Database className="h-5 w-5 text-red-500" />
+                <ArrowRight className="h-4 w-4 text-white/10 group-hover:translate-x-1 group-hover:text-white transition-all" />
+              </button>
+              
+              <button className="w-full flex items-center justify-between p-6 rounded-[2rem] hover:bg-red-500/5 transition-all group">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="h-10 w-10 rounded-xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Trash2 className="h-5 w-5 text-red-500/50" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg">Data & Privasi</CardTitle>
-                    <CardDescription>Kelola data dan privasi Anda</CardDescription>
+                    <p className="font-bold text-sm text-red-500/80">Hapus Akun Permanen</p>
+                    <p className="text-[10px] text-red-500/20 font-black uppercase tracking-widest mt-1">Terminate Session</p>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Download className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Export Data</p>
-                      <p className="text-xs text-muted-foreground">Download semua data Anda</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="rounded-lg font-medium">
-                    Export
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-xl bg-red-500/5 border border-red-500/20 hover:border-red-500/30 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Trash2 className="h-5 w-5 text-red-500" />
-                    <div>
-                      <p className="font-semibold text-sm text-red-500">Hapus Akun</p>
-                      <p className="text-xs text-muted-foreground">Hapus akun dan semua data</p>
-                    </div>
-                  </div>
-                  <Button variant="destructive" size="sm" className="rounded-lg font-medium">
-                    Hapus
-                  </Button>
-                </div>
-              </CardContent>
+                <ArrowRight className="h-4 w-4 text-red-500/10 group-hover:translate-x-1 group-hover:text-red-500 transition-all" />
+              </button>
             </div>
-          </Card>
-        </motion.div>
-      </div>
+          </section>
+        </div>
+      </main>
     </div>
   )
 }

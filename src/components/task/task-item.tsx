@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { format, isPast, isToday, isTomorrow } from "date-fns"
 import { id } from "date-fns/locale"
 import { Avatar as UIAvatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Star, MoreHorizontal } from "lucide-react"
+import { Star, MoreHorizontal, Trash2, Edit, CheckCircle2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { SubtaskItem } from "./subtask-item"
-import { useToast } from "@/components/ui/use-toast"
 
 interface TaskItemProps {
   task: {
@@ -55,32 +53,21 @@ interface TaskItemProps {
   onToggleStar?: () => void
   onEdit?: () => void
   onDelete?: () => void
-  onSubtaskToggle?: (subtaskId: string, completed: boolean) => void
-  onSubtaskUpdate?: (subtaskId: string, title: string) => void
-  onSubtaskDelete?: (subtaskId: string) => void
-  onSubtaskCreate?: (title: string) => void
-  onDetailClick?: (taskId: string) => void
   onPrefetch?: () => void
 }
 
 const priorityDotColors = {
-  P1: "bg-red-500",
-  P2: "bg-orange-500",
-  P3: "bg-blue-500",
-  P4: "bg-slate-400",
+  P1: "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]",
+  P2: "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]",
+  P3: "bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]",
+  P4: "bg-zinc-600",
 }
 
 const priorityLabels = {
-  P1: "Urgent",
-  P2: "High",
-  P3: "Medium",
-  P4: "Low",
-}
-
-const statusStyles = {
-  TODO: "border-transparent",
-  IN_PROGRESS: "border-l-2 border-l-amber-500/40",
-  DONE: "opacity-60",
+  P1: "Sangat Penting",
+  P2: "Penting",
+  P3: "Normal",
+  P4: "Rendah",
 }
 
 export function TaskItem({
@@ -89,316 +76,122 @@ export function TaskItem({
   onToggleStar,
   onEdit,
   onDelete,
-  onSubtaskToggle,
-  onSubtaskUpdate,
-  onSubtaskDelete,
-  onSubtaskCreate,
-  onDetailClick,
   onPrefetch,
 }: TaskItemProps) {
   const router = useRouter()
-  const [showSubtasks, setShowSubtasks] = useState(false)
-  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
-  const { toast } = useToast()
 
-  // Navigate to task detail when clicking on the card
   const handleCardClick = (e: React.MouseEvent) => {
-    // Don't navigate if clicking on interactive elements
     const target = e.target as HTMLElement
-    if (
-      target.closest('button') ||
-      target.closest('[role="menu"]') ||
-      target.closest('input') ||
-      target.closest('textarea')
-    ) {
-      return
-    }
-    // Navigate to detail page - use shallow routing for speed
+    if (target.closest('button') || target.closest('[role="menu"]') || target.closest('input')) return
     router.push(`/tasks/${task.id}`)
-    onDetailClick?.(task.id)
   }
 
   const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
+    return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
   }
 
   const formatDate = (date: Date | null) => {
     if (!date) return null
-    if (isToday(date)) return "Today"
-    if (isTomorrow(date)) return "Tomorrow"
-    if (isPast(date) && task.status !== "DONE") return "Overdue"
-    return format(new Date(date), "MMM d", { locale: id })
+    const d = new Date(date)
+    if (isToday(d)) return "Hari Ini"
+    if (isTomorrow(d)) return "Besok"
+    if (isPast(d) && task.status !== "DONE") return "Terlambat"
+    return format(d, "d MMM", { locale: id })
   }
 
-  const isOverdue =
-    task.dueDate &&
-    isPast(new Date(task.dueDate)) &&
-    task.status !== "DONE"
-
-  const completedSubtasks = task.subtasks.filter((s) => s.completed).length
-  const totalSubtasks = task.subtasks.length
-
-  const handleAddSubtask = async () => {
-    if (!newSubtaskTitle.trim()) return
-    try {
-      await onSubtaskCreate?.(newSubtaskTitle.trim())
-      setNewSubtaskTitle("")
-      toast({
-        title: "Success",
-        description: "Subtask added",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add subtask",
-        variant: "destructive",
-      })
-    }
-  }
+  const isOverdue = task.dueDate && isPast(new Date(task.dueDate)) && task.status !== "DONE"
 
   return (
     <div
       className={cn(
-        "group relative rounded-lg sm:rounded-xl bg-card border border-border/40 p-3 sm:p-4 transition-all duration-200 hover:shadow-md hover:shadow-primary/5 cursor-pointer overflow-hidden",
-        statusStyles[task.status]
+        "group relative rounded-[2rem] bg-white/[0.01] shadow-[0_4px_30px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.01)] p-7 transition-all duration-700 hover:bg-white/[0.02] hover:shadow-[0_20px_50px_rgba(0,0,0,0.7),inset_0_1px_2px_rgba(255,255,255,0.03)] cursor-pointer overflow-hidden",
+        task.status === "DONE" ? "opacity-20" : "opacity-100"
       )}
       onClick={handleCardClick}
       onMouseEnter={() => onPrefetch?.()}
     >
-      <div className="flex gap-2 sm:gap-4">
-        {/* Checkbox - Thin refined style */}
+      <div className="flex gap-5">
+        {/* Checkbox - Ultra Refined */}
         <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onToggleComplete?.()
-          }}
+          onClick={(e) => { e.stopPropagation(); onToggleComplete?.(); }}
           className={cn(
-            "mt-0.5 flex h-5 w-5 sm:h-5 sm:w-5 flex-shrink-0 items-center justify-center rounded border transition-all duration-200",
+            "mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border transition-all duration-500",
             task.status === "DONE"
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-muted-foreground/30 bg-transparent hover:border-primary/60"
+              ? "border-emerald-500 bg-emerald-500 text-black"
+              : "border-white/10 bg-white/[0.02] hover:border-white/30"
           )}
         >
-          {task.status === "DONE" ? (
-            <svg
-              className="h-3 w-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={3}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          ) : null}
+          {task.status === "DONE" && <CheckCircle2 className="h-3 w-3" strokeWidth={4} />}
         </button>
 
         {/* Content */}
-        <div className="flex-1 space-y-2 sm:space-y-3 min-w-0">
-          {/* Title & Star - Mobile First */}
-          <div className="flex items-start justify-between gap-2">
-            <h4
-              className={cn(
-                "text-[14px] sm:text-[15px] font-bold tracking-tight text-foreground transition-all leading-snug line-clamp-2",
-                task.status === "DONE" && "line-through text-muted-foreground/50 font-medium decoration-emerald-500/50"
-              )}
-            >
+        <div className="flex-1 space-y-4 min-w-0">
+          <div className="flex items-start justify-between gap-4">
+            <h4 className={cn("text-[16px] font-black tracking-tight text-white leading-tight transition-all duration-500", task.status === "DONE" && "text-white/20 font-medium line-through")}>
               {task.title}
             </h4>
             <button
-              onClick={(e) => {
-                e.stopPropagation()
-                onToggleStar?.()
-              }}
-              className={cn(
-                "flex-shrink-0 transition-all duration-200 mt-0.5",
-                task.starred
-                  ? "text-amber-400"
-                  : "text-muted-foreground/20 hover:text-amber-400/60"
-              )}
+              onClick={(e) => { e.stopPropagation(); onToggleStar?.(); }}
+              className={cn("flex-shrink-0 transition-all duration-500 mt-0.5", task.starred ? "text-amber-400 scale-125" : "text-white/5 hover:text-white/20")}
             >
-              <Star
-                className="h-3.5 w-3.5 sm:h-4 sm:w-4"
-                fill={task.starred ? "currentColor" : "none"}
-              />
+              <Star className="h-4 w-4" fill={task.starred ? "currentColor" : "none"} />
             </button>
           </div>
 
-          {/* Description */}
           {task.description && (
-            <p className={cn(
-              "text-[13px] sm:text-sm leading-relaxed line-clamp-2",
-              task.status === "DONE" ? "text-muted-foreground/40" : "text-muted-foreground"
-            )}>
+            <p className={cn("text-[13px] leading-relaxed line-clamp-2 transition-colors duration-500 font-medium", task.status === "DONE" ? "text-white/5" : "text-white/30")}>
               {task.description}
             </p>
           )}
 
-          {/* Meta: Premium minimalis with dot separators */}
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-0.5 text-xs text-muted-foreground">
-            {/* Priority: colored dot + label */}
-            <span className="flex items-center gap-1 shrink-0">
-              <span className={cn("h-1.5 w-1.5 rounded-full", priorityDotColors[task.priority])} />
-              <span>{priorityLabels[task.priority]}</span>
+          {/* Meta: Black Uppercase Precision */}
+          <div className="flex items-center gap-4 pt-2 text-[10px] font-black uppercase tracking-[0.3em] text-white/10">
+            <span className="flex items-center gap-2 shrink-0">
+              <span className={cn("h-1 w-1 rounded-full", priorityDotColors[task.priority])} />
+              <span className="group-hover:text-white/30 transition-colors duration-500">{priorityLabels[task.priority]}</span>
             </span>
 
-            {/* Due Date */}
             {task.dueDate && (
               <>
-                <span className="text-muted-foreground/20 select-none">·</span>
-                <span className={cn("shrink-0", isOverdue && "text-destructive font-medium")}>
+                <span className="h-0.5 w-0.5 rounded-full bg-white/5" />
+                <span className={cn("shrink-0", isOverdue ? "text-red-500/50" : "group-hover:text-white/30 transition-colors duration-500")}>
                   {formatDate(task.dueDate)}
                 </span>
               </>
             )}
 
-            {/* Subtasks count */}
-            {totalSubtasks > 0 && (
-              <>
-                <span className="text-muted-foreground/20 select-none">·</span>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setShowSubtasks(!showSubtasks) }}
-                  className={cn(
-                    "hover:text-foreground transition-colors shrink-0",
-                    showSubtasks && "text-foreground"
-                  )}
-                >
-                  {completedSubtasks}/{totalSubtasks}
-                </button>
-              </>
-            )}
+            <div className="flex-1" />
 
-            {/* Spacer untuk push labels + avatars ke kanan */}
-            {(task.labels.length > 0 || task.assignees.length > 0) && (
-              <span className="flex-1 min-w-[4px]" />
-            )}
-
-            {/* Labels sebagai tiny colored dots */}
-            {task.labels.length > 0 && (
-              <div className="flex items-center gap-1">
-                {task.labels.slice(0, 3).map(({ label }) => (
-                  <div
-                    key={label.id}
-                    className="h-1.5 w-1.5 rounded-full"
-                    title={label.name}
-                    style={{ backgroundColor: label.color }}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Assignees - Small stacked avatars */}
             {task.assignees.length > 0 && (
-              <div className="flex -space-x-1">
-                {task.assignees.slice(0, 2).map((assignment, i) => (
-                  <UIAvatar
-                    key={assignment.user.id}
-                    className="h-4 w-4 border border-background"
-                  >
+              <div className="flex -space-x-2">
+                {task.assignees.slice(0, 3).map((assignment) => (
+                  <UIAvatar key={assignment.user.id} className="h-6 w-6 border-2 border-black ring-1 ring-white/5">
                     <AvatarImage src={assignment.user.image || ""} />
-                    <AvatarFallback className="text-[6px] font-bold bg-muted text-muted-foreground">
-                      {getInitials(assignment.user.name || "U")}
-                    </AvatarFallback>
+                    <AvatarFallback className="bg-zinc-900 text-white text-[6px] font-black">{getInitials(assignment.user.name || "U")}</AvatarFallback>
                   </UIAvatar>
                 ))}
-                {task.assignees.length > 2 && (
-                  <div className="h-4 w-4 rounded-full border border-background bg-muted flex items-center justify-center">
-                    <span className="text-[6px] font-bold text-muted-foreground">
-                      +{task.assignees.length - 2}
-                    </span>
-                  </div>
-                )}
               </div>
             )}
           </div>
-
-          {/* Subtasks List - Minimal style */}
-          {showSubtasks && totalSubtasks > 0 && (
-            <div 
-              className="mt-2 ml-1 space-y-1 border-l border-primary/20 pl-3 py-1" 
-              onClick={(e) => e.stopPropagation()}
-            >
-              {task.subtasks.map((subtask) => (
-                <SubtaskItem
-                  key={subtask.id}
-                  subtask={subtask}
-                  onToggle={() => onSubtaskToggle?.(subtask.id, !subtask.completed)}
-                  onUpdate={(title) => onSubtaskUpdate?.(subtask.id, title)}
-                  onDelete={() => onSubtaskDelete?.(subtask.id)}
-                />
-              ))}
-              {/* Add subtask input */}
-              <div className="pt-1.5 border-t border-border/20 mt-2">
-                <input
-                  type="text"
-                  value={newSubtaskTitle}
-                  onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleAddSubtask()
-                  }}
-                  placeholder="Add a subtask..."
-                  className="w-full text-xs font-medium border-none bg-transparent outline-none placeholder:text-muted-foreground/40 py-1 px-1 rounded-md hover:bg-muted/20 transition-colors"
-                />
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Actions Dropdown - Premium floating menu */}
-        <div className="flex flex-col justify-center">
+        {/* Actions - Minimalist */}
+        <div className="flex flex-col justify-start">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "h-7 w-7 sm:h-9 sm:w-9 rounded-lg sm:rounded-xl hover:bg-muted transition-all duration-300 opacity-60 hover:opacity-100"
-                )}
-              >
-                <MoreHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 bg-white/5 hover:bg-white/10">
+                <MoreHorizontal className="h-4 w-4 text-white/40" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-2xl border-border/60 bg-card/95 backdrop-blur-sm shadow-2xl shadow-primary/5 p-2 w-56">
-              <DropdownMenuItem 
-                onClick={(e) => { e.stopPropagation(); router.push(`/tasks/${task.id}`) }} 
-                className="rounded-xl gap-2.5 text-sm font-medium cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                View Details
+            <DropdownMenuContent align="end" className="w-52 rounded-[1.5rem] border-white/5 bg-zinc-950/98 backdrop-blur-3xl p-2 shadow-2xl">
+              <DropdownMenuItem onClick={onEdit} className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-white/5 group transition-colors">
+                <Edit className="mr-3 h-4 w-4 text-white/40 group-hover:text-white" />
+                <span className="text-sm font-bold text-white/70 group-hover:text-white">Ubah Tugas</span>
               </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={() => setShowSubtasks(!showSubtasks)} 
-                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                {showSubtasks ? "Hide Subtasks" : "Show Subtasks"}
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={(e) => { e.stopPropagation(); onToggleComplete?.() }} 
-                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
-              >
-                {task.status === "DONE" ? "Mark as Active" : "Mark as Done"}
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={(e) => { e.stopPropagation(); onToggleStar?.() }} 
-                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-amber-500/10 hover:text-amber-600 transition-colors"
-              >
-                {task.starred ? "Remove Star" : "Add Star"}
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                onClick={(e) => { e.stopPropagation(); onEdit?.() }} 
-                className="rounded-xl gap-2.5 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                Edit Task Details
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-border/50 my-2" />
-              <DropdownMenuItem
-                onClick={(e) => { e.stopPropagation(); onDelete?.() }}
-                className="rounded-xl gap-2.5 text-sm font-bold text-destructive/80 hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 transition-colors"
-              >
-                Delete Task
+              <DropdownMenuSeparator className="bg-white/5 my-1" />
+              <DropdownMenuItem onClick={onDelete} className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-red-500/10 text-red-400 font-bold">
+                <Trash2 className="mr-3 h-4 w-4" />
+                <span className="text-sm">Hapus</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

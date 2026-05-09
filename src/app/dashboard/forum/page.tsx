@@ -29,7 +29,7 @@ export default function ForumPage() {
     <SlackLayout sidebar={<Sidebar />}>
       <div className="flex flex-col h-full bg-background overflow-hidden">
         {/* Header */}
-        <div className="shrink-0 border-b border-border/50 bg-card/50 backdrop-blur-sm">
+        <div className="shrink-0 border-b border-zinc-800/50 bg-card/50 backdrop-blur-sm">
           <div className="px-6 py-4 flex items-center gap-3">
             <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
               <MessageSquare className="h-5 w-5" />

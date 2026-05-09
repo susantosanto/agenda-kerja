@@ -37,21 +37,21 @@ export function Sidebar({}: SidebarProps) {
           href="/dashboard/all-tasks"
           className="flex items-center gap-3 group cursor-pointer"
         >
-          <div className="relative h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-300">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/20 to-transparent" />
-            <Zap className="h-5 w-5 text-white relative z-10" />
+          <div className="relative h-10 w-10 rounded-xl bg-white flex items-center justify-center shadow-xl shadow-white/5 group-hover:scale-105 transition-transform duration-300">
+            <Zap className="h-5 w-5 text-black relative z-10" />
           </div>
           <div>
-            <h1 className="text-lg font-black text-sidebar-foreground tracking-tight leading-none">
+            <h1 className="text-lg font-black text-white tracking-tight leading-none">
               ZENITH<span className="text-primary">CORE</span>
             </h1>
-            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-[0.15em] leading-none mt-1">Workspace Intelligence</p>
+            <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.15em] leading-none mt-1">Kecerdasan Ruang Kerja</p>
+
           </div>
         </Link>
       </div>
 
       <div className="px-5 mb-3">
-        <div className="h-px bg-border/50 w-full" />
+        <div className="h-px bg-white/[0.03] w-full" />
       </div>
 
       {/* Navigation - Premium Spacing with Prefetch */}
@@ -64,17 +64,19 @@ export function Sidebar({}: SidebarProps) {
               href={item.href}
               prefetch={true}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-300 relative group",
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                  : "text-muted-foreground hover:bg-sidebar-primary/10 hover:text-sidebar-foreground"
+                  ? "bg-white/10 text-white font-black shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                  : "text-white/40 hover:bg-white/[0.03] hover:text-white/80"
               )}
             >
-              <item.icon className={cn("h-4 w-4", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
-              <span className="flex-1 text-left">{item.name}</span>
+              {/* Active Indicator Bar */}
               {isActive && (
-                <div className="h-1.5 w-1.5 rounded-full bg-primary-foreground/60" />
+                <div className="absolute left-0 w-1 h-4 bg-white rounded-full shadow-[0_0_8px_white]" />
               )}
+              
+              <item.icon className={cn("h-4 w-4 transition-colors", isActive ? "text-white" : "text-white/40 group-hover:text-white/60")} />
+              <span className="flex-1 text-left tracking-tight">{item.name}</span>
             </Link>
           )
         })}
@@ -102,15 +104,15 @@ export function Sidebar({}: SidebarProps) {
         </div>
 
         {/* ARCHITECT SIGNATURE - SANTO X/CODE */}
-        <div className="pt-2 border-t border-border/10">
-          <div className="flex items-center justify-between opacity-40 hover:opacity-100 transition-all duration-500 cursor-default group px-1">
+        <div className="pt-2 border-t border-white/[0.03]">
+          <div className="flex items-center justify-between opacity-20 hover:opacity-100 transition-all duration-700 cursor-default group px-1">
             <div className="flex items-center gap-2">
-              <div className="h-px w-4 bg-gradient-to-r from-muted-foreground/40 to-transparent" />
-              <span className="text-[7px] font-bold text-muted-foreground uppercase tracking-[0.35em]">System</span>
+              <div className="h-px w-4 bg-white/20" />
+              <span className="text-[7px] font-bold text-white/40 uppercase tracking-[0.35em]">System</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <ShieldCheck className="h-2.5 w-2.5 text-primary group-hover:scale-110 transition-transform" />
-              <span className="text-[9px] font-black tracking-[0.15em] text-muted-foreground/80 group-hover:text-primary transition-colors">
+              <ShieldCheck className="h-2.5 w-2.5 text-white/60 group-hover:text-white transition-colors" />
+              <span className="text-[9px] font-black tracking-[0.15em] text-white/40 group-hover:text-white transition-colors">
                 SANTO X/CODE
               </span>
             </div>

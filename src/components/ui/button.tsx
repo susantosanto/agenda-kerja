@@ -8,15 +8,15 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-md hover:shadow-lg hover:translate-y-[-1px] active:translate-y-0 active:shadow-sm",
-        destructive: "bg-destructive text-destructive-foreground shadow-md hover:shadow-lg hover:translate-y-[-1px]",
-        outline: "border border-border bg-background shadow-sm hover:shadow-md hover:bg-secondary hover:translate-y-[-1px] active:translate-y-0",
-        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:shadow-md hover:translate-y-[-1px] active:translate-y-0",
-        ghost: "hover:bg-secondary/80 hover:translate-y-[-1px] active:translate-y-0",
-        link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-emerald-600 text-white shadow-md hover:shadow-lg hover:translate-y-[-1px] active:translate-y-0",
-        warning: "bg-amber-600 text-white shadow-md hover:shadow-lg hover:translate-y-[-1px] active:translate-y-0",
-        surface: "bg-card text-foreground shadow-sm hover:shadow-md border border-border hover:translate-y-[-1px] active:translate-y-0",
+        default: "bg-primary text-primary-foreground font-bold border border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.5)] hover:bg-zinc-700 transition-all active:scale-95",
+        destructive: "bg-red-500 text-white shadow-md hover:bg-red-600",
+        outline: "border border-white/[0.03] bg-white/[0.01] text-white/90 hover:bg-white/[0.05] hover:border-white/[0.1] hover:text-white",
+        secondary: "bg-zinc-900 text-white border border-white/[0.02] hover:bg-zinc-800",
+        ghost: "text-white/40 hover:text-white hover:bg-white/[0.03]",
+        link: "text-white underline-offset-4 hover:underline",
+        success: "bg-emerald-500/5 text-emerald-500 border border-emerald-500/10 hover:bg-emerald-500/10",
+        warning: "bg-amber-500/5 text-amber-500 border border-amber-500/10 hover:bg-amber-500/10",
+        surface: "bg-zinc-900/40 text-white border border-white/[0.03] backdrop-blur-md hover:bg-zinc-800",
       },
       size: {
         default: "h-10 px-5 py-2 text-sm",
@@ -33,6 +33,7 @@ const buttonVariants = cva(
     },
   }
 )
+
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,

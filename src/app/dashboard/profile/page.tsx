@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { User, Mail, Shield, Key, Camera, ArrowRight, Check } from "lucide-react"
+import { User, Mail, Shield, Camera, ArrowRight, Check, Key } from "lucide-react"
 import { useState } from "react"
 
 export default function ProfilePage() {
@@ -33,228 +32,114 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+    <div className="min-h-screen bg-black text-white selection:bg-white/10 selection:text-white">
+      {/* Background Effect */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-white/[0.02] blur-[120px]" />
       </div>
 
-      <div className="relative max-w-3xl mx-auto px-6 pt-8 pb-16">
+      <div className="relative max-w-3xl mx-auto px-6 pt-12 pb-32">
         {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl"
-          >
+        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="mb-12">
+          <button onClick={() => router.back()} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all">
             <ArrowRight className="h-4 w-4 rotate-180" />
-            Kembali
-          </Button>
+            Kembali ke Workspace
+          </button>
         </motion.div>
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-black tracking-tight">Account Settings</h1>
-          <p className="text-muted-foreground mt-2">Kelola informasi akun dan preferensi Anda</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-16">
+          <h1 className="text-5xl font-black tracking-tighter mb-4">Pengaturan Akun</h1>
+          <p className="text-white/30 text-lg font-medium tracking-tight">Kelola identitas digital dan otentikasi keamanan Anda.</p>
         </motion.div>
 
-        {/* Profile Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
-            <div className="relative">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Profil</CardTitle>
-                    <CardDescription>Informasi profil akun Anda</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Avatar */}
-                <div className="flex items-center gap-5">
-                  <div className="relative">
-                    <Avatar className="h-20 w-20 ring-4 ring-border shadow-xl">
-                      <AvatarImage src={session?.user?.image || ""} />
-                      <AvatarFallback className="bg-gradient-to-br from-primary to-purple-500 text-white font-bold text-2xl">
-                        {getInitials(session?.user?.name || "U")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <button className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-primary border-4 border-background flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                      <Camera className="h-3.5 w-3.5 text-white" />
-                    </button>
-                  </div>
-                  <div>
-                    <Button variant="outline" size="sm" className="rounded-lg font-medium">
-                      Ubah Foto
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2">JPG, PNG atau GIF. Maksimal 2MB.</p>
-                  </div>
-                </div>
-
-                {/* Form */}
-                <div className="grid gap-5 pt-2">
-                  <div className="space-y-2.5">
-                    <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1">
-                      Nama Lengkap
-                    </Label>
-                    <Input 
-                      id="name" 
-                      value={name} 
-                      onChange={(e) => setName(e.target.value)}
-                      className="rounded-xl h-12 bg-muted/30 border-border/60 focus:border-primary/50 transition-colors"
-                    />
-                  </div>
-                  <div className="space-y-2.5">
-                    <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground ml-1">
-                      Email
-                    </Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      value={email} 
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="rounded-xl h-12 bg-muted/30 border-border/60 focus:border-primary/50 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={handleSave}
-                  className="w-full h-12 rounded-xl font-bold bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 shadow-lg shadow-primary/20 transition-all"
-                >
-                  {saved ? (
-                    <span className="flex items-center gap-2">
-                      <Check className="h-4 w-4" />
-                      Tersimpan!
-                    </span>
-                  ) : (
-                    "Simpan Perubahan"
-                  )}
-                </Button>
-              </CardContent>
+        <div className="space-y-10">
+          {/* Profile Section */}
+          <section className="space-y-8 rounded-[2.5rem] bg-white/[0.015] p-10 shadow-2xl shadow-black">
+            <div className="flex flex-col sm:flex-row items-center gap-8">
+              <div className="relative group">
+                <Avatar className="h-32 w-32 ring-1 ring-white/10 shadow-2xl transition-all duration-500 group-hover:scale-105">
+                  <AvatarImage src={session?.user?.image || ""} />
+                  <AvatarFallback className="bg-zinc-900 text-white font-black text-4xl">
+                    {getInitials(session?.user?.name || "U")}
+                  </AvatarFallback>
+                </Avatar>
+                <button className="absolute bottom-1 right-1 h-10 w-10 rounded-full bg-white text-black border-4 border-black flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+                  <Camera className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="text-center sm:text-left space-y-2">
+                <h3 className="text-2xl font-black tracking-tight">{session?.user?.name}</h3>
+                <p className="text-white/40 font-bold uppercase tracking-widest text-[10px] flex items-center justify-center sm:justify-start gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_emerald]" />
+                  Akses Premium Aktif
+                </p>
+              </div>
             </div>
-          </Card>
-        </motion.div>
 
-        {/* Security Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6"
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden">
-            <div className="relative">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <Shield className="h-5 w-5 text-emerald-500" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Keamanan</CardTitle>
-                    <CardDescription>Pengaturan keamanan akun</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Key className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Password</p>
-                      <p className="text-xs text-muted-foreground">Terakhir diubah: Belum pernah</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="rounded-lg font-medium">
-                    Ubah Password
-                  </Button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-border/80 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-semibold text-sm">Verifikasi Email</p>
-                      <p className="text-xs text-muted-foreground">
-                        {session?.user?.email ? "Terverifikasi" : "Belum verifikasi"}
-                      </p>
-                    </div>
-                  </div>
-                  {session?.user?.email && (
-                    <div className="flex items-center gap-1.5">
-                      <Check className="h-4 w-4 text-emerald-500" />
-                      <span className="text-xs font-medium text-emerald-500">Verified</span>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
+            <div className="grid gap-8 pt-4">
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-2">Identitas Lengkap</Label>
+                <Input value={name} onChange={(e) => setName(e.target.value)} className="h-14 font-black tracking-tight" />
+              </div>
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 ml-2">Alamat Elektronik</Label>
+                <Input value={email} onChange={(e) => setEmail(e.target.value)} className="h-14 font-black tracking-tight" />
+              </div>
             </div>
-          </Card>
-        </motion.div>
 
-        {/* Account Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-6"
-        >
-          <Card className="rounded-2xl border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden">
-            <div className="relative">
-              <CardHeader className="pb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                    <User className="h-5 w-5 text-purple-500" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Informasi Akun</CardTitle>
-                    <CardDescription>Detail akun Anda</CardDescription>
-                  </div>
+            <Button 
+              onClick={handleSave}
+              className="w-full h-14 bg-zinc-800 text-white font-black rounded-2xl border-t border-white/10 shadow-2xl hover:bg-zinc-700 transition-all duration-500"
+            >
+              {saved ? (
+                <span className="flex items-center gap-2">
+                  <Check className="h-5 w-5" />
+                  SINKRONISASI BERHASIL
+                </span>
+              ) : (
+                "SIMPAN PERUBAHAN"
+              )}
+            </Button>
+          </section>
+
+          {/* Security & System Info */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-8 rounded-[2rem] bg-white/[0.01] shadow-xl space-y-6">
+              <div className="flex items-center gap-3">
+                <Key className="h-4 w-4 text-white/20" />
+                <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Keamanan</h2>
+              </div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-white/[0.02]">
+                  <span className="text-xs text-white/40 font-bold uppercase">Password</span>
+                  <button className="text-xs font-black text-white/80 hover:text-white transition-colors">UBAH</button>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between py-3 border-b border-border/50">
-                    <span className="text-sm text-muted-foreground">ID User</span>
-                    <span className="text-sm font-mono text-muted-foreground/70">
-                      {session?.user?.id?.slice(0, 8) || "N/A"}...
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-3 border-b border-border/50">
-                    <span className="text-sm text-muted-foreground">Provider</span>
-                    <span className="text-sm font-medium">Google OAuth</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-sm text-muted-foreground">Status</span>
-                    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-500">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                      Premium Active
-                    </span>
-                  </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-xs text-white/40 font-bold uppercase">2FA Status</span>
+                  <span className="text-[10px] font-black text-white/20">NON-AKTIF</span>
                 </div>
-              </CardContent>
+              </div>
             </div>
-          </Card>
-        </motion.div>
+
+            <div className="p-8 rounded-[2rem] bg-white/[0.01] shadow-xl space-y-6">
+              <div className="flex items-center gap-3">
+                <Shield className="h-4 w-4 text-white/20" />
+                <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Sistem</h2>
+              </div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-white/[0.02]">
+                  <span className="text-xs text-white/40 font-bold uppercase">ID Sesi</span>
+                  <span className="text-[10px] font-mono text-white/20 tracking-tighter">{session?.user?.id?.slice(0, 12)}...</span>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-xs text-white/40 font-bold uppercase">Provider</span>
+                  <span className="text-[10px] font-black text-white/60">GOOGLE CLOUD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

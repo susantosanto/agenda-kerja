@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { format, formatDistanceToNow } from "date-fns"
 import { id } from "date-fns/locale"
-import { Send, Loader2, MessageSquare, Trash2, Image as ImageIcon } from "lucide-react"
+import { Send, Loader2, MessageSquare, Trash2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,10 +13,6 @@ import { useSession } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { ClipboardImage } from "@/components/ui/clipboard-image"
 import { addEventListener, removeEventListener, RealtimeEvent } from "@/lib/realtime"
-
-interface ChatBoxProps {
-  // Global chat - no community or task association
-}
 
 interface Message {
   id: string
@@ -37,7 +33,7 @@ interface ImageAttachment {
   preview: string
 }
 
-export function ChatBox(_props: ChatBoxProps = {}) {
+export function ChatBox() {
   const { toast } = useToast()
   const { data: session } = useSession()
   const [messages, setMessages] = useState<Message[]>([])
@@ -46,32 +42,19 @@ export function ChatBox(_props: ChatBoxProps = {}) {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
-  const [hasMore, setHasMore] = useState(false)
-  const [nextCursor, setNextCursor] = useState<number | null>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchMessages()
     
-    // ✅ Real-time message listener
     const handleNewMessage = (event: RealtimeEvent) => {
       if (event.type === "chat-message" && event.metadata?.message) {
-        const newMessage = event.metadata.message as Message
-        // Don't add if it's our own (already handled optimistically)
-        if (newMessage.user.id === session?.user?.id) return
-        
-        setMessages((prev) => {
-          // Check if already exists
-          if (prev.some(m => m.id === newMessage.id)) return prev
-          return [...prev, newMessage]
-        })
+        const msg = event.metadata.message as Message
+        if (msg.user.id === session?.user?.id) return
+        setMessages((prev) => prev.some(m => m.id === msg.id) ? prev : [...prev, msg])
       }
     }
 
-    addEventListener("chat-message", handleNewMessage)
-    
-    // ✅ Real-time message deletion listener
     const handleDeleteMessage = (event: RealtimeEvent) => {
       if (event.type === "chat-message-deleted" && event.metadata?.messageId) {
         const deletedId = event.metadata.messageId as string
@@ -79,6 +62,7 @@ export function ChatBox(_props: ChatBoxProps = {}) {
       }
     }
 
+    addEventListener("chat-message", handleNewMessage)
     addEventListener("chat-message-deleted", handleDeleteMessage)
     
     return () => {
@@ -88,37 +72,19 @@ export function ChatBox(_props: ChatBoxProps = {}) {
   }, [session?.user?.id])
 
   useEffect(() => {
-    // Scroll to bottom when new messages arrive
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  const fetchMessages = async (cursor?: number) => {
+  const fetchMessages = async () => {
     try {
-      const url = cursor
-        ? `/api/messages?before=${cursor}&limit=50`
-        : `/api/messages?limit=50`
-
-      const res = await fetch(url)
-      if (!res.ok) throw new Error("Gagal memuat pesan")
-
+      const res = await fetch("/api/messages?limit=50")
+      if (!res.ok) throw new Error()
       const data = await res.json()
-      if (!cursor) {
-        setMessages(data.messages)
-      } else {
-        setMessages((prev) => [...prev, ...data.messages])
-      }
-      setHasMore(data.hasMore)
-      setNextCursor(data.nextCursor)
+      setMessages(data.messages)
     } catch (error) {
-      console.error("Failed to fetch messages:", error)
+      console.error(error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const loadMore = () => {
-    if (hasMore && nextCursor) {
-      fetchMessages(nextCursor)
     }
   }
 
@@ -127,24 +93,18 @@ export function ChatBox(_props: ChatBoxProps = {}) {
     if ((!newMessage.trim() && attachedImages.length === 0) || sending) return
 
     const content = newMessage.trim()
-    const imageUrls = attachedImages.map((img) => img.url)
+    const imageUrl = attachedImages.length > 0 ? attachedImages[0].url : null
     setNewMessage("")
     setAttachedImages([])
     setSending(true)
 
-    // Optimistic update
     const tempId = `temp-${Date.now()}`
     const optimisticMessage: Message = {
       id: tempId,
       content,
-      imageUrl: imageUrls.length > 0 ? imageUrls[0] : null,
+      imageUrl,
       createdAt: new Date(),
-      user: {
-        id: "self",
-        name: "You",
-        email: "",
-        image: null,
-      },
+      user: { id: session?.user?.id || "self", name: "Anda", email: "", image: session?.user?.image || null },
     }
     setMessages((prev) => [...prev, optimisticMessage])
 
@@ -152,217 +112,95 @@ export function ChatBox(_props: ChatBoxProps = {}) {
       const res = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, imageUrl: imageUrls.length > 0 ? imageUrls[0] : null }),
+        body: JSON.stringify({ content, imageUrl }),
       })
-
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || "Gagal mengirim pesan")
-      }
-
-      const savedMessage = await res.json()
-      // Replace optimistic with real
-      setMessages((prev) =>
-        prev.map((m) => (m.id === tempId ? savedMessage : m))
-      )
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
-      // Remove optimistic message on error
+      if (!res.ok) throw new Error()
+      const saved = await res.json()
+      setMessages((prev) => prev.map((m) => (m.id === tempId ? saved : m)))
+    } catch (error) {
       setMessages((prev) => prev.filter((m) => m.id !== tempId))
+      toast({ title: "Error", description: "Gagal mengirim pesan", variant: "destructive" })
     } finally {
       setSending(false)
     }
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
-
   const handleDelete = async (messageId: string) => {
     if (deleting) return
     setDeleting(messageId)
-
     try {
       const res = await fetch(`/api/messages?id=${messageId}`, { method: "DELETE" })
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || "Gagal menghapus pesan")
-      }
+      if (!res.ok) throw new Error()
       setMessages((prev) => prev.filter((m) => m.id !== messageId))
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
+    } catch (error) {
+      toast({ title: "Error", description: "Gagal menghapus pesan", variant: "destructive" })
     } finally {
       setDeleting(null)
     }
   }
 
-  const isOwnMessage = (message: Message) => {
-    return message.user.id === session?.user?.id
-  }
-
   if (loading) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <div className="flex h-96 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
   }
 
   return (
-    <div className="flex h-full flex-col bg-background relative overflow-hidden">
-      {/* Glow Effect */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] pointer-events-none" />
-
-      {/* Header - Premium Minimal */}
-      <div className="border-b border-border/50 px-6 py-4 flex items-center justify-between shrink-0 bg-background/50 backdrop-blur-md relative z-10">
+    <div className="flex h-full flex-col bg-black relative overflow-hidden">
+      <div className="border-b border-zinc-800/30 px-6 py-4 flex items-center justify-between shrink-0 bg-black/40 backdrop-blur-xl z-10">
         <div className="flex items-center gap-3">
-          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-          <h3 className="font-black text-xs uppercase tracking-[0.2em] text-foreground/80">Forum Diskusi</h3>
+          <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+          <h3 className="font-black text-xs uppercase tracking-[0.2em] text-white/80">Forum Diskusi</h3>
         </div>
-        <span className="text-[10px] font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-md border border-border/50">
-          {messages.length} messages
-        </span>
       </div>
 
-      {/* Messages - Premium Spacing */}
-      <ScrollArea className="flex-1 px-4 relative z-10" ref={scrollRef}>
-        <div className="py-6 space-y-8">
+      <ScrollArea className="flex-1 px-6 z-10">
+        <div className="py-8 space-y-8">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in">
-              <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center mb-4">
-                <MessageSquare className="h-6 w-6 text-muted-foreground/40" />
-              </div>
-              <p className="text-sm font-semibold text-foreground/60">No messages yet</p>
-              <p className="text-xs text-muted-foreground mt-1">Be the first to start the conversation.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <MessageSquare className="h-12 w-12 text-white/5 mb-4" />
+              <p className="text-sm font-bold text-white/20 uppercase tracking-widest">Belum ada percakapan</p>
             </div>
           ) : (
-            <>
-              {messages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex gap-4 group transition-all duration-300 animate-slide-up",
-                    isOwnMessage(message) && "flex-row-reverse"
-                  )}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <Avatar className="h-9 w-9 shrink-0 ring-2 ring-background shadow-sm">
-                    <AvatarImage src={message.user.image || ""} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-black text-[10px]">
-                      {getInitials(message.user.name || "U")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div
-                    className={cn(
-                      "flex max-w-[80%] flex-col gap-1.5",
-                      isOwnMessage(message) ? "items-end" : "items-start"
+            messages.map((message) => (
+              <div key={message.id} className={cn("flex gap-4 group transition-all", message.user.id === session?.user?.id && "flex-row-reverse")}>
+                <Avatar className="h-9 w-9 shrink-0 border border-white/5">
+                  <AvatarImage src={message.user.image || ""} />
+                  <AvatarFallback className="bg-zinc-900 text-white font-black text-[10px]">{message.user.name?.[0] || "U"}</AvatarFallback>
+                </Avatar>
+                <div className={cn("flex max-w-[80%] flex-col gap-1.5", message.user.id === session?.user?.id ? "items-end" : "items-start")}>
+                  <div className="flex items-center gap-2 px-1">
+                    <span className="text-[10px] font-black text-white/30 uppercase tracking-wider">{message.user.id === session?.user?.id ? "Anda" : message.user.name}</span>
+                    {message.user.id === session?.user?.id && (
+                      <button onClick={() => handleDelete(message.id)} className="opacity-0 group-hover:opacity-100 text-white/20 hover:text-red-500 transition-all"><Trash2 className="h-3 w-3" /></button>
                     )}
-                  >
-                    <div className="flex items-center gap-2 px-1">
-                      <span className="text-xs font-black text-foreground/80">
-                        {isOwnMessage(message) ? "You" : message.user.name || "Anonim"}
-                      </span>
-                      <span className="text-[10px] font-medium text-muted-foreground/60">
-                        {formatDistanceToNow(new Date(message.createdAt), {
-                          addSuffix: true,
-                          locale: id,
-                        })}
-                      </span>
-                      {isOwnMessage(message) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0 text-muted-foreground/50 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => handleDelete(message.id)}
-                          disabled={deleting === message.id}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      )}
-                    </div>
-                    <div
-                      className={cn(
-                        "rounded-2xl px-4 py-2.5 shadow-sm text-sm border transition-all duration-300",
-                        isOwnMessage(message)
-                          ? "bg-primary text-primary-foreground border-primary/20 rounded-tr-none hover:shadow-primary/10"
-                          : "bg-card text-card-foreground border-border/50 rounded-tl-none hover:bg-muted/30"
-                      )}
-                    >
-                      {/* Image attachment */}
-                      {message.imageUrl && (
-                        <img
-                          src={message.imageUrl}
-                          alt="Attachment"
-                          className="mb-2 max-w-[280px] rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                          onClick={() => window.open(message.imageUrl!, "_blank")}
-                        />
-                      )}
-                      <p className="leading-relaxed whitespace-pre-wrap break-words">
-                        {message.content}
-                      </p>
-                    </div>
+                  </div>
+                  <div className={cn("rounded-[1.5rem] px-5 py-3 text-sm transition-all shadow-2xl", message.user.id === session?.user?.id ? "bg-zinc-800 text-white rounded-tr-none border-t border-white/5" : "bg-white/[0.02] text-white rounded-tl-none border border-white/[0.01]")}>
+                    {message.imageUrl && <img src={message.imageUrl} alt="Attachment" className="mb-3 max-w-full rounded-2xl border border-white/5" />}
+                    <p className="leading-relaxed break-words">{message.content}</p>
                   </div>
                 </div>
-              ))}
-              <div ref={bottomRef} className="h-4" />
-            </>
+              </div>
+            ))
           )}
+          <div ref={bottomRef} className="h-4" />
         </div>
       </ScrollArea>
 
-      {/* Input - Premium Floating Style */}
-      <div className="p-4 relative z-10">
-        {/* Clipboard Image Preview */}
-        <ClipboardImage
-          onImagesChange={setAttachedImages}
-          disabled={sending}
-          className="mb-2"
-        />
-        
-        <form onSubmit={handleSend} className="relative group">
-          <div className="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
-          <div className="relative flex items-end gap-2 bg-card/50 backdrop-blur-xl border border-border/50 rounded-[1.5rem] p-2 pr-3 focus-within:border-primary/50 transition-all duration-300 shadow-sm focus-within:shadow-lg focus-within:shadow-primary/5">
+      <div className="p-6 shrink-0 z-10 bg-black/20 backdrop-blur-md border-t border-zinc-800/30">
+        <ClipboardImage onImagesChange={setAttachedImages} disabled={sending} className="mb-4" />
+        <form onSubmit={handleSend} className="relative group max-w-4xl mx-auto">
+          <div className="relative flex items-end gap-3 bg-[#0a0a0b] rounded-[2rem] p-3 pl-5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.8),0_1px_1px_rgba(255,255,255,0.02)] focus-within:shadow-[inset_0_2px_15px_rgba(0,0,0,1),0_1px_2px_rgba(255,255,255,0.04)] transition-all duration-500">
             <Textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message... (Ctrl+V untuk paste screenshot)"
-              className="min-h-[44px] max-h-[200px] resize-none border-none bg-transparent focus-visible:ring-0 px-4 py-3 text-sm font-medium"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && (newMessage.trim() || attachedImages.length > 0)) {
-                  e.preventDefault()
-                  handleSend(e)
-                }
-              }}
+              placeholder="Ketik pesan premium..."
+              className="min-h-[48px] max-h-[200px] resize-none border-none bg-transparent focus-visible:ring-0 px-4 py-4 text-sm font-medium text-white/80 placeholder:text-white/5"
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(e); } }}
             />
-            <Button
-              type="submit"
-              size="icon"
-              disabled={sending || (!newMessage.trim() && attachedImages.length === 0)}
-              className="h-10 w-10 shrink-0 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20 active:scale-90 transition-all"
-            >
-              {sending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
+            <Button type="submit" size="icon" disabled={sending || (!newMessage.trim() && attachedImages.length === 0)} className="h-11 w-11 shrink-0 rounded-full bg-white text-black hover:bg-zinc-200 transition-all mb-1">
+              {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </div>
-          <p className="text-[10px] text-muted-foreground/50 mt-2 text-center">
-            💡 Tekan Ctrl+V untuk paste screenshot langsung
-          </p>
+          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/10 mt-4 text-center">Ctrl+V untuk menempel tangkapan layar</p>
         </form>
       </div>
     </div>

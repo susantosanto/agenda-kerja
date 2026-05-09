@@ -15,9 +15,9 @@ export function MobileNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-border/50 bg-background/95 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-white/[0.03] bg-black/80 backdrop-blur-3xl shadow-[0_-4px_30px_rgba(0,0,0,0.5)]">
       {/* Active tab indicator line */}
-      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="flex items-center justify-around h-[68px] pb-2 px-2">
         {navItems.map((item) => {
@@ -27,47 +27,43 @@ export function MobileNav() {
               key={item.name}
               href={item.href}
               className={cn(
-                "relative flex flex-col items-center justify-center gap-0.5 py-1 px-4 rounded-2xl transition-all duration-200 min-w-[72px]",
+                "relative flex flex-col items-center justify-center gap-0.5 py-1 px-4 rounded-2xl transition-all duration-300 min-w-[72px]",
                 isActive
-                  ? "text-primary"
-                  : "text-muted-foreground/50 hover:text-muted-foreground"
+                  ? "text-white"
+                  : "text-white/20 hover:text-white/40"
               )}
             >
-              {/* Active background */}
+              {/* Active background pill */}
               {isActive && (
-                <div className="absolute inset-0 bg-primary/8 rounded-2xl" />
+                <div className="absolute inset-0 bg-white/10 rounded-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]" />
               )}
 
               {/* Icon container */}
               <div className={cn(
                 "relative flex items-center justify-center h-7 w-7 rounded-xl transition-all duration-300",
-                isActive && "scale-110"
+                isActive && "scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
               )}>
-                <item.icon className={cn(
-                  "h-5 w-5 transition-all duration-300",
-                  isActive && "drop-shadow-sm"
-                )} />
+                <item.icon className="h-5 w-5 transition-all duration-300" />
               </div>
 
               {/* Label */}
               <span className={cn(
-                "text-[9px] font-bold tracking-tight transition-all duration-200",
+                "text-[9px] font-black uppercase tracking-widest transition-all duration-200",
                 isActive
-                  ? "text-primary opacity-100"
-                  : "text-muted-foreground/60 opacity-80"
+                  ? "text-white opacity-100"
+                  : "text-white/20 opacity-80"
               )}>
                 {item.name}
               </span>
 
-              {/* Active dot */}
+              {/* Top accent line */}
               {isActive && (
-                <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 h-1 w-5 rounded-full bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30" />
+                <div className="absolute -top-px left-1/2 -translate-x-1/2 h-[2px] w-8 rounded-full bg-white shadow-[0_0_10px_white]" />
               )}
             </Link>
           )
         })}
       </div>
-
     </nav>
   )
 }

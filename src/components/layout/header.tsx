@@ -38,7 +38,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-xl shrink-0">
+    <header className="sticky top-0 z-40 bg-black/60 backdrop-blur-3xl shrink-0 shadow-[0_1px_20px_rgba(0,0,0,0.4)]">
       <div className="px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* MOBILE MENU TRIGGER - Premium */}
@@ -90,39 +90,39 @@ export function Header({ onMenuClick }: HeaderProps) {
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 rounded-xl border-border shadow-lg p-1.5">
-              <DropdownMenuLabel className="px-2 py-2">
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm">{session?.user?.name}</span>
-                  <span className="text-[11px] text-muted-foreground">{session?.user?.email}</span>
+            <DropdownMenuContent align="end" className="w-60 rounded-[1.5rem] border-white/5 bg-zinc-950/98 backdrop-blur-3xl shadow-2xl p-2">
+              <DropdownMenuLabel className="px-3 py-3">
+                <div className="flex flex-col space-y-0.5">
+                  <span className="font-black text-sm tracking-tight text-white">{session?.user?.name}</span>
+                  <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{session?.user?.email}</span>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuSeparator className="bg-white/5 my-1" />
               <DropdownMenuItem 
-                className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted"
+                className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-white/5 group transition-colors"
                 onClick={() => router.push("/dashboard/about")}
               >
-                <Info className="mr-2 h-4 w-4 text-foreground/70" />
-                <span className="text-sm">About Us</span>
+                <Info className="mr-3 h-4 w-4 text-white/40 group-hover:text-white" />
+                <span className="text-sm font-bold text-white/70 group-hover:text-white">About Us</span>
               </DropdownMenuItem>
               <DropdownMenuItem 
-                className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted"
+                className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-white/5 group transition-colors"
                 onClick={() => router.push("/dashboard/profile")}
               >
-                <User className="mr-2 h-4 w-4 text-foreground/70" />
-                <span className="text-sm">Account</span>
+                <User className="mr-3 h-4 w-4 text-white/40 group-hover:text-white" />
+                <span className="text-sm font-bold text-white/70 group-hover:text-white">Account Setting</span>
               </DropdownMenuItem>
               <DropdownMenuItem 
-                className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-muted"
+                className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-white/5 group transition-colors"
                 onClick={() => router.push("/dashboard/settings")}
               >
-                <Settings className="mr-2 h-4 w-4 text-foreground/70" />
-                <span className="text-sm">Preferences</span>
+                <Settings className="mr-3 h-4 w-4 text-white/40 group-hover:text-white" />
+                <span className="text-sm font-bold text-white/70 group-hover:text-white">Preferences</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-border" />
-              <DropdownMenuItem onClick={handleSignOut} className="rounded-lg px-2 py-1.5 cursor-pointer focus:bg-destructive/10 text-destructive">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span className="text-sm font-medium">Sign out</span>
+              <DropdownMenuSeparator className="bg-white/5 my-1" />
+              <DropdownMenuItem onClick={handleSignOut} className="rounded-xl px-3 py-2.5 cursor-pointer focus:bg-red-500/10 text-red-400 font-bold">
+                <LogOut className="mr-3 h-4 w-4" />
+                <span className="text-sm">Sign out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
