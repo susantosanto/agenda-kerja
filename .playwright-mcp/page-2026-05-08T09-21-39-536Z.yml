@@ -1,0 +1,189 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content":
+    - /url: "#geist-skip-nav"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e9]:
+            - link "Susanto's projects Hobby" [ref=e10] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da
+              - img [ref=e11]
+              - generic [ref=e12]:
+                - generic [ref=e13]: Susanto's projects
+                - generic [ref=e15]: Hobby
+            - button [ref=e16] [cursor=pointer]:
+              - img [ref=e18]
+          - button "Find… F" [ref=e21]:
+            - generic [ref=e23]:
+              - img [ref=e25]
+              - generic [ref=e27]: Find…
+              - generic [ref=e29]: F
+        - navigation [ref=e31]:
+          - generic [ref=e34]:
+            - link "Other Overview" [ref=e710] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja
+              - img "Other" [ref=e711]:
+                - img "Other" [ref=e712]
+              - generic [ref=e40]: Overview
+            - link "Deployments" [ref=e41] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/deployments
+              - img [ref=e43]
+              - generic [ref=e46]: Deployments
+            - link "Logs" [ref=e47] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/logs
+              - img [ref=e49]
+              - generic [ref=e52]: Logs
+            - link "Analytics" [ref=e53] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/analytics
+              - img [ref=e55]
+              - generic [ref=e58]: Analytics
+            - link "Speed Insights" [ref=e59] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/speed-insights
+              - img [ref=e61]
+              - generic [ref=e64]: Speed Insights
+            - link "Observability" [ref=e65] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/observability
+              - img [ref=e67]
+              - generic [ref=e70]: Observability
+              - img [ref=e72]
+            - link "Firewall" [ref=e74] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/firewall
+              - img [ref=e76]
+              - generic [ref=e80]: Firewall
+              - img [ref=e82]
+            - link "CDN" [ref=e84] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/cdn
+              - img [ref=e86]
+              - generic [ref=e89]: CDN
+              - img [ref=e91]
+            - separator [ref=e93]
+            - link "Environment Variables" [ref=e94] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/environment-variables
+              - img [ref=e96]
+              - generic [ref=e99]: Environment Variables
+            - link "Domains" [ref=e100] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/domains
+              - img [ref=e102]
+              - generic [ref=e105]: Domains
+            - link "Integrations" [ref=e106] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/integrations
+              - img [ref=e108]
+              - generic [ref=e111]: Integrations
+            - link "Storage" [ref=e112] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/stores
+              - img [ref=e114]
+              - generic [ref=e117]: Storage
+            - link "Flags" [ref=e118] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/flags
+              - img [ref=e120]
+              - generic [ref=e123]: Flags
+              - img [ref=e125]
+            - link "Agent" [ref=e127] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/agent
+              - img [ref=e129]
+              - generic [ref=e132]: Agent
+              - img [ref=e134]
+            - link "AI Gateway" [ref=e136] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/ai-gateway
+              - img [ref=e138]
+              - generic [ref=e141]: AI Gateway
+              - img [ref=e143]
+            - link "Sandboxes" [ref=e145] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/sandboxes
+              - img [ref=e147]
+              - generic [ref=e150]: Sandboxes
+            - link "Workflows" [ref=e151] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/workflows
+              - img [ref=e153]
+              - generic [ref=e156]: Workflows
+            - separator [ref=e157]
+            - link "Usage" [ref=e158] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/usage
+              - img [ref=e160]
+              - generic [ref=e163]: Usage
+            - link "Support" [ref=e164] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/support
+              - img [ref=e166]
+              - generic [ref=e169]: Support
+            - link "Settings" [ref=e170] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings
+              - img [ref=e172]
+              - generic [ref=e175]: Settings
+              - img [ref=e177]
+        - generic [ref=e181]:
+          - generic [ref=e182]:
+            - generic [ref=e183]:
+              - generic [ref=e186]:
+                - generic [ref=e187]: Ship
+                - generic [ref=e189]: "26"
+              - button "Dismiss" [ref=e190] [cursor=pointer]:
+                - img [ref=e192]
+            - generic [ref=e194]:
+              - generic [ref=e195]: Coming to five cities worldwide.
+              - button "Get your ticket" [ref=e197] [cursor=pointer]:
+                - generic [ref=e198]: Get your ticket
+          - generic [ref=e200]:
+            - button "Avatar for susantosanto susantosanto" [ref=e201] [cursor=pointer]:
+              - img "Avatar for susantosanto" [ref=e202]:
+                - img "Avatar for susantosanto" [ref=e203]
+              - generic [ref=e205]: susantosanto
+              - img [ref=e207]
+            - button "17 unseen notifications" [ref=e714] [cursor=pointer]:
+              - generic [ref=e715]:
+                - generic [ref=e716]:
+                  - img
+                - img [ref=e717]
+      - button [ref=e214] [cursor=pointer]:
+        - img [ref=e215]
+    - generic [ref=e218]:
+      - generic [ref=e219]:
+        - generic [ref=e222]:
+          - link "Other agenda-kerja" [ref=e719] [cursor=pointer]:
+            - /url: /susantos-projects-59c2e8da/agenda-kerja
+            - img "Other" [ref=e720]:
+              - img "Other" [ref=e721]
+            - generic [ref=e227]: agenda-kerja
+          - button [ref=e228] [cursor=pointer]:
+            - img [ref=e230]
+          - link "Back to team view" [ref=e234] [cursor=pointer]:
+            - /url: /susantos-projects-59c2e8da/~/domains
+            - img [ref=e236]
+        - generic [ref=e240]: Domains
+        - button "Open page actions menu" [ref=e242] [cursor=pointer]:
+          - img [ref=e244]
+      - generic [ref=e728]:
+        - generic [ref=e729]:
+          - generic [ref=e730]:
+            - button "Filter domains" [ref=e731] [cursor=pointer]:
+              - img [ref=e733]
+            - generic [ref=e735]:
+              - searchbox "Search" [ref=e736]
+              - img [ref=e738]
+          - generic [ref=e740]:
+            - button "Add Existing" [ref=e741] [cursor=pointer]:
+              - generic [ref=e742]: Add Existing
+            - link "Buy" [ref=e743] [cursor=pointer]:
+              - /url: /domains?q=&teamSlug=susantos-projects-59c2e8da
+              - generic [ref=e744]: Buy
+        - generic [ref=e754]:
+          - button "agenda-kerja.vercel.app Valid Configuration Production" [disabled] [ref=e755]:
+            - img [ref=e756]
+            - generic [ref=e759]:
+              - link "agenda-kerja.vercel.app" [ref=e760] [cursor=pointer]:
+                - /url: https://agenda-kerja.vercel.app
+              - generic [ref=e762]: Valid Configuration
+            - generic [ref=e764]:
+              - img [ref=e765]
+              - text: Production
+          - generic [ref=e767]:
+            - button "Refresh" [ref=e768] [cursor=pointer]:
+              - generic [ref=e769]: Refresh
+            - button "Edit" [ref=e770] [cursor=pointer]:
+              - generic [ref=e771]: Edit
+  - alert [ref=e709]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img

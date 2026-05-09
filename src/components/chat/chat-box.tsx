@@ -12,6 +12,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { useSession } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { ClipboardImage } from "@/components/ui/clipboard-image"
+import { addEventListener, removeEventListener, RealtimeEvent } from "@/lib/realtime"
 
 interface ChatBoxProps {
   // Global chat - no community or task association
@@ -52,10 +53,39 @@ export function ChatBox(_props: ChatBoxProps = {}) {
 
   useEffect(() => {
     fetchMessages()
-    // Polling every 5 seconds for new messages
-    const interval = setInterval(fetchMessages, 5000)
-    return () => clearInterval(interval)
-  }, [])
+    
+    // ✅ Real-time message listener
+    const handleNewMessage = (event: RealtimeEvent) => {
+      if (event.type === "chat-message" && event.metadata?.message) {
+        const newMessage = event.metadata.message as Message
+        // Don't add if it's our own (already handled optimistically)
+        if (newMessage.user.id === session?.user?.id) return
+        
+        setMessages((prev) => {
+          // Check if already exists
+          if (prev.some(m => m.id === newMessage.id)) return prev
+          return [...prev, newMessage]
+        })
+      }
+    }
+
+    addEventListener("chat-message", handleNewMessage)
+    
+    // ✅ Real-time message deletion listener
+    const handleDeleteMessage = (event: RealtimeEvent) => {
+      if (event.type === "chat-message-deleted" && event.metadata?.messageId) {
+        const deletedId = event.metadata.messageId as string
+        setMessages((prev) => prev.filter(m => m.id !== deletedId))
+      }
+    }
+
+    addEventListener("chat-message-deleted", handleDeleteMessage)
+    
+    return () => {
+      removeEventListener("chat-message", handleNewMessage)
+      removeEventListener("chat-message-deleted", handleDeleteMessage)
+    }
+  }, [session?.user?.id])
 
   useEffect(() => {
     // Scroll to bottom when new messages arrive

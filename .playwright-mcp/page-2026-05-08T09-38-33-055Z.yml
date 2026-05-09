@@ -1,0 +1,441 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content":
+    - /url: "#geist-skip-nav"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e9]:
+            - link "Susanto's projects Hobby" [ref=e10] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da
+              - img [ref=e11]
+              - generic [ref=e12]:
+                - generic [ref=e13]: Susanto's projects
+                - generic [ref=e15]: Hobby
+            - button [ref=e16] [cursor=pointer]:
+              - img [ref=e18]
+          - button "Find… F" [ref=e21]:
+            - generic [ref=e23]:
+              - img [ref=e25]
+              - generic [ref=e27]: Find…
+              - generic [ref=e29]: F
+        - navigation [ref=e31]:
+          - generic [ref=e34]:
+            - link "Other Overview" [ref=e330] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja
+              - img "Other" [ref=e331]:
+                - img "Other" [ref=e332]
+              - generic [ref=e39]: Overview
+            - link "Deployments" [ref=e40] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/deployments
+              - img [ref=e42]
+              - generic [ref=e45]: Deployments
+            - link "Logs" [ref=e46] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/logs
+              - img [ref=e48]
+              - generic [ref=e51]: Logs
+            - link "Analytics" [ref=e52] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/analytics
+              - img [ref=e54]
+              - generic [ref=e57]: Analytics
+            - link "Speed Insights" [ref=e58] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/speed-insights
+              - img [ref=e60]
+              - generic [ref=e63]: Speed Insights
+            - link "Observability" [ref=e64] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/observability
+              - img [ref=e66]
+              - generic [ref=e69]: Observability
+              - img [ref=e71]
+            - link "Firewall" [ref=e73] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/firewall
+              - img [ref=e75]
+              - generic [ref=e79]: Firewall
+              - img [ref=e81]
+            - link "CDN" [ref=e83] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/cdn
+              - img [ref=e85]
+              - generic [ref=e88]: CDN
+              - img [ref=e90]
+            - separator [ref=e92]
+            - link "Environment Variables" [ref=e93] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/environment-variables
+              - img [ref=e95]
+              - generic [ref=e98]: Environment Variables
+            - link "Domains" [ref=e99] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/domains
+              - img [ref=e101]
+              - generic [ref=e104]: Domains
+            - link "Integrations" [ref=e105] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/integrations
+              - img [ref=e107]
+              - generic [ref=e110]: Integrations
+            - link "Storage" [ref=e111] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/stores
+              - img [ref=e113]
+              - generic [ref=e116]: Storage
+            - link "Flags" [ref=e117] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/flags
+              - img [ref=e119]
+              - generic [ref=e122]: Flags
+              - img [ref=e124]
+            - link "Agent" [ref=e126] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/agent
+              - img [ref=e128]
+              - generic [ref=e131]: Agent
+              - img [ref=e133]
+            - link "AI Gateway" [ref=e135] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/ai-gateway
+              - img [ref=e137]
+              - generic [ref=e140]: AI Gateway
+              - img [ref=e142]
+            - link "Sandboxes" [ref=e144] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/sandboxes
+              - img [ref=e146]
+              - generic [ref=e149]: Sandboxes
+            - link "Workflows" [ref=e150] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/workflows
+              - img [ref=e152]
+              - generic [ref=e155]: Workflows
+            - separator [ref=e156]
+            - link "Usage" [ref=e157] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/usage
+              - img [ref=e159]
+              - generic [ref=e162]: Usage
+            - link "Support" [ref=e163] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/support
+              - img [ref=e165]
+              - generic [ref=e168]: Support
+            - link "Settings" [ref=e169] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings
+              - img [ref=e171]
+              - generic [ref=e174]: Settings
+              - img [ref=e176]
+        - generic [ref=e180]:
+          - generic [ref=e333]:
+            - generic [ref=e334]:
+              - generic [ref=e337]:
+                - generic [ref=e338]: Ship
+                - generic [ref=e340]: "26"
+              - button "Dismiss" [ref=e341] [cursor=pointer]:
+                - img [ref=e343]
+            - generic [ref=e345]:
+              - generic [ref=e346]: Coming to five cities worldwide.
+              - button "Get your ticket" [ref=e348] [cursor=pointer]:
+                - generic [ref=e349]: Get your ticket
+          - generic [ref=e182]:
+            - button "Avatar for susantosanto susantosanto" [ref=e183] [cursor=pointer]:
+              - img "Avatar for susantosanto" [ref=e184]:
+                - img "Avatar for susantosanto" [ref=e185]
+              - generic [ref=e187]: susantosanto
+              - img [ref=e189]
+            - button "17 unseen notifications" [ref=e351] [cursor=pointer]:
+              - generic [ref=e352]:
+                - generic [ref=e353]:
+                  - img
+                - img [ref=e354]
+      - button [ref=e196] [cursor=pointer]:
+        - img [ref=e197]
+    - generic [ref=e200]:
+      - generic [ref=e201]:
+        - generic [ref=e204]:
+          - link "Other agenda-kerja" [ref=e356] [cursor=pointer]:
+            - /url: /susantos-projects-59c2e8da/agenda-kerja
+            - img "Other" [ref=e357]:
+              - img "Other" [ref=e358]
+            - generic [ref=e208]: agenda-kerja
+          - button [ref=e209] [cursor=pointer]:
+            - img [ref=e211]
+          - link "Back to team view" [ref=e215] [cursor=pointer]:
+            - /url: /susantos-projects-59c2e8da/~/settings/environment-variables
+            - img [ref=e217]
+        - generic [ref=e221]: Environment Variables
+        - button "Open page actions menu" [ref=e223] [cursor=pointer]:
+          - img [ref=e225]
+      - generic [ref=e234]:
+        - generic [ref=e236]:
+          - generic [ref=e237]:
+            - heading "Environment Variables" [level=2] [ref=e238]
+            - paragraph [ref=e239]:
+              - text: Store API keys, tokens, and config securely.
+              - link "Learn more" [ref=e240] [cursor=pointer]:
+                - /url: /docs/environment-variables
+                - text: Learn more
+                - img [ref=e241]
+          - generic [ref=e243]:
+            - button "Link Shared Variable" [ref=e245] [cursor=pointer]:
+              - generic [ref=e246]: Link Shared Variable
+            - button "Add Environment Variable" [ref=e247] [cursor=pointer]:
+              - generic [ref=e248]: Add Environment Variable
+        - tablist [ref=e249]:
+          - tab "Project" [selected] [ref=e250] [cursor=pointer]
+          - tab "Shared" [ref=e251] [cursor=pointer]
+        - generic [ref=e252]:
+          - generic [ref=e254]:
+            - searchbox "Search" [ref=e255]
+            - img [ref=e257]
+          - combobox [ref=e260]:
+            - generic [ref=e360]:
+              - searchbox [ref=e361]: All Environments
+              - button "Open menu" [ref=e362] [cursor=pointer]:
+                - img [ref=e363]
+          - combobox [ref=e262]:
+            - generic [ref=e263]:
+              - generic:
+                - img
+              - searchbox "All Editors…" [ref=e264]
+              - button "Open menu" [ref=e265] [cursor=pointer]:
+                - img [ref=e266]
+          - generic [ref=e268]:
+            - generic [ref=e270]:
+              - combobox "Filter variables by status" [ref=e271] [cursor=pointer]:
+                - option "All Variables" [selected]
+                - option "Needs Attention"
+              - generic:
+                - img
+            - generic [ref=e273]:
+              - generic:
+                - img
+              - combobox [ref=e274] [cursor=pointer]:
+                - option "Sort by…" [disabled]
+                - option "Last Updated" [selected]
+                - option "Name"
+                - option "Type"
+              - generic:
+                - img
+        - generic [ref=e275]:
+          - generic [ref=e367]:
+            - generic [ref=e368]:
+              - generic [ref=e369]:
+                - generic [ref=e370]:
+                  - img [ref=e373]
+                  - generic [ref=e375]:
+                    - generic [ref=e377]:
+                      - button "NEXTAUTH_URL" [ref=e379] [cursor=pointer]:
+                        - generic "NEXTAUTH_URL" [ref=e380]:
+                          - generic [ref=e382]: NEXTAUTH_URL
+                      - generic [ref=e384]: Sensitive
+                    - generic [ref=e388]: Production
+                - generic [ref=e390]:
+                  - generic [ref=e392]:
+                    - generic [ref=e394] [cursor=pointer]:
+                      - generic [ref=e395]: Updated
+                      - text: 51m ago
+                    - img [ref=e398]
+                  - button "Menu" [ref=e401] [cursor=pointer]:
+                    - img [ref=e405]
+              - generic [ref=e776]:
+                - generic [ref=e777]:
+                  - generic [ref=e778]:
+                    - generic [ref=e784]:
+                      - generic [ref=e785]: key
+                      - textbox "environment variable key" [disabled] [ref=e787]:
+                        - /placeholder: EXAMPLE_NAME
+                        - text: NEXTAUTH_URL
+                    - generic [ref=e789]:
+                      - generic [ref=e790]: Value
+                      - textbox "Value" [ref=e794]:
+                        - /placeholder: https://example.com
+                    - generic [ref=e800]:
+                      - generic [ref=e801]: Note (Optional)
+                      - textbox "shared environment variable comment" [ref=e803]:
+                        - /placeholder: Where to rotate, or who to contact
+                  - generic [ref=e804]:
+                    - generic [ref=e805]:
+                      - generic [ref=e807]: Environments
+                      - generic [ref=e808]:
+                        - button "Production" [ref=e809] [cursor=pointer]:
+                          - generic [ref=e811]:
+                            - img [ref=e813]
+                            - generic [ref=e815]: Production
+                          - img [ref=e817]
+                        - button "Select a Custom Preview Branch" [ref=e820] [cursor=pointer]:
+                          - generic [ref=e821]: Select a Custom Preview Branch
+                    - generic [ref=e824]:
+                      - generic "Sensitive" [ref=e826]:
+                        - generic [ref=e827]: Sensitive
+                        - checkbox "Sensitive" [checked] [disabled] [ref=e828]
+                      - img [ref=e833]
+                - generic [ref=e836]:
+                  - button "Cancel" [ref=e839] [cursor=pointer]:
+                    - generic [ref=e840]: Cancel
+                  - button "Save" [ref=e842] [cursor=pointer]:
+                    - generic [ref=e843]: Save
+            - generic [ref=e408]:
+              - generic [ref=e409]:
+                - img [ref=e412]
+                - generic [ref=e414]:
+                  - generic [ref=e416]:
+                    - button "AUTH_URL" [ref=e418] [cursor=pointer]:
+                      - generic "AUTH_URL" [ref=e419]:
+                        - generic [ref=e421]: AUTH_URL
+                    - generic [ref=e423]: Sensitive
+                  - generic [ref=e427]: Production
+              - generic [ref=e429]:
+                - generic [ref=e431]:
+                  - generic [ref=e433] [cursor=pointer]:
+                    - generic [ref=e434]: Updated
+                    - text: 51m ago
+                  - img [ref=e437]
+                - button "Menu" [ref=e440] [cursor=pointer]:
+                  - img [ref=e444]
+            - generic [ref=e447]:
+              - generic [ref=e448]:
+                - img [ref=e451]
+                - generic [ref=e453]:
+                  - generic [ref=e455]:
+                    - button "DATABASE_URL" [ref=e457] [cursor=pointer]:
+                      - generic "DATABASE_URL" [ref=e458]:
+                        - generic [ref=e460]: DATABASE_URL
+                    - generic [ref=e462]: Sensitive
+                  - generic [ref=e466]: Production
+              - generic [ref=e468]:
+                - generic [ref=e470]:
+                  - generic [ref=e472] [cursor=pointer]:
+                    - generic [ref=e473]: Added
+                    - text: 1h ago
+                  - img [ref=e476]
+                - button "Menu" [ref=e479] [cursor=pointer]:
+                  - img [ref=e483]
+            - generic [ref=e486]:
+              - generic [ref=e487]:
+                - img [ref=e490]
+                - generic [ref=e492]:
+                  - generic [ref=e494]:
+                    - button "AUTH_SECRET" [ref=e496] [cursor=pointer]:
+                      - generic "AUTH_SECRET" [ref=e497]:
+                        - generic [ref=e499]: AUTH_SECRET
+                    - generic [ref=e501]: Sensitive
+                  - generic [ref=e505]: Production
+              - generic [ref=e507]:
+                - generic [ref=e509]:
+                  - generic [ref=e511] [cursor=pointer]:
+                    - generic [ref=e512]: Added
+                    - text: 1h ago
+                  - img [ref=e515]
+                - button "Menu" [ref=e518] [cursor=pointer]:
+                  - img [ref=e522]
+            - generic [ref=e525]:
+              - generic [ref=e526]:
+                - img [ref=e529]
+                - generic [ref=e531]:
+                  - generic [ref=e533]:
+                    - button "NEXTAUTH_SECRET" [ref=e535] [cursor=pointer]:
+                      - generic "NEXTAUTH_SECRET" [ref=e536]:
+                        - generic [ref=e538]: NEXTAUTH_SECRET
+                    - generic [ref=e540]: Sensitive
+                  - generic [ref=e544]: Production
+              - generic [ref=e546]:
+                - generic [ref=e548]:
+                  - generic [ref=e550] [cursor=pointer]:
+                    - generic [ref=e551]: Added
+                    - text: 1h ago
+                  - img [ref=e554]
+                - button "Menu" [ref=e557] [cursor=pointer]:
+                  - img [ref=e561]
+            - generic [ref=e564]:
+              - generic [ref=e565]:
+                - img [ref=e568]
+                - generic [ref=e570]:
+                  - generic [ref=e572]:
+                    - button "AUTH_TRUST_HOST" [ref=e574] [cursor=pointer]:
+                      - generic "AUTH_TRUST_HOST" [ref=e575]:
+                        - generic [ref=e577]: AUTH_TRUST_HOST
+                    - generic [ref=e579]: Sensitive
+                  - generic [ref=e583]: Production
+              - generic [ref=e585]:
+                - generic [ref=e587]:
+                  - generic [ref=e589] [cursor=pointer]:
+                    - generic [ref=e590]: Added
+                    - text: 1h ago
+                  - img [ref=e593]
+                - button "Menu" [ref=e596] [cursor=pointer]:
+                  - img [ref=e600]
+            - generic [ref=e603]:
+              - generic [ref=e604]:
+                - img [ref=e607]
+                - generic [ref=e609]:
+                  - generic [ref=e611]:
+                    - button "GOOGLE_CLIENT_ID" [ref=e613] [cursor=pointer]:
+                      - generic "GOOGLE_CLIENT_ID" [ref=e614]:
+                        - generic [ref=e616]: GOOGLE_CLIENT_ID
+                    - generic [ref=e618]: Sensitive
+                  - generic [ref=e622]: Production
+              - generic [ref=e624]:
+                - generic [ref=e626]:
+                  - generic [ref=e628] [cursor=pointer]:
+                    - generic [ref=e629]: Added
+                    - text: 1h ago
+                  - img [ref=e632]
+                - button "Menu" [ref=e635] [cursor=pointer]:
+                  - img [ref=e639]
+            - generic [ref=e642]:
+              - generic [ref=e643]:
+                - img [ref=e646]
+                - generic [ref=e648]:
+                  - generic [ref=e650]:
+                    - button "GOOGLE_CLIENT_SECRET" [ref=e652] [cursor=pointer]:
+                      - generic "GOOGLE_CLIENT_SECRET" [ref=e653]:
+                        - generic [ref=e655]: GOOGLE_CLIENT_SECRET
+                    - generic [ref=e657]: Sensitive
+                  - generic [ref=e661]: Production
+              - generic [ref=e663]:
+                - generic [ref=e665]:
+                  - generic [ref=e667] [cursor=pointer]:
+                    - generic [ref=e668]: Added
+                    - text: 1h ago
+                  - img [ref=e671]
+                - button "Menu" [ref=e674] [cursor=pointer]:
+                  - img [ref=e678]
+            - generic [ref=e681]:
+              - generic [ref=e682]:
+                - img [ref=e685]
+                - generic [ref=e687]:
+                  - generic [ref=e689]:
+                    - button "UPLOADTHING_SECRET" [ref=e691] [cursor=pointer]:
+                      - generic "UPLOADTHING_SECRET" [ref=e692]:
+                        - generic [ref=e694]: UPLOADTHING_SECRET
+                    - generic [ref=e696]: Sensitive
+                  - generic [ref=e700]: Production
+              - generic [ref=e702]:
+                - generic [ref=e704]:
+                  - generic [ref=e706] [cursor=pointer]:
+                    - generic [ref=e707]: Added
+                    - text: 1h ago
+                  - img [ref=e710]
+                - button "Menu" [ref=e713] [cursor=pointer]:
+                  - img [ref=e717]
+            - generic [ref=e720]:
+              - generic [ref=e721]:
+                - img [ref=e724]
+                - generic [ref=e726]:
+                  - generic [ref=e728]:
+                    - button "UPLOADTHING_APP_ID" [ref=e730] [cursor=pointer]:
+                      - generic "UPLOADTHING_APP_ID" [ref=e731]:
+                        - generic [ref=e733]: UPLOADTHING_APP_ID
+                    - generic [ref=e735]: Sensitive
+                  - generic [ref=e739]: Production
+              - generic [ref=e741]:
+                - generic [ref=e743]:
+                  - generic [ref=e745] [cursor=pointer]:
+                    - generic [ref=e746]: Added
+                    - text: 1h ago
+                  - img [ref=e749]
+                - button "Menu" [ref=e752] [cursor=pointer]:
+                  - img [ref=e756]
+          - generic [ref=e318]:
+            - generic [ref=e320] [cursor=pointer]:
+              - checkbox [checked] [ref=e321]
+              - img [ref=e323]
+            - generic [ref=e325]:
+              - text: Enable access to
+              - link "System Environment Variables" [ref=e326] [cursor=pointer]:
+                - /url: /docs/environment-variables/system-environment-variables
+                - text: System Environment Variables
+                - img [ref=e327]
+  - alert [ref=e329]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img

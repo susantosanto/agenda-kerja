@@ -2,7 +2,8 @@
 
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useEffect, useRef, useState } from "react"
 import { SlackLayout } from "@/components/layout/slack-layout"
 import { Sidebar } from "@/components/layout/sidebar"
 import { TaskList } from "@/components/task/task-list"
@@ -19,6 +20,8 @@ async function fetchAllTasks() {
 export default function AllTasksPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const queryClient = useQueryClient()
+  const [isConnected, setIsConnected] = useState(false)
   
   // Optimized caching: stale 5 minutes, keep data longer
   const { data: tasks, isLoading, refetch, isFetching } = useQuery({
@@ -28,6 +31,70 @@ export default function AllTasksPage() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes (was cacheTime)
   })
+
+  // Connect to SSE for real-time task updates
+  useEffect(() => {
+    if (!session?.user?.id) return
+
+    let eventSource: EventSource | null = null
+
+    const connect = () => {
+      try {
+        eventSource = new EventSource("/api/realtime/all-tasks", {
+          withCredentials: true
+        })
+
+        eventSource.onopen = () => {
+          console.log("[ALL-TASKS] SSE Connected")
+          setIsConnected(true)
+        }
+
+        eventSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data)
+            
+            if (data.type === "connected") {
+              console.log("[ALL-TASKS] Handshake done")
+              return
+            }
+
+            console.log("[ALL-TASKS] Received:", data.type)
+            
+            // Refresh task list for any task change
+            if (data.type === "task-created" || data.type === "task-updated" || data.type === "task-deleted") {
+              queryClient.invalidateQueries({ queryKey: ["all-tasks-view"] })
+              queryClient.invalidateQueries({ queryKey: ["tasks"] })
+            }
+          } catch (e) {
+            console.error("[ALL-TASKS] Parse error:", e)
+          }
+        }
+
+        eventSource.onerror = () => {
+          console.log("[ALL-TASKS] SSE error, reconnecting...")
+          setIsConnected(false)
+          if (eventSource) {
+            eventSource.close()
+            eventSource = null
+          }
+          setTimeout(connect, 5000)
+        }
+      } catch (error) {
+        console.error("[ALL-TASKS] Failed to connect:", error)
+        setTimeout(connect, 5000)
+      }
+    }
+
+    // Delay connection slightly
+    const timer = setTimeout(connect, 1000)
+
+    return () => {
+      clearTimeout(timer)
+      if (eventSource) {
+        eventSource.close()
+      }
+    }
+  }, [session?.user?.id, queryClient])
 
   if (status === "loading") {
     return <PremiumLoader fullScreen size="xl" text="Memuat workspace..." />

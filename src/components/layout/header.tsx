@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut, Settings, User, Menu, Search, Bell, Zap, Info } from "lucide-react"
+import { NotificationCenter } from "@/components/notification/notification-center"
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -65,9 +66,8 @@ export function Header({ onMenuClick }: HeaderProps) {
             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-muted/50">
               <Search className="h-4 w-4 text-muted-foreground" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg hover:bg-muted/50">
-              <Bell className="h-4 w-4 text-muted-foreground" />
-            </Button>
+            {/* ✅ Notification Bell dengan Badge - Real-time */}
+            <NotificationCenter />
           </div>
           
           <div className="h-6 w-px bg-border mx-1 hidden sm:block" />

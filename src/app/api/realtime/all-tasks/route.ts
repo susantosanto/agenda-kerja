@@ -4,33 +4,19 @@ import { createServerClient } from "@/lib/realtime"
 
 export const dynamic = "force-dynamic"
 
+// GET /api/realtime/all-tasks - Subscribe to all tasks updates
 export async function GET(request: Request) {
   const session = await auth()
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { searchParams } = new URL(request.url)
-  const taskId = searchParams.get("taskId")
-
-  if (!taskId) {
-    return NextResponse.json({ error: "taskId is required" }, { status: 400 })
-  }
-
-  const userId = session.user.id // Track which user subscribed
+  const userId = session.user.id
+  console.log("[API/REALTIME/ALL-TASKS] User connecting:", userId)
 
   const stream = new ReadableStream({
     start(controller) {
-      console.log("[API/REALTIME] User connecting to task SSE:", { taskId, userId })
-      
-      // Subscribe with userId for proper exclusion
-      createServerClient().subscribe(taskId, userId, controller)
-      
-      // Debug: Log all subscriptions
-      console.log("[API/REALTIME] Subscription complete. Current state:")
-      const server = createServerClient()
-      const taskMap = (server as any).taskSubscriptions?.get(taskId)
-      console.log("[API/REALTIME] Subscribers for", taskId, ":", taskMap ? Array.from(taskMap.keys()) : "none")
+      createServerClient().subscribeAllTasks(userId, controller)
 
       const heartbeat = setInterval(() => {
         try {
@@ -43,7 +29,7 @@ export async function GET(request: Request) {
 
       request.signal.addEventListener("abort", () => {
         clearInterval(heartbeat)
-        createServerClient().unsubscribe(taskId, userId)
+        createServerClient().unsubscribeAllTasks(userId)
         try {
           controller.close()
         } catch (e) {

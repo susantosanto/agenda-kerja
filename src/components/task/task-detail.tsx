@@ -42,7 +42,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { SkeletonLoader } from "@/components/ui/premium-loader"
 import { ClipboardImage } from "@/components/ui/clipboard-image"
-import { createRealtimeClient, requestNotificationPermission, playNotificationSound, showBrowserNotification } from "@/lib/realtime"
+import { createRealtimeClient, requestNotificationPermission } from "@/lib/realtime"
 
 interface TaskDetailProps {
   taskId: string
@@ -114,7 +114,6 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   const [addingSubtask, setAddingSubtask] = useState(false)
   const [newComment, setNewComment] = useState("")
   const [attachedImages, setAttachedImages] = useState<ImageAttachment[]>([])
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const realtimeRef = useRef<ReturnType<typeof createRealtimeClient> | null>(null)
 
   // Request notification permission on mount
@@ -124,17 +123,25 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
   // Set up real-time connection - delay slightly to not block initial render
   useEffect(() => {
-    if (!taskId) return
+    if (!taskId) {
+      console.log("[TASK-DETAIL] No taskId, skipping realtime")
+      return
+    }
 
+    console.log("[TASK-DETAIL] Setting up realtime for task:", taskId)
+    
     // Small delay to not block initial render
     const connectTimer = setTimeout(() => {
+      console.log("[TASK-DETAIL] Creating realtime client...")
       const realtimeClient = createRealtimeClient()
       realtimeRef.current = realtimeClient
 
+      console.log("[TASK-DETAIL] Calling connect...")
       realtimeClient.connect(taskId, {
         onCommentAdded: (comment) => {
+          console.log("[TASK-DETAIL] onCommentAdded received:", comment)
           // Don't add if it's our own comment (already added optimistically)
-          if (comment.user.id === session?.user?.id) return
+          if (comment.user?.id === session?.user?.id) return
 
           // Add comment to list
           queryClient.setQueryData<CommentType[]>(["task-comments", taskId], (old) => {
@@ -144,19 +151,15 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
             return [...old, comment]
           })
 
-          // Show notification
-          if (notificationsEnabled) {
-            playNotificationSound("comment")
-            showBrowserNotification(
-              "Komentar Baru",
-              `${comment.user.name} mengomentari task`,
-              taskId
-            )
-          }
-
-          toast({
-            title: "Komentar Baru",
-            description: `${comment.user.name} mengomentari task ini`,
+          // Note: Sound & toast sudah ditangani oleh NotificationToast di providers.tsx
+          // Jangan play sound di sini lagi untuk avoid duplicate
+        },
+        onCommentDeleted: (commentId) => {
+          console.log("[TASK-DETAIL] onCommentDeleted received:", commentId)
+          // Remove deleted comment from the list
+          queryClient.setQueryData<CommentType[]>(["task-comments", taskId], (old) => {
+            if (!old) return old
+            return old.filter((c) => c.id !== commentId)
           })
         },
         onError: () => {
@@ -171,7 +174,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
         realtimeRef.current.disconnect(taskId)
       }
     }
-  }, [taskId, session?.user?.id, notificationsEnabled])
+  }, [taskId, session?.user?.id])
 
   const { data: task, isLoading: taskLoading, refetch: refetchTask } = useQuery({
     queryKey: ["task", taskId],
@@ -380,21 +383,14 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
         
         {/* Actions */}
         <div className="flex items-center gap-2">
+          {/* Note: Notifications sekarang ditangani secara global via NotificationToast */}
           <Button
             variant="ghost"
             size="icon"
-            className={cn(
-              "rounded-xl hover:bg-muted/50",
-              notificationsEnabled && "text-primary"
-            )}
-            onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-            title={notificationsEnabled ? "Matikan notifikasi" : "Aktifkan notifikasi"}
+            className="rounded-xl hover:bg-muted/50 text-muted-foreground"
+            title="Notifikasi realtime aktif"
           >
-            {notificationsEnabled ? (
-              <Bell className="h-5 w-5" />
-            ) : (
-              <BellOff className="h-5 w-5" />
-            )}
+            <Bell className="h-5 w-5" />
           </Button>
           <Button
             variant="ghost"

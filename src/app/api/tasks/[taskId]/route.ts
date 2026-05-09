@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
+import { createServerClient } from "@/lib/realtime"
+import { revalidatePath } from "next/cache"
 
 // GET /api/tasks/[taskId]
 export async function GET(
@@ -60,12 +62,22 @@ export async function PATCH(
   const body = await request.json()
   const { title, description, status, priority, startDate, dueDate, duration, isStarred, starred, assigneeIds, labelIds } = body
 
+  // Get existing task for comparison
   const existingTask = await prisma.task.findUnique({
     where: { id: taskId },
+    include: {
+      assignees: { select: { userId: true } },
+    },
   })
   if (!existingTask) {
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
   }
+
+  // Get task title for notifications
+  const taskInfo = await prisma.task.findUnique({
+    where: { id: taskId },
+    select: { title: true },
+  })
 
   const updates: Record<string, unknown> = {}
   if (title !== undefined) updates.title = title
@@ -79,14 +91,21 @@ export async function PATCH(
   if (isStarred !== undefined) updates.isStarred = isStarred
   else if (starred !== undefined) updates.isStarred = starred
 
+  // Track old assignees
+  const oldAssigneeIds = existingTask.assignees.map(a => a.userId)
+  let newAssigneeIds: string[] = []
+
   // Handle assignees
   if (assigneeIds !== undefined) {
     await prisma.taskAssignee.deleteMany({ where: { taskId } })
+    newAssigneeIds = assigneeIds
     if (assigneeIds.length > 0) {
       updates.assignees = {
         create: assigneeIds.map((userId: string) => ({ userId })),
       }
     }
+  } else {
+    newAssigneeIds = oldAssigneeIds
   }
 
   // Handle labels
@@ -108,6 +127,101 @@ export async function PATCH(
       subtasks: { orderBy: { order: "asc" } },
       labels: { include: { label: true } },
     },
+  })
+
+  // ✅ BROADCAST TASK ASSIGNMENT ke user yang BARU di-assign
+  if (assigneeIds !== undefined) {
+    // Find newly added assignees (not in old list)
+    const newlyAssignedIds = newAssigneeIds.filter(id => !oldAssigneeIds.includes(id))
+    
+    if (newlyAssignedIds.length > 0) {
+      const senderId = session.user.id
+      const senderName = session.user.name || "User"
+      
+      // Broadcast realtime notification
+      createServerClient().broadcastToAll(senderId, {
+        type: "task-assigned",
+        title: "Task Ditugaskan",
+        body: `${senderName} menugaskan: ${taskInfo?.title || "Task"}`,
+        link: `/tasks/${taskId}`,
+        senderId,
+        senderName,
+        senderImage: session.user.image || null,
+        timestamp: new Date().toISOString(),
+        metadata: {
+          taskId,
+          assignedTo: newlyAssignedIds,
+        },
+      })
+
+      // Create database notifications untuk assignee baru
+      const notificationData = newlyAssignedIds.map((userId) => ({
+        userId,
+        type: "TASK_ASSIGNED" as const,
+        title: "Task Ditugaskan",
+        body: `${senderName} menugaskan: ${taskInfo?.title || "Task"}`,
+        link: `/tasks/${taskId}`,
+        metadata: {
+          taskId,
+          senderName,
+        },
+      }))
+
+      await prisma.notification.createMany({
+        data: notificationData,
+      })
+    }
+  }
+
+  // ✅ BROADCAST juga ke semua user lain (task diupdate)
+  const allUsers = await prisma.user.findMany({
+    where: { id: { not: session.user.id } },
+    select: { id: true },
+  })
+
+  if (allUsers.length > 0) {
+    const senderId = session.user.id
+    const senderName = session.user.name || "User"
+
+    // Broadcast realtime (skip assignees - already notified above)
+    createServerClient().broadcastToAll(senderId, {
+      type: "task-updated",
+      title: "Task Diperbarui",
+      body: `${senderName} memperbarui: ${taskInfo?.title || "Task"}`,
+      link: `/tasks/${taskId}`,
+      senderId,
+      senderName,
+      senderImage: session.user.image || null,
+      timestamp: new Date().toISOString(),
+      metadata: { taskId },
+    })
+
+    // Create DB notifications for other users
+    const notificationData = allUsers.map((u) => ({
+      userId: u.id,
+      type: "TASK_STATUS_CHANGED" as const,
+      title: "Task Diperbarui",
+      body: `${senderName} memperbarui: ${taskInfo?.title || "Task"}`,
+      link: `/tasks/${taskId}`,
+      metadata: { taskId, senderName },
+    }))
+
+    await prisma.notification.createMany({
+      data: notificationData,
+    })
+  }
+
+  // ✅ BROADCAST ke all-tasks page untuk refresh UI
+  createServerClient().broadcastToAllTasks(session.user.id, {
+    type: "task-updated",
+    title: "Task Diperbarui",
+    body: `${session.user.name || "User"} memperbarui: ${taskInfo?.title || "Task"}`,
+    link: `/tasks/${taskId}`,
+    senderId: session.user.id,
+    senderName: session.user.name || "User",
+    senderImage: session.user.image,
+    timestamp: new Date().toISOString(),
+    metadata: { taskId },
   })
 
   return NextResponse.json(task)
@@ -133,7 +247,49 @@ export async function DELETE(
     return NextResponse.json({ error: "Task not found" }, { status: 404 })
   }
 
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  })
+
+  // Delete the task
   await prisma.task.delete({ where: { id: taskId } })
+
+  // BROADCAST to all other users
+  const serverClient = createServerClient()
+  const senderId = session.user.id
+  const senderName = user?.name || "User"
+  
+  // Global notification
+  serverClient.broadcastToAll(senderId, {
+    type: "task-deleted",
+    title: "Task Dihapus",
+    body: `${senderName} menghapus task: ${task.title}`,
+    link: "/dashboard/all-tasks",
+    senderId,
+    senderName,
+    senderImage: user?.image,
+    timestamp: new Date().toISOString(),
+    metadata: {
+      deletedTaskId: taskId,
+      taskTitle: task.title,
+    },
+  })
+    
+  // Refresh all-tasks page
+  serverClient.broadcastToAllTasks(senderId, {
+    type: "task-deleted",
+    title: "Task Dihapus",
+    body: `${senderName} menghapus task: ${task.title}`,
+    link: "/dashboard/all-tasks",
+    senderId,
+    senderName,
+    senderImage: user?.image,
+    timestamp: new Date().toISOString(),
+    metadata: {
+      deletedTaskId: taskId,
+      taskTitle: task.title,
+    },
+  })
 
   return NextResponse.json({ success: true })
 }

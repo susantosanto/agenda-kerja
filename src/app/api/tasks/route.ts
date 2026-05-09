@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { createServerClient } from "@/lib/realtime"
 
 export async function GET(request: Request) {
   const session = await auth()
@@ -107,6 +108,37 @@ export async function POST(request: Request) {
       details: `Task "${title}" created`,
       taskId: task.id,
       userId: user.id,
+    },
+  })
+
+  // ✅ BROADCAST new task to ALL users EXCEPT sender (global notifications)
+  const serverClient = createServerClient()
+  serverClient.broadcastToAll(user.id, {
+    type: "task-created",
+    title: "Task Baru",
+    body: `${user.name} membuat task baru: ${title}`,
+    link: `/tasks/${task.id}`,
+    senderId: user.id,
+    senderName: user.name,
+    senderImage: user.image,
+    timestamp: new Date().toISOString(),
+    metadata: {
+      taskId: task.id,
+    },
+  })
+
+  // ✅ BROADCAST to global tasks list channel (for users viewing all tasks)
+  serverClient.broadcastToAllTasks(user.id, {
+    type: "task-created",
+    title: "Task Baru",
+    body: `${user.name} membuat task baru: ${title}`,
+    link: `/tasks/${task.id}`,
+    senderId: user.id,
+    senderName: user.name,
+    senderImage: user.image,
+    timestamp: new Date().toISOString(),
+    metadata: {
+      taskId: task.id,
     },
   })
 

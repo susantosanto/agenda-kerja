@@ -1,0 +1,718 @@
+- generic:
+  - link:
+    - /url: "#geist-skip-nav"
+    - text: Skip to content
+  - generic:
+    - main:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - link:
+                    - /url: /susantos-projects-59c2e8da
+                    - img
+                    - generic:
+                      - generic: Susanto's projects
+                      - generic:
+                        - generic: Hobby
+                  - button:
+                    - generic:
+                      - img
+            - button [ref=e760]:
+              - generic [ref=e23]:
+                - img [ref=e25]
+                - generic [ref=e27]: Find…
+                - generic [ref=e29]: F
+          - generic:
+            - navigation:
+              - generic:
+                - generic:
+                  - generic:
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja
+                      - generic:
+                        - img:
+                          - img
+                      - generic:
+                        - generic: Overview
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/deployments
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Deployments
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/logs
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Logs
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/analytics
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Analytics
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/speed-insights
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Speed Insights
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/observability
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Observability
+                      - generic:
+                        - img
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/firewall
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Firewall
+                      - generic:
+                        - img
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/cdn
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: CDN
+                      - generic:
+                        - img
+                    - separator
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/environment-variables
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Environment Variables
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/domains
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Domains
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/integrations
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Integrations
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/stores
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Storage
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/flags
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Flags
+                      - generic:
+                        - img
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/agent
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Agent
+                      - generic:
+                        - img
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/ai-gateway
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: AI Gateway
+                      - generic:
+                        - img
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/sandboxes
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Sandboxes
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/workflows
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Workflows
+                    - separator
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/usage
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Usage
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/support
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Support
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/settings
+                      - generic:
+                        - img
+                      - generic:
+                        - generic: Settings
+                      - generic:
+                        - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: Ship
+                      - generic:
+                        - generic: "26"
+                - button:
+                  - generic:
+                    - img
+              - generic:
+                - generic: Coming to five cities worldwide.
+                - generic:
+                  - button:
+                    - generic: Get your ticket
+            - generic:
+              - generic:
+                - button:
+                  - img:
+                    - img
+                  - generic:
+                    - generic: susantosanto
+                  - generic:
+                    - img
+                - generic:
+                  - generic:
+                    - button:
+                      - generic:
+                        - generic:
+                          - img
+                        - img
+        - button:
+          - img
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - link:
+                    - /url: /susantos-projects-59c2e8da/agenda-kerja
+                    - img:
+                      - img
+                    - generic:
+                      - generic: agenda-kerja
+                  - button:
+                    - generic:
+                      - img
+                  - generic:
+                    - link:
+                      - /url: /susantos-projects-59c2e8da/~/settings/environment-variables
+                      - generic:
+                        - img
+            - generic:
+              - generic:
+                - generic: Environment Variables
+            - generic:
+              - button:
+                - generic:
+                  - img
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - heading [level=2]: Environment Variables
+                                - paragraph:
+                                  - text: Store API keys, tokens, and config securely.
+                                  - link:
+                                    - /url: /docs/environment-variables
+                                    - text: Learn more
+                                    - img
+                              - generic:
+                                - generic:
+                                  - button:
+                                    - generic: Link Shared Variable
+                                - button:
+                                  - generic: Add Environment Variable
+                          - tablist:
+                            - tab [selected]: Project
+                            - tab: Shared
+                          - generic:
+                            - generic:
+                              - generic:
+                                - searchbox
+                                - generic:
+                                  - img
+                            - generic:
+                              - combobox:
+                                - generic:
+                                  - generic:
+                                    - searchbox: All Environments
+                                    - button:
+                                      - img
+                            - generic:
+                              - combobox:
+                                - generic:
+                                  - generic:
+                                    - img
+                                  - searchbox
+                                  - button:
+                                    - img
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - combobox
+                                  - generic:
+                                    - img
+                              - generic:
+                                - generic:
+                                  - generic:
+                                    - img
+                                  - combobox
+                                  - generic:
+                                    - img
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic:
+                                    - generic:
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: NEXTAUTH_URL
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e390] [cursor=pointer]:
+                                                  - generic [ref=e391]: Updated
+                                                  - text: 8m ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: AUTH_URL
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e429] [cursor=pointer]:
+                                                  - generic [ref=e430]: Updated
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: DATABASE_URL
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e468] [cursor=pointer]:
+                                                  - generic [ref=e469]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: AUTH_SECRET
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e507] [cursor=pointer]:
+                                                  - generic [ref=e508]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: NEXTAUTH_SECRET
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e546] [cursor=pointer]:
+                                                  - generic [ref=e547]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: AUTH_TRUST_HOST
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e585] [cursor=pointer]:
+                                                  - generic [ref=e586]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: GOOGLE_CLIENT_ID
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e624] [cursor=pointer]:
+                                                  - generic [ref=e625]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: GOOGLE_CLIENT_SECRET
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e663] [cursor=pointer]:
+                                                  - generic [ref=e664]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: UPLOADTHING_SECRET
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e702] [cursor=pointer]:
+                                                  - generic [ref=e703]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                                      - generic:
+                                        - generic:
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - img
+                                            - generic:
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - button:
+                                                      - generic:
+                                                        - generic:
+                                                          - generic: UPLOADTHING_APP_ID
+                                                  - generic:
+                                                    - generic: Sensitive
+                                              - generic:
+                                                - generic:
+                                                  - generic:
+                                                    - generic: Production
+                                          - generic:
+                                            - generic:
+                                              - generic:
+                                                - generic [ref=e741] [cursor=pointer]:
+                                                  - generic [ref=e742]: Added
+                                                  - text: 1h ago
+                                                - generic:
+                                                  - img
+                                            - generic:
+                                              - generic:
+                                                - button:
+                                                  - generic:
+                                                    - generic:
+                                                      - generic:
+                                                        - img
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic:
+                                    - generic:
+                                      - checkbox [checked]
+                                      - generic:
+                                        - img
+                                  - generic:
+                                    - text: Enable access to
+                                    - link:
+                                      - /url: /docs/environment-variables/system-environment-variables
+                                      - text: System Environment Variables
+                                      - img
+  - alert
+  - generic:
+    - generic:
+      - img
+  - dialog "Add Environment Variable" [ref=e762]:
+    - generic [ref=e763]:
+      - heading "Add Environment Variable" [level=2] [ref=e764]
+      - button "Close" [active] [ref=e765] [cursor=pointer]:
+        - img [ref=e767]
+    - generic [ref=e771]:
+      - generic [ref=e772]:
+        - generic [ref=e773]:
+          - generic [ref=e776]:
+            - generic [ref=e779]:
+              - generic [ref=e780]: key
+              - textbox "environment variable key" [ref=e782]
+            - generic [ref=e783]:
+              - generic [ref=e784]: value
+              - generic [ref=e786]:
+                - textbox "shared environment variable value" [ref=e787]
+                - button "Show value" [ref=e788] [cursor=pointer]:
+                  - img [ref=e790]
+            - generic [ref=e794]:
+              - generic [ref=e795]: Note (Optional)
+              - textbox "shared environment variable comment" [ref=e797]:
+                - /placeholder: Where to rotate, or who to contact
+          - button "Add Another" [ref=e799] [cursor=pointer]:
+            - img [ref=e801]
+            - generic [ref=e803]: Add Another
+        - separator [ref=e806]
+        - generic [ref=e807]:
+          - generic [ref=e808]:
+            - generic [ref=e810]: Environments
+            - generic [ref=e811]:
+              - button "Production and Preview" [ref=e812] [cursor=pointer]:
+                - generic [ref=e814]:
+                  - img [ref=e816]
+                  - generic [ref=e818]: Production and Preview
+                - img [ref=e820]
+              - generic [ref=e822]:
+                - generic [ref=e824]: Branch
+                - button "Select a Custom Preview Branch" [ref=e826] [cursor=pointer]:
+                  - generic [ref=e827]: Select a Custom Preview Branch
+          - generic [ref=e829]:
+            - generic "Sensitive" [ref=e830]:
+              - generic [ref=e831]: Sensitive
+              - checkbox "Sensitive" [checked] [ref=e832]
+            - img [ref=e837]
+      - generic [ref=e840]:
+        - generic [ref=e842]:
+          - button "Import .env" [ref=e844] [cursor=pointer]:
+            - img [ref=e846]
+            - generic [ref=e848]: Import .env
+          - paragraph [ref=e849]: or paste .env contents in Key input
+        - button "Save" [ref=e852] [cursor=pointer]:
+          - generic [ref=e853]: Save

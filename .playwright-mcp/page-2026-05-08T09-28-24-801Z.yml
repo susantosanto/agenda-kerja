@@ -1,0 +1,50 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e8]
+          - generic [ref=e10]: Zenith Core
+        - heading "Next Gen Productivity Workspace" [level=1] [ref=e11]:
+          - text: Next Gen
+          - text: Productivity
+          - text: Workspace
+        - paragraph [ref=e13]: Exclusive workspace for modern engineering communities. Premium performance meets elegant design.
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e18]: Quantum Auth
+          - generic [ref=e19]: v2026.1.0
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - heading "Elite Access" [level=2] [ref=e22]
+            - paragraph [ref=e23]: Enter your credentials to access the workspace.
+          - generic [ref=e24]:
+            - generic [ref=e25]:
+              - text: Identity Identifier
+              - generic [ref=e26]:
+                - img [ref=e27]
+                - textbox "Identity Identifier" [ref=e30]:
+                  - /placeholder: agent@zenith.core
+            - generic [ref=e31]:
+              - generic [ref=e32]:
+                - generic [ref=e33]: Security Key
+                - button "Restore?" [ref=e34] [cursor=pointer]
+              - generic [ref=e35]:
+                - img [ref=e36]
+                - textbox "Security Key" [ref=e39]
+                - button [ref=e40] [cursor=pointer]:
+                  - img [ref=e41]
+            - button "Initialize Session" [disabled]:
+              - generic:
+                - text: Initialize Session
+                - img
+          - generic [ref=e46]: Quantum Bridge
+          - button "Login with Account" [ref=e48] [cursor=pointer]:
+            - img [ref=e50]
+            - generic [ref=e55]: Login with Account
+        - generic [ref=e58]:
+          - generic [ref=e59]: Architectural Engineering
+          - generic [ref=e62]: SANTO X/CODE
+    - region "Notifications (F8)":
+      - list
+  - alert [ref=e64]

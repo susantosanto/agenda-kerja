@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { createServerClient } from "@/lib/realtime"
 
 export async function GET(request: Request) {
   const session = await auth()
@@ -78,6 +79,61 @@ export async function POST(request: Request) {
       },
     })
 
+    const senderId = session.user.id
+    const senderName = session.user.name || user.name || "User"
+    const senderImage = session.user.image || user.image || null
+
+    // ✅ BROADCAST ke SEMUA user KECUALI pengirim (global notification)
+    createServerClient().broadcastToAll(senderId, {
+      type: "chat-message",
+      title: "Pesan Baru",
+      body: `${senderName}: ${content?.trim()?.slice(0, 50) || "mengirim gambar"}`,
+      link: "/dashboard/forum",
+      senderId,
+      senderName,
+      senderImage,
+      timestamp: new Date().toISOString(),
+      metadata: {
+        messageId: message.id,
+        message: {
+          id: message.id,
+          content: message.content,
+          imageUrl: message.imageUrl,
+          createdAt: message.createdAt,
+          user: {
+            id: user.id,
+            name: user.name,
+            image: user.image,
+            email: user.email
+          }
+        }
+      },
+    })
+
+    // Simpan notification ke database untuk SEMUA user KECUALI pengirim
+    const allUsers = await prisma.user.findMany({
+      where: { id: { not: session.user.id } },
+      select: { id: true },
+    })
+
+    if (allUsers.length > 0) {
+      const notificationData = allUsers.map((u) => ({
+        userId: u.id,
+        type: "CHAT_MESSAGE" as const,
+        title: "Pesan Baru",
+        body: `${senderName}: ${content?.trim()?.slice(0, 100) || "mengirim gambar"}`,
+        link: "/dashboard/forum",
+        metadata: {
+          messageId: message.id,
+          senderName,
+        },
+      }))
+
+      await prisma.notification.createMany({
+        data: notificationData,
+      })
+    }
+
     return NextResponse.json(message)
   } catch (error) {
     console.error("Error creating message:", error)
@@ -125,6 +181,19 @@ export async function DELETE(request: Request) {
 
     await prisma.chatMessage.delete({
       where: { id: messageId },
+    })
+
+    // ✅ BROADCAST deletion ke SEMUA user
+    const senderId = session.user.id
+    createServerClient().broadcastToAll(senderId, {
+      type: "chat-message-deleted",
+      title: "Pesan Dihapus",
+      body: "Sebuah pesan telah dihapus",
+      senderId,
+      timestamp: new Date().toISOString(),
+      metadata: {
+        messageId,
+      },
     })
 
     return NextResponse.json({ success: true })

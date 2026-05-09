@@ -1,0 +1,462 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content":
+    - /url: "#geist-skip-nav"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e9]:
+            - link "Susanto's projects Hobby" [ref=e10] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da
+              - img [ref=e11]
+              - generic [ref=e12]:
+                - generic [ref=e13]: Susanto's projects
+                - generic [ref=e15]: Hobby
+            - button [ref=e16] [cursor=pointer]:
+              - img [ref=e18]
+          - button "Find… F" [ref=e21]:
+            - generic [ref=e23]:
+              - img [ref=e25]
+              - generic [ref=e27]: Find…
+              - generic [ref=e29]: F
+        - navigation [ref=e31]:
+          - generic [ref=e34]:
+            - link "Projects" [ref=e35] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da
+              - img [ref=e37]
+              - generic [ref=e40]: Projects
+            - link "Deployments" [ref=e41] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/deployments
+              - img [ref=e43]
+              - generic [ref=e46]: Deployments
+            - link "Logs" [ref=e47] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/logs
+              - img [ref=e49]
+              - generic [ref=e52]: Logs
+            - link "Analytics" [ref=e53] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/analytics
+              - img [ref=e55]
+              - generic [ref=e58]: Analytics
+            - link "Speed Insights" [ref=e59] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/speed-insights
+              - img [ref=e61]
+              - generic [ref=e64]: Speed Insights
+            - link "Observability" [ref=e65] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/observability
+              - img [ref=e67]
+              - generic [ref=e70]: Observability
+              - img [ref=e72]
+            - link "Firewall" [ref=e74] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/firewall
+              - img [ref=e76]
+              - generic [ref=e80]: Firewall
+            - link "CDN" [ref=e81] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/cdn
+              - img [ref=e83]
+              - generic [ref=e86]: CDN
+            - separator [ref=e87]
+            - link "Environment Variables" [ref=e88] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/settings/environment-variables
+              - img [ref=e90]
+              - generic [ref=e93]: Environment Variables
+            - link "Domains" [ref=e94] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/domains
+              - img [ref=e96]
+              - generic [ref=e99]: Domains
+            - link "Integrations" [ref=e100] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/integrations
+              - img [ref=e102]
+              - generic [ref=e105]: Integrations
+            - link "Storage" [ref=e106] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/stores
+              - img [ref=e108]
+              - generic [ref=e111]: Storage
+            - link "Flags" [ref=e112] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/experimentation/collections
+              - img [ref=e114]
+              - generic [ref=e117]: Flags
+            - link "Agent" [ref=e118] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/agent
+              - img [ref=e120]
+              - generic [ref=e123]: Agent
+              - img [ref=e125]
+            - link "AI Gateway" [ref=e127] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/ai-gateway
+              - img [ref=e129]
+              - generic [ref=e132]: AI Gateway
+              - img [ref=e134]
+            - link "Sandboxes" [ref=e136] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/sandboxes
+              - img [ref=e138]
+              - generic [ref=e141]: Sandboxes
+            - link "Workflows" [ref=e142] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/workflows
+              - img [ref=e144]
+              - generic [ref=e147]: Workflows
+            - separator [ref=e148]
+            - link "Usage" [ref=e149] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/usage
+              - img [ref=e151]
+              - generic [ref=e154]: Usage
+            - link "Support" [ref=e155] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/support
+              - img [ref=e157]
+              - generic [ref=e160]: Support
+            - link "Settings" [ref=e161] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/~/settings
+              - img [ref=e163]
+              - generic [ref=e166]: Settings
+              - img [ref=e168]
+        - generic [ref=e172]:
+          - generic [ref=e173]:
+            - generic [ref=e174]:
+              - generic [ref=e176]: Action Required
+              - img [ref=e179]
+            - generic [ref=e181]:
+              - generic [ref=e182]: Take action to secure your projects from critical vulnerabilities.
+              - link "Update Projects" [ref=e184] [cursor=pointer]:
+                - /url: /susantos-projects-59c2e8da/~/fixes
+                - generic [ref=e185]: Update Projects
+          - generic [ref=e187]:
+            - button "Avatar for susantosanto susantosanto" [ref=e188] [cursor=pointer]:
+              - img "Avatar for susantosanto" [ref=e189]:
+                - img "Avatar for susantosanto" [ref=e190]
+              - generic [ref=e192]: susantosanto
+              - img [ref=e194]
+            - button "17 unseen notifications" [ref=e198] [cursor=pointer]:
+              - generic [ref=e199]:
+                - generic [ref=e200]:
+                  - img
+                - img [ref=e201]
+      - button [ref=e204] [cursor=pointer]:
+        - img [ref=e205]
+    - generic [ref=e208]:
+      - generic [ref=e209]:
+        - button "All projects" [ref=e213] [cursor=pointer]:
+          - generic [ref=e214]: All projects
+          - img [ref=e216]
+        - generic [ref=e220]: Overview
+        - button "Open page actions menu" [ref=e222] [cursor=pointer]:
+          - img [ref=e224]
+      - generic [ref=e229]:
+        - generic [ref=e231]:
+          - generic [ref=e232]:
+            - searchbox "Search" [ref=e233]
+            - img [ref=e235]
+          - button "Filter and Sort Projects" [ref=e237] [cursor=pointer]:
+            - img [ref=e239]
+          - generic [ref=e241]:
+            - generic [ref=e242]:
+              - radio "grid" [checked] [ref=e243]
+              - generic [ref=e244] [cursor=pointer]:
+                - img [ref=e245]
+                - generic [ref=e247]: grid
+            - generic [ref=e248]:
+              - radio "list" [ref=e249]
+              - generic [ref=e250] [cursor=pointer]:
+                - img [ref=e251]
+                - generic [ref=e253]: list
+          - button "Add New..." [ref=e254] [cursor=pointer]:
+            - generic [ref=e255]: Add New...
+            - img [ref=e257]
+        - generic [ref=e259]:
+          - generic [ref=e262]:
+            - generic [ref=e263]:
+              - link "Usage" [ref=e265] [cursor=pointer]:
+                - /url: /susantos-projects-59c2e8da/~/usage
+              - generic [ref=e266]:
+                - generic [ref=e267]:
+                  - link "Last 30 days" [ref=e269] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/~/usage
+                  - button "Upgrade" [ref=e270] [cursor=pointer]:
+                    - generic [ref=e271]: Upgrade
+                - list [ref=e272]:
+                  - listitem [ref=e273]:
+                    - link "0.16468891 Fast Data Transfer 164.69 MB / 100 GB 1 TB" [ref=e274] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/networking-fast-data-transfer
+                      - progressbar [ref=e275]:
+                        - img [ref=e276]
+                      - generic [ref=e279]:
+                        - generic [ref=e280]: Fast Data Transfer
+                        - img [ref=e283]
+                      - generic [ref=e286]:
+                        - text: 164.69 MB /
+                        - generic [ref=e287]: 100 GB
+                      - generic: 1 TB
+                  - listitem [ref=e288]:
+                    - link "0.0812 Edge Requests 812 / 1M 10M" [ref=e289] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/networking-edge-requests
+                      - progressbar [ref=e290]:
+                        - img [ref=e291]
+                      - generic [ref=e294]:
+                        - generic [ref=e295]: Edge Requests
+                        - img [ref=e298]
+                      - generic [ref=e301]:
+                        - text: 812 /
+                        - generic [ref=e302]: 1M
+                      - generic: 10M
+                  - listitem [ref=e303]:
+                    - link "0.03243055555555555 Fluid Active CPU 5s / 4h 16h" [ref=e304] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/vercel-functions-fluid-cpu-duration
+                      - progressbar [ref=e305]:
+                        - img [ref=e306]
+                      - generic [ref=e309]:
+                        - generic [ref=e310]: Fluid Active CPU
+                        - img [ref=e313]
+                      - generic [ref=e316]:
+                        - text: 5s /
+                        - generic [ref=e317]: 4h
+                      - generic: 16h
+                  - listitem [ref=e318]:
+                    - link "0.02 Image Optimization - Transformations 1 / 5K 10K" [ref=e319] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/image-optimization-image-transformations
+                      - progressbar [ref=e320]:
+                        - img [ref=e321]
+                      - generic [ref=e324]:
+                        - generic [ref=e325]: Image Optimization - Transformations
+                        - img [ref=e328]
+                      - generic [ref=e331]:
+                        - text: 1 /
+                        - generic [ref=e332]: 5K
+                      - generic: 10K
+                  - listitem [ref=e333]:
+                    - link "0.0164 ISR Reads 164 / 1M 10M" [ref=e334] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/isr-reads
+                      - progressbar [ref=e335]:
+                        - img [ref=e336]
+                      - generic [ref=e339]:
+                        - generic [ref=e340]: ISR Reads
+                        - img [ref=e343]
+                      - generic [ref=e346]:
+                        - text: 164 /
+                        - generic [ref=e347]: 1M
+                      - generic: 10M
+                  - listitem [ref=e348]:
+                    - link "0.01190181 Fast Origin Transfer 1.19 MB / 10 GB 100 GB" [ref=e349] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/networking-fast-origin-transfer
+                      - progressbar [ref=e350]:
+                        - img [ref=e351]
+                      - generic [ref=e354]:
+                        - generic [ref=e355]: Fast Origin Transfer
+                        - img [ref=e358]
+                      - generic [ref=e361]:
+                        - text: 1.19 MB /
+                        - generic [ref=e362]: 10 GB
+                      - generic: 100 GB
+                  - listitem [ref=e363]:
+                    - link "0.006600000000000001 Function Invocations 66 / 1M" [ref=e364] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/vercel-functions-invocations
+                      - progressbar [ref=e365]:
+                        - img [ref=e366]
+                      - generic [ref=e369]:
+                        - generic [ref=e370]: Function Invocations
+                        - img [ref=e373]
+                      - generic [ref=e376]: 66 / 1M
+                  - listitem [ref=e377]:
+                    - link "0.003888888888888889 Edge Request CPU Duration 0s / 1h" [ref=e378] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/networking-edge-request-cpu-duration
+                      - progressbar [ref=e379]:
+                        - img [ref=e380]
+                      - generic [ref=e383]:
+                        - generic [ref=e384]: Edge Request CPU Duration
+                        - img [ref=e387]
+                      - generic [ref=e390]: 0s / 1h
+                  - listitem [ref=e391]:
+                    - link "0.0013419456790123457 Fluid Provisioned Memory 0 GB-Hrs / 360 GB-Hrs 1,440 GB-Hrs" [ref=e392] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/vercel-functions-fluid-duration
+                      - progressbar [ref=e393]:
+                        - img [ref=e394]
+                      - generic [ref=e397]:
+                        - generic [ref=e398]: Fluid Provisioned Memory
+                        - img [ref=e401]
+                      - generic [ref=e404]:
+                        - text: 0 GB-Hrs /
+                        - generic [ref=e405]: 360 GB-Hrs
+                      - generic: 1,440 GB-Hrs
+                  - listitem [ref=e406]:
+                    - link "0.001 Image Optimization - Cache Writes 1 / 100K 200K" [ref=e407] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/~/usage/image-optimization-image-cache-writes
+                      - progressbar [ref=e408]:
+                        - img [ref=e409]
+                      - generic [ref=e412]:
+                        - generic [ref=e413]: Image Optimization - Cache Writes
+                        - img [ref=e416]
+                      - generic [ref=e419]:
+                        - text: 1 /
+                        - generic [ref=e420]: 100K
+                      - generic: 200K
+              - button "Show More Usage" [ref=e421] [cursor=pointer]:
+                - img [ref=e423]
+            - generic [ref=e425]:
+              - link "Alerts" [ref=e427] [cursor=pointer]:
+                - /url: /susantos-projects-59c2e8da/~/observability/alerts
+              - generic [ref=e432]:
+                - generic [ref=e433]:
+                  - generic [ref=e434]: Get alerted for anomalies
+                  - generic [ref=e435]: Automatically monitor your projects for anomalies and get notified.
+                - button "Upgrade to Pro" [ref=e436] [cursor=pointer]:
+                  - generic [ref=e437]: Upgrade to Pro
+            - generic [ref=e438]:
+              - generic [ref=e440]: Recent Previews
+              - list [ref=e441]:
+                - listitem [ref=e442]:
+                  - generic [ref=e443]:
+                    - generic [ref=e445]:
+                      - generic [ref=e446]:
+                        - generic [ref=e447]:
+                          - img "github/vercel[bot]" [ref=e449]:
+                            - img "github/vercel[bot]" [ref=e450]
+                          - img [ref=e451] [cursor=pointer]
+                        - 'generic "Fix React Server Components CVE vulnerabilities / Fix React Server Components CVE vulnerabilities Updated dependencies to fix Next.js and React CVE vulnerabilities. The fix-react2shell-next tool automatically updated the following packages to their secure versions: - next - react-server-dom-webpack - react-server-dom-parcel - react-server-dom-turbopack All package.json files have been scanned and vulnerable versions have been patched to the correct fixed versions based on the official React advisory. Co-authored-by: Vercel <vercel[bot]@users.noreply.github.com>" [ref=e452]': "Fix React Server Components CVE vulnerabilitiesFix React Server Components CVE vulnerabilities Updated dependencies to fix Next.js and React CVE vulnerabilities. The fix-react2shell-next tool automatically updated the following packages to their secure versions: - next - react-server-dom-webpack - react-server-dom-parcel - react-server-dom-turbopack All package.json files have been scanned and vulnerable versions have been patched to the correct fixed versions based on the official React advisory. Co-authored-by: Vercel <vercel[bot]@users.noreply.github.com>"
+                      - generic [ref=e453]:
+                        - generic [ref=e455]:
+                          - img [ref=e457]
+                          - text: Preview
+                        - link "View Pull Request" [ref=e459] [cursor=pointer]:
+                          - /url: https://github.com/susantosanto/agenda-kerja/pull/2
+                          - generic [ref=e461]:
+                            - img [ref=e463]
+                            - text: "#2"
+                        - link "View Latest Deployment" [ref=e466] [cursor=pointer]:
+                          - /url: /susantos-projects-59c2e8da/agenda-kerja/rsmbEAkTXRBRjSDbLhYRcrbWizKQ
+                          - generic [ref=e469]: rsmbEAkTX
+                    - button "Preview Menu" [ref=e475] [cursor=pointer]:
+                      - img [ref=e477]
+                    - link [ref=e479] [cursor=pointer]:
+                      - /url: https://agenda-kerja-git-vercel-react-c013bb-susantos-projects-59c2e8da.vercel.app
+                - listitem [ref=e480]:
+                  - generic [ref=e481]:
+                    - generic [ref=e483]:
+                      - generic [ref=e484]:
+                        - generic [ref=e485]:
+                          - img "github/vercel[bot]" [ref=e487]:
+                            - img "github/vercel[bot]" [ref=e488]
+                          - img [ref=e489] [cursor=pointer]
+                        - 'generic "Fix React Server Components CVE vulnerabilities / Fix React Server Components CVE vulnerabilities Updated dependencies to fix Next.js and React CVE vulnerabilities. The fix-react2shell-next tool automatically updated the following packages to their secure versions: - next - react-server-dom-webpack - react-server-dom-parcel - react-server-dom-turbopack All package.json files have been scanned and vulnerable versions have been patched to the correct fixed versions based on the official React advisory. Co-authored-by: Vercel <vercel[bot]@users.noreply.github.com>" [ref=e490]': "Fix React Server Components CVE vulnerabilitiesFix React Server Components CVE vulnerabilities Updated dependencies to fix Next.js and React CVE vulnerabilities. The fix-react2shell-next tool automatically updated the following packages to their secure versions: - next - react-server-dom-webpack - react-server-dom-parcel - react-server-dom-turbopack All package.json files have been scanned and vulnerable versions have been patched to the correct fixed versions based on the official React advisory. Co-authored-by: Vercel <vercel[bot]@users.noreply.github.com>"
+                      - generic [ref=e491]:
+                        - generic [ref=e493]:
+                          - img [ref=e495]
+                          - text: Preview
+                        - link "View Pull Request" [ref=e497] [cursor=pointer]:
+                          - /url: https://github.com/susantosanto/next-web-profile/pull/1
+                          - generic [ref=e499]:
+                            - img [ref=e501]
+                            - text: "#1"
+                        - link "View Latest Deployment" [ref=e504] [cursor=pointer]:
+                          - /url: /susantos-projects-59c2e8da/next-web-profile/koZf8ow6t9u4AH7McyXvzyDC7AEw
+                          - generic [ref=e507]: koZf8ow6t
+                    - button "Preview Menu" [ref=e513] [cursor=pointer]:
+                      - img [ref=e515]
+                    - link [ref=e517] [cursor=pointer]:
+                      - /url: https://next-web-profile-git-vercel-r-53e47a-susantos-projects-59c2e8da.vercel.app
+          - generic [ref=e519]:
+            - generic [ref=e521]: Projects
+            - list [ref=e522]:
+              - listitem [ref=e523]:
+                - link [ref=e524] [cursor=pointer]:
+                  - /url: /susantos-projects-59c2e8da/agenda-kerja
+                - generic [ref=e525]:
+                  - link [ref=e526] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/agenda-kerja
+                    - img [ref=e528]
+                  - generic [ref=e529]:
+                    - link "agenda-kerja" [ref=e530] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja
+                      - generic [ref=e532]: agenda-kerja
+                    - link "agenda-kerja.vercel.app" [ref=e533] [cursor=pointer]:
+                      - /url: https://agenda-kerja.vercel.app
+                  - link "40" [ref=e534] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/agenda-kerja#production-checklist
+                    - progressbar [ref=e536]:
+                      - img [ref=e537]
+                      - img [ref=e542]
+                  - button "Project Menu" [ref=e544] [cursor=pointer]:
+                    - img [ref=e546]
+                - link "github susantosanto/agenda-kerja" [ref=e549] [cursor=pointer]:
+                  - /url: /susantos-projects-59c2e8da?repo=https://github.com/susantosanto/agenda-kerja
+                  - img "github" [ref=e550]
+                  - generic [ref=e552]: susantosanto/agenda-kerja
+                - generic [ref=e553]:
+                  - 'link "Merge pull request #2 from susantosanto/vercel/react-server-components-cve-vu-rlftju" [ref=e554] [cursor=pointer]':
+                    - /url: /susantos-projects-59c2e8da/agenda-kerja/5gf5xVvgUjWCbtqvZJpdvJV7HFsB
+                  - generic [ref=e555]:
+                    - generic [ref=e556]:
+                      - generic [ref=e558] [cursor=pointer]: 33m ago
+                      - text: "on"
+                    - img [ref=e559]
+                    - link "main" [ref=e561] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/agenda-kerja/deployments?filterBranch=main
+              - listitem [ref=e562]:
+                - link [ref=e563] [cursor=pointer]:
+                  - /url: /susantos-projects-59c2e8da/next-web-profile
+                - generic [ref=e564]:
+                  - link [ref=e565] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/next-web-profile
+                    - img [ref=e567]
+                  - generic [ref=e568]:
+                    - link "next-web-profile" [ref=e569] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/next-web-profile
+                      - generic [ref=e571]: next-web-profile
+                    - link "next-web-profile.vercel.app" [ref=e572] [cursor=pointer]:
+                      - /url: https://next-web-profile.vercel.app
+                  - link "40" [ref=e573] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/next-web-profile#production-checklist
+                    - progressbar [ref=e575]:
+                      - img [ref=e576]
+                      - img [ref=e581]
+                  - button "Project Menu" [ref=e583] [cursor=pointer]:
+                    - img [ref=e585]
+                - link "github susantosanto/next-web-profile" [ref=e588] [cursor=pointer]:
+                  - /url: /susantos-projects-59c2e8da?repo=https://github.com/susantosanto/next-web-profile
+                  - img "github" [ref=e589]
+                  - generic [ref=e591]: susantosanto/next-web-profile
+                - generic [ref=e592]:
+                  - link "initial commit" [ref=e593] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/next-web-profile/G5B9VS6d36mXHueEZPCdJWYAQhSX
+                  - generic [ref=e594]:
+                    - generic [ref=e595]:
+                      - generic [ref=e597] [cursor=pointer]: May 2
+                      - text: "on"
+                    - img [ref=e598]
+                    - link "master" [ref=e600] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/next-web-profile/deployments?filterBranch=master
+              - listitem [ref=e601]:
+                - link [ref=e602] [cursor=pointer]:
+                  - /url: /susantos-projects-59c2e8da/steven-andien-web
+                - generic [ref=e603]:
+                  - link [ref=e604] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/steven-andien-web
+                    - img [ref=e606]
+                  - generic [ref=e607]:
+                    - link "steven-andien-web" [ref=e608] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/steven-andien-web
+                      - generic [ref=e610]: steven-andien-web
+                    - link "steven-andien-web.vercel.app" [ref=e611] [cursor=pointer]:
+                      - /url: https://steven-andien-web.vercel.app
+                  - link "20" [ref=e612] [cursor=pointer]:
+                    - /url: /susantos-projects-59c2e8da/steven-andien-web#production-checklist
+                    - progressbar [ref=e614]:
+                      - img [ref=e615]
+                      - img [ref=e620]
+                  - button "Project Menu" [ref=e622] [cursor=pointer]:
+                    - img [ref=e624]
+                - link "github susantosanto/steven-andien-web" [ref=e627] [cursor=pointer]:
+                  - /url: /susantos-projects-59c2e8da?repo=https://github.com/susantosanto/steven-andien-web
+                  - img "github" [ref=e628]
+                  - generic [ref=e630]: susantosanto/steven-andien-web
+                - generic [ref=e631]:
+                  - 'link "fix: spacing talenta strategis di CEOMessage section" [ref=e632] [cursor=pointer]':
+                    - /url: /susantos-projects-59c2e8da/steven-andien-web/AL4Y8ZZ1mrLc1uiTkGqehLqKEQfd
+                  - generic [ref=e633]:
+                    - generic [ref=e634]:
+                      - generic [ref=e636] [cursor=pointer]: May 2
+                      - text: "on"
+                    - img [ref=e637]
+                    - link "main" [ref=e639] [cursor=pointer]:
+                      - /url: /susantos-projects-59c2e8da/steven-andien-web/deployments?filterBranch=main
+  - alert [ref=e641]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img

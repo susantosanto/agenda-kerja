@@ -39,6 +39,13 @@ enum ActivityType {
   STATUS_CHANGED
 }
 
+enum NotificationType {
+  COMMENT_ADDED
+  TASK_ASSIGNED
+  CHAT_MESSAGE
+  TASK_STATUS_CHANGED
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -82,6 +89,7 @@ model User {
   ownedCommunities Community[] @relation("CommunityOwner")
   messages      ChatMessage[]
   notes         Note[]
+  notifications Notification[]
 }
 
 model VerificationToken {
@@ -243,4 +251,20 @@ model Note {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  title       String
+  body        String?
+  link        String?
+  isRead      Boolean  @default(false)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, isRead])
 }

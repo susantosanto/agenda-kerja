@@ -1,0 +1,119 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e8]:
+      - img "Google" [ref=e10]
+      - generic [ref=e11]: Sign in with Google
+    - generic [ref=e12]:
+      - generic [ref=e14]:
+        - heading "Sign in" [level=1] [ref=e15]
+        - paragraph [ref=e16]:
+          - text: to continue to
+          - button "agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app" [ref=e17] [cursor=pointer]
+      - generic [ref=e18]:
+        - generic [ref=e21]:
+          - generic [ref=e26]:
+            - textbox "Email or phone" [active] [ref=e27]
+            - generic:
+              - generic: Email or phone
+          - paragraph [ref=e28]:
+            - link "Forgot email?" [ref=e29] [cursor=pointer]:
+              - /url: /signin/v2/usernamerecovery?access_type=offline&app_domain=https://agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app&client_id=338172036774-7k158017ivrgugpj1pugcauqc3vdh9po.apps.googleusercontent.com&continue=https://accounts.google.com/signin/oauth/legacy/consent?authuser%3Dunknown%26part%3DAJi8hANB8ucReV7kUvZj8PeaNfc6CeR3GlHn_Ofp0ym0SuGhksN7ih_eeY-QczDOwJVJ8BCcpEOxPVFbwPmHJE-5yj1gHmI_eY5Jdaz51iUltJFqWyasDrQSidUv3CubRSo4WPXZOH6P_a1_LtryslmqqN-Nh9ebTVD1rf2rQ4PpA8rDhWcrX3Upkb4Kjp39IeA6A4wotAgZfp_gREDMTzIRAm6l_A9_ZholoIcQFb5yMja1Gr3S9JkO5MwSLGGm4aAt0_a04TX3MtbZgwPJw573xnMDnzNduO8QO3wyWgEwnSOZTcnibQcpIy3HSPz0Se2EQr3TTdIqDgAbOFaPnJEW38ySjTJ9T4jBNwfPf1LzQ2HhHdYucckpFnwhNbrxrY5RlAZjz2-2Lbk0RUHoR_XrJ0CEp-flOh4eslTA_AI9sWDzIjxEvxZ4Dl829UM_MDQSZhbtRRfqd46eaBDwifULPgXbnW4-LefywvKuh0gaUHP_bSv96xkVVsQe-h9CPoV9RfSjVLw5xHszoEaME_q3O8QhI5cYvfbk6vlqK-ypkFrpB0UAwoYpJ3HACO7tHBZaB5CVfLYLI2gjKRkjVduQhIMCU1gVVaJItier4t-_MhVl-BxEMNVe23m5m8MR4SXl5AMXNfakyzfAeRoP5Qin0_fHQN4U-uCZuMcVXCCYafG_k-qZsv5fPyACEiiT6n0Q9NqjBKXx%26flowName%3DGeneralOAuthFlow%26as%3DS-2029778191%253A1778232524373927%26client_id%3D338172036774-7k158017ivrgugpj1pugcauqc3vdh9po.apps.googleusercontent.com%23&dsh=S-2029778191:1778232524373927&flowName=GeneralOAuthLite&o2v=2&opparams=%253F&prompt=select_account&rart=ANgoxcePXO8zL24w2FLiHVwpC24f6OmTMGZgP3qzVMf-CL_gDaKjB9hW5twKmrVPV60GOxf8mlwIYY296chiTxt78T9T4P959eG2e7W17w6tKZhR5jEj_ds&redirect_uri=https://agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app/api/auth/callback/google&response_type=code&scope=openid+profile+email&service=lso
+        - generic [ref=e31]:
+          - button "Next" [ref=e33]
+          - link "Create account" [ref=e35] [cursor=pointer]:
+            - /url: /lifecycle/flows/signup?access_type=offline&app_domain=https://agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app&client_id=338172036774-7k158017ivrgugpj1pugcauqc3vdh9po.apps.googleusercontent.com&continue=https://accounts.google.com/signin/oauth/legacy/consent?authuser%3Dunknown%26part%3DAJi8hANB8ucReV7kUvZj8PeaNfc6CeR3GlHn_Ofp0ym0SuGhksN7ih_eeY-QczDOwJVJ8BCcpEOxPVFbwPmHJE-5yj1gHmI_eY5Jdaz51iUltJFqWyasDrQSidUv3CubRSo4WPXZOH6P_a1_LtryslmqqN-Nh9ebTVD1rf2rQ4PpA8rDhWcrX3Upkb4Kjp39IeA6A4wotAgZfp_gREDMTzIRAm6l_A9_ZholoIcQFb5yMja1Gr3S9JkO5MwSLGGm4aAt0_a04TX3MtbZgwPJw573xnMDnzNduO8QO3wyWgEwnSOZTcnibQcpIy3HSPz0Se2EQr3TTdIqDgAbOFaPnJEW38ySjTJ9T4jBNwfPf1LzQ2HhHdYucckpFnwhNbrxrY5RlAZjz2-2Lbk0RUHoR_XrJ0CEp-flOh4eslTA_AI9sWDzIjxEvxZ4Dl829UM_MDQSZhbtRRfqd46eaBDwifULPgXbnW4-LefywvKuh0gaUHP_bSv96xkVVsQe-h9CPoV9RfSjVLw5xHszoEaME_q3O8QhI5cYvfbk6vlqK-ypkFrpB0UAwoYpJ3HACO7tHBZaB5CVfLYLI2gjKRkjVduQhIMCU1gVVaJItier4t-_MhVl-BxEMNVe23m5m8MR4SXl5AMXNfakyzfAeRoP5Qin0_fHQN4U-uCZuMcVXCCYafG_k-qZsv5fPyACEiiT6n0Q9NqjBKXx%26flowName%3DGeneralOAuthFlow%26as%3DS-2029778191%253A1778232524373927%26client_id%3D338172036774-7k158017ivrgugpj1pugcauqc3vdh9po.apps.googleusercontent.com%23&dsh=S-2029778191:1778232524373927&flowEntry=SignUp&flowName=GlifWebSignIn&o2v=2&opparams=%253F&prompt=select_account&rart=ANgoxcePXO8zL24w2FLiHVwpC24f6OmTMGZgP3qzVMf-CL_gDaKjB9hW5twKmrVPV60GOxf8mlwIYY296chiTxt78T9T4P959eG2e7W17w6tKZhR5jEj_ds&redirect_uri=https://agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app/api/auth/callback/google&response_type=code&scope=openid+profile+email&service=lso&signInUrl=https://accounts.google.com/signin/oauth?access_type%3Doffline%26app_domain%3Dhttps://agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app%26client_id%3D338172036774-7k158017ivrgugpj1pugcauqc3vdh9po.apps.googleusercontent.com%26continue%3Dhttps://accounts.google.com/signin/oauth/legacy/consent?authuser%253Dunknown%2526part%253DAJi8hANB8ucReV7kUvZj8PeaNfc6CeR3GlHn_Ofp0ym0SuGhksN7ih_eeY-QczDOwJVJ8BCcpEOxPVFbwPmHJE-5yj1gHmI_eY5Jdaz51iUltJFqWyasDrQSidUv3CubRSo4WPXZOH6P_a1_LtryslmqqN-Nh9ebTVD1rf2rQ4PpA8rDhWcrX3Upkb4Kjp39IeA6A4wotAgZfp_gREDMTzIRAm6l_A9_ZholoIcQFb5yMja1Gr3S9JkO5MwSLGGm4aAt0_a04TX3MtbZgwPJw573xnMDnzNduO8QO3wyWgEwnSOZTcnibQcpIy3HSPz0Se2EQr3TTdIqDgAbOFaPnJEW38ySjTJ9T4jBNwfPf1LzQ2HhHdYucckpFnwhNbrxrY5RlAZjz2-2Lbk0RUHoR_XrJ0CEp-flOh4eslTA_AI9sWDzIjxEvxZ4Dl829UM_MDQSZhbtRRfqd46eaBDwifULPgXbnW4-LefywvKuh0gaUHP_bSv96xkVVsQe-h9CPoV9RfSjVLw5xHszoEaME_q3O8QhI5cYvfbk6vlqK-ypkFrpB0UAwoYpJ3HACO7tHBZaB5CVfLYLI2gjKRkjVduQhIMCU1gVVaJItier4t-_MhVl-BxEMNVe23m5m8MR4SXl5AMXNfakyzfAeRoP5Qin0_fHQN4U-uCZuMcVXCCYafG_k-qZsv5fPyACEiiT6n0Q9NqjBKXx%2526flowName%253DGeneralOAuthFlow%2526as%253DS-2029778191%25253A1778232524373927%2526client_id%253D338172036774-7k158017ivrgugpj1pugcauqc3vdh9po.apps.googleusercontent.com%2523%26dsh%3DS-2029778191:1778232524373927%26flowName%3DGeneralOAuthLite%26o2v%3D2%26opparams%3D%25253F%26prompt%3Dselect_account%26rart%3DANgoxcePXO8zL24w2FLiHVwpC24f6OmTMGZgP3qzVMf-CL_gDaKjB9hW5twKmrVPV60GOxf8mlwIYY296chiTxt78T9T4P959eG2e7W17w6tKZhR5jEj_ds%26redirect_uri%3Dhttps://agenda-kerja-yy91uzq0q-susantos-projects-59c2e8da.vercel.app/api/auth/callback/google%26response_type%3Dcode%26scope%3Dopenid%2Bprofile%2Bemail%26service%3Dlso
+  - contentinfo [ref=e36]:
+    - combobox [ref=e39] [cursor=pointer]:
+      - option "Afrikaans"
+      - option "azərbaycan"
+      - option "bosanski"
+      - option "català"
+      - option "Čeština"
+      - option "Cymraeg"
+      - option "Dansk"
+      - option "Deutsch"
+      - option "eesti"
+      - option "English (United Kingdom)"
+      - option "English (United States)" [selected]
+      - option "Español (España)"
+      - option "Español (Latinoamérica)"
+      - option "euskara"
+      - option "Filipino"
+      - option "Français (Canada)"
+      - option "Français (France)"
+      - option "Gaeilge"
+      - option "galego"
+      - option "Hrvatski"
+      - option "Indonesia"
+      - option "isiZulu"
+      - option "íslenska"
+      - option "Italiano"
+      - option "Kiswahili"
+      - option "latviešu"
+      - option "lietuvių"
+      - option "magyar"
+      - option "Melayu"
+      - option "Nederlands"
+      - option "norsk"
+      - option "o‘zbek"
+      - option "polski"
+      - option "Português (Brasil)"
+      - option "Português (Portugal)"
+      - option "română"
+      - option "shqip"
+      - option "Slovenčina"
+      - option "slovenščina"
+      - option "srpski (latinica)"
+      - option "Suomi"
+      - option "Svenska"
+      - option "Tiếng Việt"
+      - option "Türkçe"
+      - option "Ελληνικά"
+      - option "беларуская"
+      - option "български"
+      - option "кыргызча"
+      - option "қазақ тілі"
+      - option "македонски"
+      - option "монгол"
+      - option "Русский"
+      - option "српски (ћирилица)"
+      - option "Українська"
+      - option "ქართული"
+      - option "հայերեն"
+      - option "‫עברית‬‎"
+      - option "‫اردو‬‎"
+      - option "‫العربية‬‎"
+      - option "‫فارسی‬‎"
+      - option "አማርኛ"
+      - option "नेपाली"
+      - option "मराठी"
+      - option "हिन्दी"
+      - option "অসমীয়া"
+      - option "বাংলা"
+      - option "ਪੰਜਾਬੀ"
+      - option "ગુજરાતી"
+      - option "ଓଡ଼ିଆ"
+      - option "தமிழ்"
+      - option "తెలుగు"
+      - option "ಕನ್ನಡ"
+      - option "മലയാളം"
+      - option "සිංහල"
+      - option "ไทย"
+      - option "ລາວ"
+      - option "မြန်မာ"
+      - option "ខ្មែរ"
+      - option "한국어"
+      - option "中文（香港）"
+      - option "日本語"
+      - option "简体中文"
+      - option "繁體中文"
+    - list [ref=e40]:
+      - listitem [ref=e41]:
+        - link "Help" [ref=e42] [cursor=pointer]:
+          - /url: https://support.google.com/accounts?hl=en-US&p=account_iph
+      - listitem [ref=e43]:
+        - link "Privacy" [ref=e44] [cursor=pointer]:
+          - /url: https://accounts.google.com/TOS?loc=ID&hl=en-US&privacy=true
+      - listitem [ref=e45]:
+        - link "Terms" [ref=e46] [cursor=pointer]:
+          - /url: https://accounts.google.com/TOS?loc=ID&hl=en-US

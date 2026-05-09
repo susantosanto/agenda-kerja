@@ -1,0 +1,197 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content":
+    - /url: "#geist-skip-nav"
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e9]:
+            - link "Susanto's projects Hobby" [ref=e10] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da
+              - img [ref=e11]
+              - generic [ref=e12]:
+                - generic [ref=e13]: Susanto's projects
+                - generic [ref=e15]: Hobby
+            - button [ref=e16] [cursor=pointer]:
+              - img [ref=e18]
+          - button "Find… F" [ref=e21]:
+            - generic [ref=e23]:
+              - img [ref=e25]
+              - generic [ref=e27]: Find…
+              - generic [ref=e29]: F
+        - navigation [ref=e31]:
+          - generic [ref=e34]:
+            - link "Overview" [ref=e35] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja
+              - generic [ref=e39]: Overview
+            - link "Deployments" [ref=e40] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/deployments
+              - img [ref=e42]
+              - generic [ref=e45]: Deployments
+            - link "Logs" [ref=e46] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/logs
+              - img [ref=e48]
+              - generic [ref=e51]: Logs
+            - link "Analytics" [ref=e52] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/analytics
+              - img [ref=e54]
+              - generic [ref=e57]: Analytics
+            - link "Speed Insights" [ref=e58] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/speed-insights
+              - img [ref=e60]
+              - generic [ref=e63]: Speed Insights
+            - link "Observability" [ref=e64] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/observability
+              - img [ref=e66]
+              - generic [ref=e69]: Observability
+              - img [ref=e71]
+            - link "Firewall" [ref=e73] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/firewall
+              - img [ref=e75]
+              - generic [ref=e79]: Firewall
+              - img [ref=e81]
+            - link "CDN" [ref=e83] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/cdn
+              - img [ref=e85]
+              - generic [ref=e88]: CDN
+              - img [ref=e90]
+            - separator [ref=e92]
+            - link "Environment Variables" [ref=e93] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/environment-variables
+              - img [ref=e95]
+              - generic [ref=e98]: Environment Variables
+            - link "Domains" [ref=e99] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/domains
+              - img [ref=e101]
+              - generic [ref=e104]: Domains
+            - link "Integrations" [ref=e105] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings/integrations
+              - img [ref=e107]
+              - generic [ref=e110]: Integrations
+            - link "Storage" [ref=e111] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/stores
+              - img [ref=e113]
+              - generic [ref=e116]: Storage
+            - link "Flags" [ref=e117] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/flags
+              - img [ref=e119]
+              - generic [ref=e122]: Flags
+              - img [ref=e124]
+            - link "Agent" [ref=e126] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/agent
+              - img [ref=e128]
+              - generic [ref=e131]: Agent
+              - img [ref=e133]
+            - link "AI Gateway" [ref=e135] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/ai-gateway
+              - img [ref=e137]
+              - generic [ref=e140]: AI Gateway
+              - img [ref=e142]
+            - link "Sandboxes" [ref=e144] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/sandboxes
+              - img [ref=e146]
+              - generic [ref=e149]: Sandboxes
+            - link "Workflows" [ref=e150] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/workflows
+              - img [ref=e152]
+              - generic [ref=e155]: Workflows
+            - separator [ref=e156]
+            - link "Usage" [ref=e157] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/usage
+              - img [ref=e159]
+              - generic [ref=e162]: Usage
+            - link "Support" [ref=e163] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/support
+              - img [ref=e165]
+              - generic [ref=e168]: Support
+            - link "Settings" [ref=e169] [cursor=pointer]:
+              - /url: /susantos-projects-59c2e8da/agenda-kerja/settings
+              - img [ref=e171]
+              - generic [ref=e174]: Settings
+              - img [ref=e176]
+        - generic [ref=e182]:
+          - button "Avatar for susantosanto susantosanto" [ref=e183] [cursor=pointer]:
+            - img "Avatar for susantosanto" [ref=e184]:
+              - img "Avatar for susantosanto" [ref=e185]
+            - generic [ref=e187]: susantosanto
+            - img [ref=e189]
+          - img [ref=e193]
+      - button [ref=e196] [cursor=pointer]:
+        - img [ref=e197]
+    - generic [ref=e200]:
+      - generic [ref=e201]:
+        - generic [ref=e204]:
+          - link "agenda-kerja" [ref=e205] [cursor=pointer]:
+            - /url: /susantos-projects-59c2e8da/agenda-kerja
+            - generic [ref=e208]: agenda-kerja
+          - button [ref=e209] [cursor=pointer]:
+            - img [ref=e211]
+          - link "Back to team view" [ref=e215] [cursor=pointer]:
+            - /url: /susantos-projects-59c2e8da/~/settings/environment-variables
+            - img [ref=e217]
+        - generic [ref=e221]: Environment Variables
+        - button "Open page actions menu" [ref=e223] [cursor=pointer]:
+          - img [ref=e225]
+      - generic [ref=e234]:
+        - generic [ref=e236]:
+          - generic [ref=e237]:
+            - heading "Environment Variables" [level=2] [ref=e238]
+            - paragraph [ref=e239]:
+              - text: Store API keys, tokens, and config securely.
+              - link "Learn more" [ref=e240] [cursor=pointer]:
+                - /url: /docs/environment-variables
+                - text: Learn more
+                - img [ref=e241]
+          - generic [ref=e243]:
+            - button "Link Shared Variable" [ref=e245] [cursor=pointer]:
+              - generic [ref=e246]: Link Shared Variable
+            - button "Add Environment Variable" [ref=e247] [cursor=pointer]:
+              - generic [ref=e248]: Add Environment Variable
+        - tablist [ref=e249]:
+          - tab "Project" [selected] [ref=e250] [cursor=pointer]
+          - tab "Shared" [ref=e251] [cursor=pointer]
+        - generic [ref=e252]:
+          - generic [ref=e254]:
+            - searchbox "Search" [ref=e255]
+            - img [ref=e257]
+          - combobox [ref=e260]
+          - combobox [ref=e262]:
+            - generic [ref=e263]:
+              - generic:
+                - img
+              - searchbox "All Editors…" [ref=e264]
+              - button "Open menu" [ref=e265] [cursor=pointer]:
+                - img [ref=e266]
+          - generic [ref=e268]:
+            - generic [ref=e270]:
+              - combobox "Filter variables by status" [ref=e271] [cursor=pointer]:
+                - option "All Variables" [selected]
+                - option "Needs Attention"
+              - generic:
+                - img
+            - generic [ref=e273]:
+              - generic:
+                - img
+              - combobox [ref=e274] [cursor=pointer]:
+                - option "Sort by…" [disabled]
+                - option "Last Updated" [selected]
+                - option "Name"
+                - option "Type"
+              - generic:
+                - img
+        - generic [ref=e318]:
+          - generic [ref=e320] [cursor=pointer]:
+            - checkbox [checked] [ref=e321]
+            - img [ref=e323]
+          - generic [ref=e325]:
+            - text: Enable access to
+            - link "System Environment Variables" [ref=e326] [cursor=pointer]:
+              - /url: /docs/environment-variables/system-environment-variables
+              - text: System Environment Variables
+              - img [ref=e327]
+  - alert [ref=e329]
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - img

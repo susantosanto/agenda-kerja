@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useState, createContext, useContext } from "react"
 import { ToastProvider } from "@/components/ui/toast"
+import { NotificationToast } from "@/components/notification/notification-toast"
 
 const TooltipContext = createContext<{ delayDuration: number }>({ delayDuration: 200 })
 
@@ -48,6 +49,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <TooltipProvider delayDuration={200}>
           <ToastProvider>
             <div className="dark min-h-screen bg-background text-foreground">
+              {/* Toast notifications mounted at root level to avoid overflow issues */}
+              <NotificationToast position="bottom-right" maxVisible={3} />
               {children}
             </div>
           </ToastProvider>
